@@ -11,6 +11,12 @@ public class Gif {
     Integer id;
     String url;
 
+    public Gif() { }
+
+    public Gif(String url) {
+        this.url = url;
+    }
+
     public Integer getId() {
         return id;
     }

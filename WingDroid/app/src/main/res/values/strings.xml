@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">WingDroid</string>
+
+    <!-- order -->
+    <string name="order_by_recent">Recent</string>
+    <string name="order_by_star">Star</string>
+
 </resources>

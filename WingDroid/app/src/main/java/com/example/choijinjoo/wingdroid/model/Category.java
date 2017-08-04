@@ -9,7 +9,13 @@ import org.parceler.Parcel;
 @Parcel
 public class Category {
     Integer id;
-    String url;
+    String name;
+
+    public Category() {}
+
+    public Category(String name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;
@@ -19,11 +25,12 @@ public class Category {
         this.id = id;
     }
 
-    public String getUrl() {
-        return url;
+    public String getName() {
+        return name;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setName(String name) {
+        this.name = name;
     }
+
 }

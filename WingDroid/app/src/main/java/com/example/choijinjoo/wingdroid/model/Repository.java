@@ -2,6 +2,8 @@ package com.example.choijinjoo.wingdroid.model;
 
 import org.parceler.Parcel;
 
+import java.util.List;
+
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
@@ -17,14 +19,21 @@ public class Repository {
     Integer star;
     Integer fork;
     Integer issue;
+    List<Image> images;
+    List<Gif> gifs;
+
+    public Repository() {}
+
+    public Repository(String name, List<Gif> gifs) {
+        this.name = name;
+        this.gifs = gifs;
+    }
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public void setId(Integer id) { this.id = id; }
 
     public String getName() {
         return name;
@@ -89,4 +98,12 @@ public class Repository {
     public void setIssue(Integer issue) {
         this.issue = issue;
     }
+
+    public List<Image> getImages() { return images; }
+
+    public void setImages(List<Image> images) { this.images = images; }
+
+    public List<Gif> getGifs() { return gifs; }
+
+    public void setGifs(List<Gif> gifs) { this.gifs = gifs; }
 }
