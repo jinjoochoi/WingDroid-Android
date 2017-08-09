@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/news_issue_height"
+    android:orientation="vertical"
+    android:padding="@dimen/news_padding">
+
+    <ImageView
+        android:id="@+id/imgvIssue"
+        android:layout_width="@dimen/ic_issue_open_width"
+        android:layout_height="@dimen/ic_issue_open_height"
+        android:layout_marginTop="2dp"
+        android:src="@drawable/ic_push" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@id/imgvIssue"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/imgvIssue">
+
+            <TextView
+                android:id="@+id/txtvName"
+                style="@style/TextStyle.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                tools:text="Ikzhao / Hero" />
+
+            <View
+                android:layout_width="@dimen/new_mark_width"
+                android:layout_height="@dimen/new_mark_width"
+                android:layout_marginLeft="@dimen/new_mark_margin_left"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/txtvName"
+                android:background="@drawable/mark_new" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txtvTitle"
+            style="@style/TextStyle.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:maxWidth="300dp"
+            tools:text="Initial commit + ..." />
+
+        <TextView
+            android:id="@+id/txtvIssueInfo"
+            style="@style/TextStyle.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:maxWidth="300dp"
+            tools:text="Commited by jinjoo 27 days ago" />
+    </LinearLayout>
+
+</RelativeLayout>

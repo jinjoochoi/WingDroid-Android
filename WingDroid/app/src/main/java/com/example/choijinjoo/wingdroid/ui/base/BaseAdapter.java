@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.List;
 
+import static android.icu.text.Normalizer.NO;
+
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
@@ -57,6 +59,20 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
             notifyDataSetChanged();
         }
     }
+
+    public void setItems(List<T> items) {
+        this.items = items;
+        notifyDataSetChanged();
+    }
+
+    public List<T> getItems(){
+        return items;
+    }
+
+    public T getItem(int position){
+        return items.get(position);
+    }
+
 
     @Override
     public int getItemCount() {

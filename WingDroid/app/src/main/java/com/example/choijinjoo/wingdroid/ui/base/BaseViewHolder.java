@@ -19,5 +19,10 @@ public abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
+    public int getSafeAdapterPosition(){
+        return getAdapterPosition() == RecyclerView.NO_POSITION ? 0 : getAdapterPosition();
+    }
+
+
     public abstract void bindData(T item);
 }

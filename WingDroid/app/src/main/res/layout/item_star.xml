@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_alignParentRight="true"
+    android:layout_below="@id/flowLayout"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="@dimen/ic_star_width"
+        android:layout_height="@dimen/ic_star_height"
+        android:layout_marginRight="2dp"
+        android:src="@drawable/ic_star"
+        android:tint="@color/grey" />
+
+    <TextView
+        android:id="@+id/txtvStar"
+        style="@style/TextStyle.Star"
+        tools:text="1.8K"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/textsize_min" />
+
+</LinearLayout>
+

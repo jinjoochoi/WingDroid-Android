@@ -15,6 +15,12 @@ public class User {
     String introduction;
     Integer followers;
 
+    public User() {}
+
+    public User(String name) {
+        this.name = name;
+    }
+
     public Integer getId() {
         return id;
     }

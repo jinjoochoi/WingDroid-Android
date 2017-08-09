@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_repository_filter_height"
+        android:background="@color/white"
+        android:padding="10dp"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="@dimen/dialog_repository_filter_height"
+        app:layout_behavior="@string/bottom_sheet_behavior">
+
+        <TextView
+            android:id="@+id/txtvDescription"
+            style="@style/TextStyle.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/description_repository_filter" />
+
+        <ImageView
+            android:layout_width="@dimen/ic_arrow_bottom_width"
+            android:layout_height="@dimen/ic_arrow_bottom_hegiht"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_arrow_bottom"
+            android:tint="@color/greyDark" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recvCategories"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/txtvDescription" />
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

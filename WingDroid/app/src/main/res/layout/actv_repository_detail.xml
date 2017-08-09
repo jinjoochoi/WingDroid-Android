@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_detail" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/imgvPreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/ic_star_width"
+                            android:layout_height="@dimen/ic_star_height"
+                            android:layout_marginRight="2dp"
+                            android:src="@drawable/ic_star"
+                            android:tint="@color/grey" />
+
+                        <TextView
+                            android:id="@+id/txtvStar"
+                            style="@style/TextStyle.Star"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/textsize_min"
+                            tools:text="1.8K" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txtvName"
+                        style="@style/TextStyle.Title.Large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="TextSurface" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/txtvAuthor"
+                    style="@style/TextStyle.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="by. jinjoo" />
+
+                <TextView
+                    android:id="@+id/txtvDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:maxWidth="340dp"
+                    tools:text="To customize the theme's base colors to fit your brand, define your custom colors using theme attributes when you inherit from the material theme:" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/grey" />
+
+                <TextView
+                    android:id="@+id/txtvIssue"
+                    style="@style/TextStyle.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/detail_issues"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtvGithub"
+                    style="@style/TextStyle.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/detail_github"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bd_green_rad18"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_simulate"
+                        android:tint="@color/issue_open" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="@string/detail_simulate"
+                        android:textColor="@color/issue_open" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/TextStyle.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/simmilar_libraries" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recvSimmilarLibs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

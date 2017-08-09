@@ -1,25 +1,34 @@
 package com.example.choijinjoo.wingdroid.ui;
 
-import android.support.design.widget.TabLayout;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.model.Category;
+import com.example.choijinjoo.wingdroid.tools.BottomNavigationViewHelper;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
+import com.example.choijinjoo.wingdroid.ui.bookmark.BookMarkFragment;
+import com.example.choijinjoo.wingdroid.ui.feed.FeedContainerFragment;
+import com.example.choijinjoo.wingdroid.ui.news.NewsFragment;
+import com.example.choijinjoo.wingdroid.ui.search.SearchFragment;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 
+import static com.example.choijinjoo.wingdroid.ui.MainActivity.ViewPagerAdapter.FRAG_BOOKMARK;
+import static com.example.choijinjoo.wingdroid.ui.MainActivity.ViewPagerAdapter.FRAG_FEED;
+import static com.example.choijinjoo.wingdroid.ui.MainActivity.ViewPagerAdapter.FRAG_NEWS;
+import static com.example.choijinjoo.wingdroid.ui.MainActivity.ViewPagerAdapter.FRAG_SEARCH;
+
 public class MainActivity extends BaseActivity {
-    @BindView(R.id.tabLayout)
-    TabLayout tabLayout;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
+    @BindView(R.id.bottomNav)
+    BottomNavigationView bottomNav;
 
     @Override
     protected int getLayoutId() {
@@ -28,49 +37,65 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initLayout() {
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), makeMockCategories()));
-        tabLayout.setupWithViewPager(viewPager, true);
+        bottomNav.getMenu().getItem(0).setChecked(true);
+        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+        bottomNav.setOnNavigationItemSelectedListener(this::swtichFragment);
+        BottomNavigationViewHelper.disableShiftMode(bottomNav);
+
     }
 
-    private List<Category> makeMockCategories() {
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Button"));
-        categories.add(new Category("Calendar"));
-        categories.add(new Category("Effect"));
-        categories.add(new Category("Graph"));
-        categories.add(new Category("Image"));
-        categories.add(new Category("Label/Form"));
-        categories.add(new Category("List/Grid"));
-        categories.add(new Category("Loading"));
-        categories.add(new Category("Menu"));
-        categories.add(new Category("Progress"));
-        categories.add(new Category("SeekBar"));
-        categories.add(new Category("SideBar"));
-        return categories;
+    private boolean swtichFragment(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_feed:
+                viewPager.setCurrentItem(FRAG_FEED);
+                break;
+            case R.id.nav_search:
+                viewPager.setCurrentItem(FRAG_SEARCH);
+                break;
+            case R.id.nav_news:
+                viewPager.setCurrentItem(FRAG_NEWS);
+                break;
+            case R.id.nav_bookmark:
+                viewPager.setCurrentItem(FRAG_BOOKMARK);
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        return true;
     }
 
-    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
-        List<Category> categories;
+    public class ViewPagerAdapter extends FragmentPagerAdapter {
+        public static final int FRAG_FEED = 0;
+        public static final int FRAG_SEARCH = 1;
+        public static final int FRAG_NEWS = 2;
+        public static final int FRAG_BOOKMARK = 3;
 
-        public ViewPagerAdapter(FragmentManager fm, List<Category> categories) {
+
+        public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
-            this.categories = categories;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return FeedFragment.newInstance();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return categories.get(position).getName();
+            switch (position) {
+                case FRAG_FEED:
+                    return FeedContainerFragment.newInstance();
+                case FRAG_SEARCH:
+                    return SearchFragment.newInstance();
+                case FRAG_NEWS:
+                    return NewsFragment.newInstance();
+                case FRAG_BOOKMARK:
+                    return BookMarkFragment.newInstance();
+                default:
+                    throw new IndexOutOfBoundsException();
+            }
         }
 
         @Override
         public int getCount() {
-            return categories != null ? categories.size() : 0;
+            return 4;
         }
+
     }
 
 }

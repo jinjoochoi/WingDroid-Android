@@ -1,7 +1,6 @@
-package com.example.choijinjoo.wingdroid.ui;
+package com.example.choijinjoo.wingdroid.ui.feed;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.ui.base.BaseAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,13 +17,23 @@ import java.util.List;
  */
 
 public class RepositoryAdapter extends BaseAdapter<Repository,RepositoryViewHolder> {
-    public RepositoryAdapter(Context context, List items) {
-        super(context, items);
+    RepositoryClickedListener listener;
+
+    public interface RepositoryClickedListener{
+        void clicked(int position);
+    }
+
+    public RepositoryAdapter(Context context, RepositoryClickedListener listener) {
+        super(context, new ArrayList<>());
+        this.listener = listener;
     }
 
     @Override
     public RepositoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new RepositoryViewHolder(context, LayoutInflater.from(context).inflate(R.layout.item_repository, parent, false));
+        View view = LayoutInflater.from(context).inflate(R.layout.item_repository, parent, false);
+        RepositoryViewHolder viewHolder =  new RepositoryViewHolder(context, view);
+        view.setOnClickListener(it -> listener.clicked(viewHolder.getSafeAdapterPosition()));
+        return viewHolder;
     }
 
     @Override

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:paddingRight="8dp"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imgvBookMark"
+            android:layout_width="@dimen/ic_toolbar_width"
+            android:layout_height="@dimen/ic_toolbar_width"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_bookmark" />
+
+        <ImageView
+            android:id="@+id/imgvShare"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/imgvBookMark"
+            android:layout_width="@dimen/ic_toolbar_width"
+            android:layout_height="@dimen/ic_toolbar_width"
+            android:src="@drawable/ic_share" />
+
+    </RelativeLayout>
+</android.support.v7.widget.Toolbar>

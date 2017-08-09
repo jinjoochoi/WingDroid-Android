@@ -5,4 +5,38 @@
     <string name="order_by_recent">Recent</string>
     <string name="order_by_star">Star</string>
 
+    <!-- bottom nav items  -->
+    <string name="nav_feed">FEED</string>
+    <string name="nav_search">SEARCH</string>
+    <string name="nav_news">NEWS</string>
+    <string name="nav_bookmark">BOOKMARK</string>
+
+    <string name="description_select_sort_criteria">Select sort criteria of list</string>
+    <string name="description_repository_filter">Select filter for repositories</string>
+
+    <string name="sort_recent">Recent</string>
+    <string name="sort_star">Star</string>
+    <string name="sort_match">Match</string>
+
+    <string name="category">Categories</string>
+    <string name="suggested_libraries">Suggested Libraries</string>
+    <string name="recent_searchs">Recent searchs</string>
+    <string name="search_hint">Search Android UI/UX library</string>
+
+    <string name="news_new">New</string>
+    <string name="news_events">Events about your Bookmark</string>
+
+
+    <string name="detail_issues">Issues</string>
+    <string name="detail_github">Github</string>
+    <string name="detail_simulate">Simulate</string>
+    <string name="simmilar_libraries">Simmilar Libraries</string>
+
+
+    <string name="transition_story_background" translatable="false">transition_story_background</string>
+
+
+
+
+
 </resources>

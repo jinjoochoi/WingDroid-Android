@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:textColorHint">@color/decorate_bd</item>
     </style>
 
     <style name="Theme.TabLayout" parent="Widget.Design.TabLayout">
@@ -16,4 +18,36 @@
         <item name="tabBackground">@android:color/white</item>
         <item name="tabSelectedTextColor">@color/colorPrimary</item>
     </style>
+
+    <style name="TextStyle.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">@dimen/textsize_title</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/greyDark</item>
+    </style>
+
+    <style name="TextStyle.Title.Large" parent="TextStyle.Title">
+        <item name="android:textSize">@dimen/textsize_large</item>
+    </style>
+
+    <style name="TextStyle.Tag" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">@dimen/textsize_tag</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="TextStyle.Star" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textSize">@dimen/textsize_min</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="TextStyle.Medium" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">@dimen/textsize_medium</item>
+        <item name="android:textColor">@color/greyDark</item>
+    </style>
+
+    <style name="TextStyle.Small" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">@dimen/textsize_tag</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
 </resources>
+

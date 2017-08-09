@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary"> #00CA44</color>
-    <color name="colorPrimaryDark">#0EB92D</color>
-    <color name="colorAccent">#0EB92D</color>
+    <color name="colorPrimary">@color/greyDark</color>
+    <color name="colorPrimaryDark">#151515</color>
+    <color name="colorAccent">@color/white</color>
+
+    <color name="greyDark">#292929</color>
+    <color name="grey">#515050</color>
+    <color name="decorate_bg">#f5f5f5</color>
+    <color name="decorate_bd">#c7c7c7</color>
+    <color name="border">#c7c7c7</color>
+    <color name="white">#ffffff</color>
+    <color name="blue">#076AFF</color>
+
+    <color name="newcolor">@color/blue</color>
+
+    <color name="issue_open">#0EB92D</color>
+    <color name="background_light">#fafafa</color> <!-- grey 50 -->
+
+
 </resources>

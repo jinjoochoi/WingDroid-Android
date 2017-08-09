@@ -1,5 +1,6 @@
 package com.example.choijinjoo.wingdroid.ui.base;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
+
+import static android.R.attr.fragment;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -22,13 +25,14 @@ public abstract class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return LayoutInflater.from(getActivity()).inflate(getLayoutId(),container,false);
+        return LayoutInflater.from(getActivity()).inflate(getLayoutId(), container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
+        getView().setBackgroundColor(Color.WHITE);
+        ButterKnife.bind(this, view);
         initLayout();
     }
 }

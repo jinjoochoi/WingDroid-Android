@@ -4,11 +4,12 @@ import org.parceler.Parcel;
 
 import java.util.List;
 
+
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel
+@Parcel(Parcel.Serialization.BEAN)
 public class Repository {
     Integer id;
     String name;
@@ -21,19 +22,35 @@ public class Repository {
     Integer issue;
     List<Image> images;
     List<Gif> gifs;
+    List<Tag> tags;
 
     public Repository() {}
 
-    public Repository(String name, List<Gif> gifs) {
+    public Repository(String name) {
+        this.name = name;
+    }
+
+    public Repository(String name, List<Gif> gifs, List<Tag> tags, Integer star) {
         this.name = name;
         this.gifs = gifs;
+        this.tags = tags;
+        this.star = star;
+    }
+
+    public Repository(String name, List<Gif> gifs, Integer star) {
+        this.name = name;
+        this.gifs = gifs;
+        this.tags = tags;
+        this.star = star;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) { this.id = id; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -99,11 +116,35 @@ public class Repository {
         this.issue = issue;
     }
 
-    public List<Image> getImages() { return images; }
+    public List<Image> getImages() {
+        return images;
+    }
 
-    public void setImages(List<Image> images) { this.images = images; }
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
 
-    public List<Gif> getGifs() { return gifs; }
+    public List<Gif> getGifs() {
+        return gifs;
+    }
 
-    public void setGifs(List<Gif> gifs) { this.gifs = gifs; }
+    public void setGifs(List<Gif> gifs) {
+        this.gifs = gifs;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    /*
+     * Custom method
+     */
+
+    public String getFormattedStarString() {
+        return star > 1000 ? String.format("%d.%dk", star / 1000, (star - (star / 1000) * 1000) / 100) : String.valueOf(star);
+    }
 }

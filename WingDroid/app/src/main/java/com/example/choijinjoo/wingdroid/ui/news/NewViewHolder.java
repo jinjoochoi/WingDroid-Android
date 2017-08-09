@@ -1,6 +1,7 @@
-package com.example.choijinjoo.wingdroid.ui;
+package com.example.choijinjoo.wingdroid.ui.news;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -8,24 +9,23 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
+import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.ui.base.BaseViewHolder;
+import com.nex3z.flowlayout.FlowLayout;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-public class RepositoryViewHolder extends BaseViewHolder<Repository> {
-    @BindView(R.id.imgvPreview)
-    ImageView imgvPreview;
-    @BindView(R.id.txtvName)
-    TextView txtvName;
+public class NewViewHolder extends BaseViewHolder<Repository> {
+    @BindView(R.id.imgvPreview) ImageView imgvPreview;
+    @BindView(R.id.txtvName) TextView txtvName;
+    @BindView(R.id.txtvStar) TextView txtvStar;
 
-    public RepositoryViewHolder(Context context, View itemView) {
+    public NewViewHolder(Context context, View itemView) {
         super(context, itemView);
-        ButterKnife.bind(this, itemView);
     }
 
     @Override
@@ -34,5 +34,6 @@ public class RepositoryViewHolder extends BaseViewHolder<Repository> {
                 .load(item.getGifs().get(0).getUrl())
                 .into(imgvPreview);
         txtvName.setText(item.getName());
+        txtvStar.setText(item.getFormattedStarString());
     }
 }

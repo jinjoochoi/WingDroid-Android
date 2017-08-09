@@ -10,6 +10,8 @@ import org.parceler.Parcel;
 public class Category {
     Integer id;
     String name;
+    boolean selected;
+    boolean simulatable;
 
     public Category() {}
 
@@ -32,5 +34,23 @@ public class Category {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Boolean getSelected() { return selected; }
+
+    public void setSelected(Boolean selected) { this.selected = selected; }
+
+    public boolean isSelected() { return selected; }
+
+    public void setSelected(boolean selected) { this.selected = selected; }
+
+    public boolean isSimulatable() { return simulatable; }
+
+    public void setSimulatable(boolean simulatable) { this.simulatable = simulatable; }
+
+    /*
+     * Custom method
+     */
+
+    public void selected() { this.selected = !this.selected; }
 
 }

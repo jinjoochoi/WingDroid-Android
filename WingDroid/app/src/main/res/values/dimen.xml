@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- TextSize dimen -->
+    <dimen name="textsize_title">15sp</dimen>
+    <dimen name="textsize_large">18sp</dimen>
+    <dimen name="textsize_min">12sp</dimen>
+    <dimen name="textsize_tag">@dimen/textsize_min</dimen>
+    <dimen name="textsize_medium">13sp</dimen>
+
+    <!-- icon dimen -->
+    <dimen name="ic_star_width">8dp</dimen>
+    <dimen name="ic_star_height">8dp</dimen>
+    <dimen name="ic_arrow_bottom_width">8dp</dimen>
+    <dimen name="ic_arrow_bottom_hegiht">8dp</dimen>
+    <dimen name="ic_filter_width">14dp</dimen>
+    <dimen name="ic_filter_height">14dp</dimen>
+    <dimen name="ic_issue_open_width">16dp</dimen>
+    <dimen name="ic_issue_open_height">16dp</dimen>
+    <dimen name="ic_toolbar_width">28dp</dimen>
+    <dimen name="ic_toolbar_height">28dp</dimen>
+
+
+    <!-- Button dimen -->
+    <dimen name="btn_radius">30dp</dimen>
+    <dimen name="btn_stroke">1dp</dimen>
+
+    <!-- Book mark dimen -->
+    <dimen name="bookmark_height">120dp</dimen>
+    <dimen name="bookmark_img_width">110dp</dimen>
+    <dimen name="bookmark_img_height">110dp</dimen>
+    <dimen name="bookmark_padding">10dp</dimen>
+
+    <!-- Event dimen -->
+    <dimen name="news_new_height">120dp</dimen>
+    <dimen name="news_issue_height">110dp</dimen>
+    <dimen name="news_padding">10dp</dimen>
+
+    <!-- Dialog dimen -->
+    <dimen name="dialog_select_sort_criteria_height">120dp</dimen>
+    <dimen name="dialog_repository_filter_height">160dp</dimen>
+
+    <!-- Search dimen -->
+    <dimen name="repository_suggestion_width">110dp</dimen>
+    <dimen name="repository_suggestion_height">150dp</dimen>
+    <dimen name="repository_suggestion_img_width">100dp</dimen>
+    <dimen name="repository_suggestion_img_height">90dp</dimen>
+    <dimen name="repository_suggestion_padding">10dp</dimen>
+
+
+
+    <dimen name="preview_border_radius">18dp</dimen>
+    <dimen name="drag_dismiss_distance">112dp</dimen>
+
+    <dimen name="new_mark_width">6dp</dimen>
+    <dimen name="new_mark_height">6dp</dimen>
+    <dimen name="new_mark_margin_left">5dp</dimen>
+
+
+
+
+
+</resources>
