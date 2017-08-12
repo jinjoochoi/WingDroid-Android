@@ -8,6 +8,22 @@
         android:layout_height="wrap_content"
         android:scrollbars="none">
 
+
+        <RelativeLayout
+            android:id="@+id/containerEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/TextStyle.IssueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/empty_bookmark" />
+        </RelativeLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -15,9 +31,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:gravity="right"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:gravity="right"
                 android:orientation="horizontal">
 
                 <ImageView

@@ -35,6 +35,10 @@
 
     <string name="transition_story_background" translatable="false">transition_story_background</string>
 
+    <string name="empty_bookmark">No bookmarks, yet</string>
+    <string name="empty_search_result">No result found.</string>
+    <string name="empty_issue">No issue about your bookmarks.</string>
+
 
 
 

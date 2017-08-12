@@ -52,12 +52,32 @@
                     android:src="@drawable/ic_filter" />
             </RelativeLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recvEvents"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" />
+                android:layout_height="match_parent">
 
+
+                <RelativeLayout
+                    android:id="@+id/containerEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp"
+                    android:visibility="gone"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        style="@style/TextStyle.IssueText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/empty_issue" />
+                </RelativeLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recvEvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp" />
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 
