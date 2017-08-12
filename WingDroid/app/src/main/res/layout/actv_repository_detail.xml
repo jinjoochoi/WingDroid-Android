@@ -1,149 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar_detail" />
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <include layout="@layout/toolbar_detail" />
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="5dp">
-
-            <ImageView
-                android:id="@+id/imgvPreview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <RelativeLayout
+                <ImageView
+                    android:id="@+id/imgvPreview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/txtvName"
+                            style="@style/TextStyle.Title.Large"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            tools:text="TextSurface" />
+
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginTop="10dp"
-                        android:gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
                         android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="@dimen/ic_star_width"
-                            android:layout_height="@dimen/ic_star_height"
-                            android:layout_marginRight="2dp"
-                            android:src="@drawable/ic_star"
-                            android:tint="@color/grey" />
-
                         <TextView
-                            android:id="@+id/txtvStar"
-                            style="@style/TextStyle.Star"
+                            android:id="@+id/txtvAuthor"
+                            style="@style/TextStyle.Small"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/textsize_min"
-                            tools:text="1.8K" />
+                            android:layout_marginLeft="10dp"
+                            tools:text="by. jinjoo" />
 
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="@dimen/ic_star_width"
+                                android:layout_height="@dimen/ic_star_height"
+                                android:layout_marginRight="2dp"
+                                android:src="@drawable/ic_star"
+                                android:tint="@color/grey" />
+
+                            <TextView
+                                android:id="@+id/txtvStar"
+                                style="@style/TextStyle.Star"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/textsize_min"
+                                tools:text="1.8K" />
+
+                        </LinearLayout>
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/txtvName"
-                        style="@style/TextStyle.Title.Large"
+                        android:id="@+id/txtvDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="TextSurface" />
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:maxWidth="340dp"
+                        tools:text="To customize the theme's base colors to fit your brand, define your custom colors using theme attributes when you inherit from the material theme:" />
 
-                </RelativeLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/grey" />
 
-                <TextView
-                    android:id="@+id/txtvAuthor"
-                    style="@style/TextStyle.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="by. jinjoo" />
+                    <TextView
+                        android:id="@+id/txtvIssue"
+                        style="@style/TextStyle.Medium"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/detail_issues"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txtvDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:maxWidth="340dp"
-                    tools:text="To customize the theme's base colors to fit your brand, define your custom colors using theme attributes when you inherit from the material theme:" />
+                    <TextView
+                        android:id="@+id/txtvGithub"
+                        style="@style/TextStyle.Medium"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/detail_github"
+                        android:textStyle="bold" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.1dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@color/grey" />
+                    <include layout="@layout/space" />
 
-                <TextView
-                    android:id="@+id/txtvIssue"
-                    style="@style/TextStyle.Medium"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/detail_issues"
-                    android:textStyle="bold" />
+                    <TextView
+                        style="@style/TextStyle.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/related_libraries" />
 
-                <TextView
-                    android:id="@+id/txtvGithub"
-                    style="@style/TextStyle.Medium"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/detail_github"
-                    android:textStyle="bold" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recvSimmilarLibs"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="10dp" />
+                </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:background="@drawable/bd_green_rad18"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:background="@color/issue_open"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp">
 
                     <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         android:src="@drawable/ic_simulate"
-                        android:tint="@color/issue_open" />
+                        android:tint="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:text="@string/detail_simulate"
-                        android:textColor="@color/issue_open" />
+                        android:textColor="@color/white" />
                 </LinearLayout>
 
-                <TextView
-                    style="@style/TextStyle.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/simmilar_libraries" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recvSimmilarLibs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" />
             </LinearLayout>
-        </LinearLayout>
 
-    </ScrollView>
-</LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

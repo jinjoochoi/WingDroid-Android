@@ -17,8 +17,8 @@
     <dimen name="ic_filter_height">14dp</dimen>
     <dimen name="ic_issue_open_width">16dp</dimen>
     <dimen name="ic_issue_open_height">16dp</dimen>
-    <dimen name="ic_toolbar_width">28dp</dimen>
-    <dimen name="ic_toolbar_height">28dp</dimen>
+    <dimen name="ic_toolbar_width">22dp</dimen>
+    <dimen name="ic_toolbar_height">22dp</dimen>
 
 
     <!-- Button dimen -->

@@ -1,16 +1,26 @@
 package com.example.choijinjoo.wingdroid.model;
 
-import org.parceler.Parcel;
+import com.example.choijinjoo.wingdroid.model.converter.GifListParcelConverter;
+import com.example.choijinjoo.wingdroid.model.converter.ImageListParcelConverter;
+import com.example.choijinjoo.wingdroid.model.converter.TagListParcelConverter;
+import com.example.choijinjoo.wingdroid.tools.Utils;
 
-import java.util.List;
+import org.parceler.Parcel;
+import org.parceler.ParcelPropertyConverter;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.RepositoryRealmProxy;
 
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel(Parcel.Serialization.BEAN)
-public class Repository {
+@Parcel(implementations = { RepositoryRealmProxy.class },
+        value = Parcel.Serialization.BEAN,
+        analyze = { Repository.class })
+public class Repository extends RealmObject{
     Integer id;
     String name;
     String author;
@@ -20,9 +30,9 @@ public class Repository {
     Integer star;
     Integer fork;
     Integer issue;
-    List<Image> images;
-    List<Gif> gifs;
-    List<Tag> tags;
+    RealmList<Image> images;
+    RealmList<Gif> gifs;
+    RealmList<Tag> tags;
 
     public Repository() {}
 
@@ -30,18 +40,19 @@ public class Repository {
         this.name = name;
     }
 
-    public Repository(String name, List<Gif> gifs, List<Tag> tags, Integer star) {
+    public Repository(String name, RealmList<Gif> gifs, RealmList<Tag> tags, Integer star) {
         this.name = name;
         this.gifs = gifs;
         this.tags = tags;
         this.star = star;
+        this.description = "this is description";
     }
 
-    public Repository(String name, List<Gif> gifs, Integer star) {
+    public Repository(String name, RealmList<Gif> gifs, Integer star) {
         this.name = name;
         this.gifs = gifs;
-        this.tags = tags;
         this.star = star;
+        this.description = "this is description";
     }
 
     public Integer getId() {
@@ -116,27 +127,30 @@ public class Repository {
         this.issue = issue;
     }
 
-    public List<Image> getImages() {
+    public RealmList<Image> getImages() {
         return images;
     }
 
-    public void setImages(List<Image> images) {
+    @ParcelPropertyConverter(ImageListParcelConverter.class)
+    public void setImages(RealmList<Image> images) {
         this.images = images;
     }
 
-    public List<Gif> getGifs() {
+    public RealmList<Gif> getGifs() {
         return gifs;
     }
 
-    public void setGifs(List<Gif> gifs) {
+    @ParcelPropertyConverter(GifListParcelConverter.class)
+    public void setGifs(RealmList<Gif> gifs) {
         this.gifs = gifs;
     }
 
-    public List<Tag> getTags() {
+    public RealmList<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    @ParcelPropertyConverter(TagListParcelConverter.class)
+    public void setTags(RealmList<Tag> tags) {
         this.tags = tags;
     }
 
@@ -145,6 +159,6 @@ public class Repository {
      */
 
     public String getFormattedStarString() {
-        return star > 1000 ? String.format("%d.%dk", star / 1000, (star - (star / 1000) * 1000) / 100) : String.valueOf(star);
+        return Utils.getStarString(star);
     }
 }

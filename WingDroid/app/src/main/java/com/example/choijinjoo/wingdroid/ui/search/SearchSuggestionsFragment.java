@@ -22,6 +22,7 @@ import butterknife.BindView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.RealmList;
 
 /**
  * Created by choijinjoo on 2017. 8. 8..
@@ -47,6 +48,7 @@ public class SearchSuggestionsFragment extends BaseFragment {
         categoryAdapter = new CategorySearchAdapter(getActivity(), position -> {
             categoryAdapter.getItem(position).selected();
             categoryAdapter.notifyItemChanged(position);
+            moveToSearchResultFragment(categoryAdapter.getItem(position).getName());
         });
         suggestionsAdapter = new SuggestionsAdapter(getActivity(),
                 position -> moveToDetailActivity(suggestionsAdapter.getItem(position)));
@@ -66,8 +68,10 @@ public class SearchSuggestionsFragment extends BaseFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(repositories -> suggestionsAdapter.setItems(repositories));
     }
-    // TODO: 2017. 8. 8. MOVETO SEARCH RESULT
-    private void moveToSearchResultActivity() {
+
+    private void moveToSearchResultFragment(String name) {
+        ((SearchFragment)getParentFragment()).hideSearchViewText();
+        ((SearchFragment)getParentFragment()).showSuggestions(name);
     }
 
     // TODO: 2017. 8. 8. MOVETO DETAIL
@@ -95,19 +99,18 @@ public class SearchSuggestionsFragment extends BaseFragment {
 
     private Observable<List<Repository>> makeMockRepository() {
         List<Repository> repositories = new ArrayList<>();
-        List<Gif> gifs = new ArrayList<>();
+        RealmList<Gif> gifs = new RealmList<>();
         gifs.add(new Gif("https://github.com/airbnb/lottie-android/blob/master/gifs/Example2.gif?raw=true"));
-        List<Gif> gifs2 = new ArrayList<>();
+        RealmList<Gif> gifs2 = new RealmList<>();
         gifs2.add(new Gif("https://github.com/wasabeef/awesome-android-ui/raw/master/art/discrollview.gif?raw-true"));
-        List<Tag> tags = new ArrayList<>();
+        RealmList<Tag> tags = new RealmList<>();
         tags.add(new Tag("1"));
         tags.add(new Tag("2"));
         tags.add(new Tag("3"));
         tags.add(new Tag("Expanding"));
-        List<Tag> tags2 = new ArrayList<>();
+        RealmList<Tag> tags2 = new RealmList<>();
         tags2.add(new Tag("Shimmer"));
         tags2.add(new Tag("ripple"));
-
 
         repositories.add(new Repository("lottie", gifs, tags, 850));
         repositories.add(new Repository("discrollview", gifs2, tags, 1500));
@@ -115,7 +118,6 @@ public class SearchSuggestionsFragment extends BaseFragment {
 
         return Observable.just(repositories);
     }
-
 
 
 }

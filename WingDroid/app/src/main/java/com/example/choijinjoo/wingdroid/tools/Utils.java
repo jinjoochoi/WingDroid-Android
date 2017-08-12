@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by choijinjoo on 2017. 8. 8..
  */
 
-public class Util {
+public class Utils {
     public static String getElapsedDateString(Date date) {
 
         Date d1 = Calendar.getInstance().getTime();
@@ -25,5 +25,12 @@ public class Util {
             return String.format(" %d seconds ago", diff / 1000 % 60);
 
         return "";
+    }
+
+    public static String getStarString(int star) {
+        if (star > 1000 && ((star - (star / 1000) * 1000) / 100) == 0)
+            return String.format("%dk", star / 1000);
+        else
+            return star > 1000 ? String.format("%d.%dk", star / 1000, (star - (star / 1000) * 1000) / 100) : String.valueOf(star);
     }
 }

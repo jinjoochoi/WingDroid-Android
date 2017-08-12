@@ -4,18 +4,16 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.tools.BottomNavigationViewHelper;
+import com.example.choijinjoo.wingdroid.tools.ScrollDisabledViewPager;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 import com.example.choijinjoo.wingdroid.ui.bookmark.BookMarkFragment;
 import com.example.choijinjoo.wingdroid.ui.feed.FeedContainerFragment;
 import com.example.choijinjoo.wingdroid.ui.news.NewsFragment;
 import com.example.choijinjoo.wingdroid.ui.search.SearchFragment;
-
 
 import butterknife.BindView;
 
@@ -25,10 +23,8 @@ import static com.example.choijinjoo.wingdroid.ui.MainActivity.ViewPagerAdapter.
 import static com.example.choijinjoo.wingdroid.ui.MainActivity.ViewPagerAdapter.FRAG_SEARCH;
 
 public class MainActivity extends BaseActivity {
-    @BindView(R.id.viewPager)
-    ViewPager viewPager;
-    @BindView(R.id.bottomNav)
-    BottomNavigationView bottomNav;
+    @BindView(R.id.viewPager) ScrollDisabledViewPager viewPager;
+    @BindView(R.id.bottomNav) BottomNavigationView bottomNav;
 
     @Override
     protected int getLayoutId() {
@@ -41,6 +37,13 @@ public class MainActivity extends BaseActivity {
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
         bottomNav.setOnNavigationItemSelectedListener(this::swtichFragment);
         BottomNavigationViewHelper.disableShiftMode(bottomNav);
+
+        FragmentManager fm = getSupportFragmentManager();
+        fm.addOnBackStackChangedListener(()->{
+            if(getFragmentManager().getBackStackEntryCount() == 0) finish();
+        });
+
+        viewPager.setOffscreenPageLimit(3);
 
     }
 
@@ -98,4 +101,9 @@ public class MainActivity extends BaseActivity {
 
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

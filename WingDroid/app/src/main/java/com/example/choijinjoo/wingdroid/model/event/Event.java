@@ -2,14 +2,17 @@ package com.example.choijinjoo.wingdroid.model.event;
 
 import org.parceler.Parcel;
 
-import static android.R.attr.value;
+import io.realm.EventRealmProxy;
+import io.realm.RealmObject;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel
-public class Event {
+@Parcel(implementations = { EventRealmProxy.class },
+        value = Parcel.Serialization.BEAN,
+        analyze = { Event.class })
+public class Event extends RealmObject{
     Integer id;
     Integer type;
     Issue issue;

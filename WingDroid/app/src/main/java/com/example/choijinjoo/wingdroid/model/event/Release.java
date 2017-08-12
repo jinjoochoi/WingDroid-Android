@@ -2,20 +2,25 @@ package com.example.choijinjoo.wingdroid.model.event;
 
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.User;
-import com.example.choijinjoo.wingdroid.tools.Util;
+import com.example.choijinjoo.wingdroid.tools.Utils;
 
 import org.parceler.Parcel;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import io.realm.RealmObject;
+import io.realm.ReleaseRealmProxy;
+
 import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_RELEASE;
 
 /**
  * Created by choijinjoo on 2017. 8. 9..
  */
-@Parcel
-public class Release implements IEvent {
+@Parcel(implementations = { ReleaseRealmProxy.class },
+        value = Parcel.Serialization.BEAN,
+        analyze = { Release.class })
+public class Release extends RealmObject implements IEvent {
     Integer id;
     String action;
     String url;
@@ -90,7 +95,7 @@ public class Release implements IEvent {
 
     @Override
     public String getEventInfoString() {
-        return "Released by " + author.getName() + Util.getElapsedDateString(createdAt);
+        return "Released by " + author.getName() + Utils.getElapsedDateString(createdAt);
     }
 
     //FIXME MOCK DATA

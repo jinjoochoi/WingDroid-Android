@@ -28,7 +28,7 @@ public class SuggestionsAdapter extends BaseAdapter<Repository, SuggestionsViewH
     public SuggestionsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_suggestion, parent, false);
         SuggestionsViewHolder viewHolder = new SuggestionsViewHolder(context, view);
-        view.setOnClickListener(it -> listener.clicked(viewHolder.getSafeAdapterPosition()));
+//        view.setOnClickListener(it -> listener.clicked(viewHolder.getSafeAdapterPosition()));
         return viewHolder;
     }
 

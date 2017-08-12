@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.ui.base.BaseAdapter;
-import com.example.choijinjoo.wingdroid.ui.search.SuggestionsViewHolder;
 
 import java.util.ArrayList;
 

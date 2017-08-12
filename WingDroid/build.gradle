@@ -8,6 +8,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.6.0'
         classpath 'me.tatarka:gradle-retrolambda:3.2.2'
+        classpath "io.realm:realm-gradle-plugin:3.5.0"
 
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -39,5 +40,6 @@ ext {
     rxandroid_version = '2.0.1'
     flowlayout_version = '0.1.4'
     flowlayoutmanager_version = '1.2.3.2'
+    realm_adapter_version = '2.1.0'
 
 }

@@ -6,6 +6,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".WingDroidApp"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -21,8 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.detail.RepositoryDetailActivity" />
-        <activity android:name=".ui.detail.WebViewActivity" />
-
+        <activity android:name="" />
     </application>
 
 

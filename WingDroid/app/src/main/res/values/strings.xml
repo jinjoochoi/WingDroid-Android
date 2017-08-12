@@ -30,7 +30,7 @@
     <string name="detail_issues">Issues</string>
     <string name="detail_github">Github</string>
     <string name="detail_simulate">Simulate</string>
-    <string name="simmilar_libraries">Simmilar Libraries</string>
+    <string name="related_libraries">Related Libraries</string>
 
 
     <string name="transition_story_background" translatable="false">transition_story_background</string>

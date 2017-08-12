@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Category;
-import com.example.choijinjoo.wingdroid.ui.CategoryFilterViewHolder;
 import com.example.choijinjoo.wingdroid.ui.base.BaseAdapter;
 
 import java.util.ArrayList;

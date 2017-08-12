@@ -2,12 +2,15 @@ package com.example.choijinjoo.wingdroid.model.event;
 
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.User;
-import com.example.choijinjoo.wingdroid.tools.Util;
+import com.example.choijinjoo.wingdroid.tools.Utils;
 
 import org.parceler.Parcel;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import io.realm.PushRealmProxy;
+import io.realm.RealmObject;
 
 import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_PUSH;
 
@@ -15,8 +18,10 @@ import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_PUSH;
  * Created by choijinjoo on 2017. 8. 9..
  */
 
-@Parcel
-public class Push implements IEvent {
+@Parcel(implementations = { PushRealmProxy.class },
+        value = Parcel.Serialization.BEAN,
+        analyze = { Push.class })
+public class Push extends RealmObject implements IEvent {
     User pusher;
     Commit headCommit;
     Repository repository;
@@ -66,7 +71,7 @@ public class Push implements IEvent {
 
     @Override
     public String getEventInfoString() {
-        return  "Pushed by " + pusher.getName() + Util.getElapsedDateString(createdAt);
+        return  "Pushed by " + pusher.getName() + Utils.getElapsedDateString(createdAt);
     }
 
     //FIXME MOCK DATA

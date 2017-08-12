@@ -2,12 +2,15 @@ package com.example.choijinjoo.wingdroid.model.event;
 
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.User;
-import com.example.choijinjoo.wingdroid.tools.Util;
+import com.example.choijinjoo.wingdroid.tools.Utils;
 
 import org.parceler.Parcel;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import io.realm.IssueRealmProxy;
+import io.realm.RealmObject;
 
 import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_ISSUE;
 
@@ -15,8 +18,10 @@ import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_ISSUE;
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel
-public class Issue implements IEvent {
+@Parcel(implementations = { IssueRealmProxy.class },
+        value = Parcel.Serialization.BEAN,
+        analyze = { Issue.class })
+public class Issue extends RealmObject implements IEvent {
     Integer id;
     String action;
     User sender;
@@ -161,7 +166,7 @@ public class Issue implements IEvent {
 
     @Override
     public String getEventInfoString() {
-        return state + " by " + sender.getName() + Util.getElapsedDateString(createdAt);
+        return state + " by " + sender.getName() + Utils.getElapsedDateString(createdAt);
     }
 
     @Override

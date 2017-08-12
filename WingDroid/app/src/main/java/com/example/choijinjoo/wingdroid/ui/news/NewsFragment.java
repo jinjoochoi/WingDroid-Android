@@ -1,25 +1,28 @@
 package com.example.choijinjoo.wingdroid.ui.news;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Gif;
+import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.event.Event;
+import com.example.choijinjoo.wingdroid.model.event.EventType;
 import com.example.choijinjoo.wingdroid.model.event.Issue;
 import com.example.choijinjoo.wingdroid.model.event.IssueType;
-import com.example.choijinjoo.wingdroid.model.event.EventType;
-import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.event.Push;
 import com.example.choijinjoo.wingdroid.model.event.Release;
 import com.example.choijinjoo.wingdroid.ui.SelectSortCriteriaDialog;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
-import com.example.choijinjoo.wingdroid.ui.detail.WebViewActivity;
+import com.example.choijinjoo.wingdroid.ui.detail.WebViewFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,7 @@ import butterknife.BindView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.RealmList;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -37,6 +41,7 @@ public class NewsFragment extends BaseFragment {
     @BindView(R.id.recvNew) RecyclerView recvNew;
     @BindView(R.id.recvEvents) RecyclerView recvEvents;
     @BindView(R.id.imgvFilter) ImageView imgvFilter;
+    @BindView(R.id.frameLayout) FrameLayout frameLayout;
     NewAdapter newAdapter;
     EventAdapter eventAdapter;
 
@@ -79,7 +84,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void moveToWebViewActivity(int position){
-        startActivity(WebViewActivity.getStartIntent(getActivity(), eventAdapter.getItem(position).getEvent().getMainUrl()));
+        addFragment(WebViewFragment.newInstance(eventAdapter.getItem(position).getEvent().getMainUrl()));
     }
 
     private void showSelectSortCriteriaDialog() {
@@ -113,8 +118,8 @@ public class NewsFragment extends BaseFragment {
     }
 
     private Observable<List<Repository>> makeMockRepositories() {
-        List<Repository> repositories = new ArrayList<>();
-        List<Gif> gifs = new ArrayList<>();
+        RealmList<Repository> repositories = new RealmList<>();
+        RealmList<Gif> gifs = new RealmList<>();
         gifs.add(new Gif("https://github.com/airbnb/lottie-android/blob/master/gifs/Example2.gif?raw=true"));
 
         repositories.add(new Repository("lottie", gifs, 1700));
@@ -124,5 +129,13 @@ public class NewsFragment extends BaseFragment {
 
         return Observable.just(repositories);
     }
+
+    public void addFragment(Fragment fragment){
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
+        transaction.add(R.id.frameLayout, fragment);
+        transaction.commitNow();
+    }
+
 
 }

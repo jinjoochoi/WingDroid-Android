@@ -13,17 +13,17 @@ import com.example.choijinjoo.wingdroid.model.Gif;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.ui.CategoryFilterDialog;
-import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
 import com.example.choijinjoo.wingdroid.ui.SelectSortCriteriaDialog;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
+import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.RealmList;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -84,17 +84,17 @@ public class BookMarkFragment extends BaseFragment {
     }
 
     private Observable<List<Repository>> makeMockRepository() {
-        List<Repository> repositories = new ArrayList<>();
-        List<Gif> gifs = new ArrayList<>();
+        RealmList<Repository> repositories = new RealmList<>();
+        RealmList<Gif> gifs = new RealmList<>();
         gifs.add(new Gif("https://github.com/airbnb/lottie-android/blob/master/gifs/Example2.gif?raw=true"));
-        List<Gif> gifs2 = new ArrayList<>();
+        RealmList<Gif> gifs2 = new RealmList<>();
         gifs2.add(new Gif("https://github.com/wasabeef/awesome-android-ui/raw/master/art/discrollview.gif?raw-true"));
-        List<Tag> tags = new ArrayList<>();
+        RealmList<Tag> tags = new RealmList<>();
         tags.add(new Tag("Expanding"));
         tags.add(new Tag("Snap"));
         tags.add(new Tag("span"));
         tags.add(new Tag("Expanding"));
-        List<Tag> tags2 = new ArrayList<>();
+        RealmList<Tag> tags2 = new RealmList<>();
         tags.add(new Tag("Shimmer"));
         tags.add(new Tag("ripple"));
 

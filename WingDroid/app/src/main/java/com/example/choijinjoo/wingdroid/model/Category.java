@@ -2,12 +2,18 @@ package com.example.choijinjoo.wingdroid.model;
 
 import org.parceler.Parcel;
 
+import io.realm.CategoryRealmProxy;
+import io.realm.RealmObject;
+
+
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel
-public class Category {
+@Parcel(implementations = { CategoryRealmProxy.class },
+        value = Parcel.Serialization.BEAN,
+        analyze = { Category.class })
+public class Category extends RealmObject{
     Integer id;
     String name;
     boolean selected;
@@ -35,11 +41,7 @@ public class Category {
         this.name = name;
     }
 
-    public Boolean getSelected() { return selected; }
-
-    public void setSelected(Boolean selected) { this.selected = selected; }
-
-    public boolean isSelected() { return selected; }
+    public boolean getSelected() { return selected; }
 
     public void setSelected(boolean selected) { this.selected = selected; }
 
@@ -50,6 +52,7 @@ public class Category {
     /*
      * Custom method
      */
+
 
     public void selected() { this.selected = !this.selected; }
 

@@ -15,11 +15,11 @@
 
             <TextView
                 android:id="@+id/txtvNew"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
                 style="@style/TextStyle.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/news_new" />
 
             <android.support.v7.widget.RecyclerView
@@ -27,14 +27,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <include layout="@layout/border" />
+            <include layout="@layout/space" />
 
             <RelativeLayout
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:id="@+id/txtvIssue"
@@ -42,13 +42,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/news_events" />
+
                 <ImageView
                     android:id="@+id/imgvFilter"
                     android:layout_width="@dimen/ic_filter_width"
+                    android:layout_height="@dimen/ic_filter_height"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_height="@dimen/ic_filter_height"
-                    android:src="@drawable/ic_filter"/>
+                    android:src="@drawable/ic_filter" />
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
@@ -59,5 +60,9 @@
 
         </LinearLayout>
     </ScrollView>
-    z
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>

@@ -1,44 +1,41 @@
 package com.example.choijinjoo.wingdroid.ui.search;
 
-import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.model.Category;
-import com.example.choijinjoo.wingdroid.model.Gif;
-import com.example.choijinjoo.wingdroid.model.Repository;
-import com.example.choijinjoo.wingdroid.model.Tag;
-import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
+import com.example.choijinjoo.wingdroid.WingDroidApp;
+import com.example.choijinjoo.wingdroid.model.SearchHistory;
+import com.example.choijinjoo.wingdroid.tools.StringUtils;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
-import com.xiaofeng.flowlayoutmanager.FlowLayoutManager;
+import com.jakewharton.rxbinding2.widget.RxSearchView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by choijinjoo on 2017. 8. 8..
  */
 
 public class SearchFragment extends BaseFragment {
+    private static final String TAG_SUGGESTIONS = "fragment_suggestions";
+    private static final String TAG_HISTORY = "fragment_history";
+    private static final String TAG_RESULT = "fragment_result";
+
     @BindView(R.id.searchView) SearchView searchView;
     @BindView(R.id.frameLayout) FrameLayout frameLayout;
     @BindView(R.id.txtvHint) TextView txtvHint;
     @BindView(R.id.imgvEmoji) ImageView imgvEmoji;
     @BindView(R.id.border) View border;
+
 
     public static SearchFragment newInstance() {
         return new SearchFragment();
@@ -51,33 +48,84 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     protected void initLayout() {
-
-
         SearchSuggestionsFragment searchSuggestionsFragment = SearchSuggestionsFragment.newInstance();
-        SearchResultFragment searchResultFragment = SearchResultFragment.newInstance();
+        SearchHistoryFragment searchHistoryFragment = SearchHistoryFragment.newInstance();
 
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.frameLayout, searchSuggestionsFragment);
-        transaction.commit();
+        addFragment(searchSuggestionsFragment, TAG_SUGGESTIONS);
+
+
+        RxSearchView.queryTextChanges(searchView)
+                .debounce(1000, TimeUnit.MILLISECONDS)
+                .filter(c -> !StringUtils.isEmpty(c))
+                .map(c -> c.toString())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::showSuggestions);
+
 
         searchView.setOnQueryTextFocusChangeListener(((view, focus) -> {
-            FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
             if(focus) {
-                txtvHint.setVisibility(View.GONE);
-                imgvEmoji.setVisibility(View.GONE);
-                border.setVisibility(View.GONE);
-                fragmentTransaction.add(R.id.frameLayout, searchResultFragment);
-                fragmentTransaction.commit();
+                hideSearchViewText();
+                addFragment(searchHistoryFragment, TAG_HISTORY);
             }else{
-                txtvHint.setVisibility(View.VISIBLE);
-                imgvEmoji.setVisibility(View.VISIBLE);
-                border.setVisibility(View.VISIBLE);
-                fragmentTransaction.remove(searchResultFragment);
-                fragmentTransaction.commit();
+                if(!getActivity().isFinishing()) {
+                    txtvHint.setVisibility(View.VISIBLE);
+                    imgvEmoji.setVisibility(View.VISIBLE);
+                    border.setVisibility(View.VISIBLE);
+
+                    // SuggestionsFrag or SearchResultFrag
+                    if (getActiveFragment() instanceof SearchResultFragment) {
+                        removeFragment(getActiveFragment());
+                        removeFragment(searchHistoryFragment);
+                    } else if (getActiveFragment() instanceof SearchHistoryFragment) {
+                        removeFragment(getActiveFragment());
+                    }
+                }
             }
 
         }));
 
+    }
+
+    public void hideSearchViewText(){
+        txtvHint.setVisibility(View.GONE);
+        imgvEmoji.setVisibility(View.GONE);
+        border.setVisibility(View.GONE);
+        searchView.setIconified(false);
+    }
+
+
+    public void showSuggestions(String str){
+        //FIXME DELETE
+        WingDroidApp.getInstance().searchHistoryLocalSource().saveSearchHistory(new SearchHistory(str, Calendar.getInstance().getTime()));
+
+        searchView.setQuery(str,false);
+        Fragment fragment = getChildFragmentManager().findFragmentByTag(TAG_RESULT);
+        if(fragment == null) {
+            SearchResultFragment resultFragment = SearchResultFragment.newInstance();
+            addFragment(resultFragment,TAG_RESULT);
+        }
+        SearchResultFragment resultFragment = (SearchResultFragment)getChildFragmentManager().findFragmentByTag(TAG_RESULT);
+        resultFragment.showSuggestions(str);
+    }
+
+
+    public void addFragment(Fragment fragment, String tag){
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
+        transaction.add(R.id.frameLayout, fragment, tag);
+        transaction.commitNow();
+    }
+
+    private void removeFragment(Fragment fragment){
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_EXIT_MASK);
+        transaction.remove(fragment);
+        transaction.commitNow();
+    }
+
+    public BaseFragment getActiveFragment() {
+        int index = getChildFragmentManager().getFragments().size()-1;
+        return (BaseFragment)getChildFragmentManager().getFragments().get(index);
     }
 
 

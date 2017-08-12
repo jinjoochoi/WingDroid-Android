@@ -1,19 +1,16 @@
 package com.example.choijinjoo.wingdroid.model;
 
-import android.content.Context;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.content.res.AppCompatResources;
-
-import com.example.choijinjoo.wingdroid.R;
-
 import org.parceler.Parcel;
+
+import io.realm.RealmObject;
+import io.realm.TagRealmProxy;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel
-public class Tag {
+@Parcel(implementations = {TagRealmProxy.class})
+public class Tag extends RealmObject{
     Integer id;
     String name;
 

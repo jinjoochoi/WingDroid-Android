@@ -2,12 +2,17 @@ package com.example.choijinjoo.wingdroid.model;
 
 import org.parceler.Parcel;
 
+import io.realm.RealmObject;
+import io.realm.UserRealmProxy;
+
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel
-public class User {
+@Parcel(implementations = { UserRealmProxy.class },
+        value = Parcel.Serialization.BEAN,
+        analyze = { User.class })
+public class User extends RealmObject{
     Integer id;
     String name;
     String avatarUrl;
