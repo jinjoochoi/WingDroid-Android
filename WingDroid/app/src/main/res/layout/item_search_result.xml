@@ -32,17 +32,17 @@
         <TextView
             android:id="@+id/txtvDescription"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/txtvName"
-            tools:text="this is description!!"
-            android:layout_height="wrap_content" />
+            tools:text="this is description!!" />
 
-        <com.nex3z.flowlayout.FlowLayout
+        <org.apmem.tools.layouts.FlowLayout xmlns:f="http://schemas.android.com/apk/res-auto"
             android:id="@+id/flowLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/txtvDescription"
-            android:gravity="start|top"
-            app:childSpacing="auto" />
+            android:gravity="fill"
+            f:weightDefault="1.0" />
 
         <include layout="@layout/item_star" />
 

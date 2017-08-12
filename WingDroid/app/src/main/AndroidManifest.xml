@@ -22,7 +22,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.detail.RepositoryDetailActivity" />
-        <activity android:name="" />
     </application>
 
 

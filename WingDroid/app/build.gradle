@@ -49,7 +49,7 @@ dependencies {
     compile "com.jakewharton.rxbinding2:rxbinding:$rootProject.rxbinding_version"
     compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroid_version"
 
-    compile "com.nex3z:flow-layout:$rootProject.flowlayout_version"
+    compile "org.apmem.tools:layouts:$rootProject.flowlayout_version"
     compile "com.xiaofeng.android:flowlayoutmanager:$rootProject.flowlayoutmanager_version"
     compile "io.realm:android-adapters:$rootProject.realm_adapter_version"
 

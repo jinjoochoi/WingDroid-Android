@@ -7,15 +7,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.ui.base.BaseViewHolder;
-import com.nex3z.flowlayout.FlowLayout;
+
+import org.apmem.tools.layouts.FlowLayout;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..

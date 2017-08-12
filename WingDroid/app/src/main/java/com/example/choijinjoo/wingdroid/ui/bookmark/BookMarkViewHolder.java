@@ -11,7 +11,8 @@ import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.ui.base.BaseViewHolder;
-import com.nex3z.flowlayout.FlowLayout;
+
+import org.apmem.tools.layouts.FlowLayout;
 
 import butterknife.BindView;
 

@@ -10,7 +10,6 @@ import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.ui.base.BaseAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..

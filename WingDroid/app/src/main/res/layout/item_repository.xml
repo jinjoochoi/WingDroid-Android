@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -11,8 +10,8 @@
         android:id="@+id/imgvPreview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bd_grey_rad18"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bd_grey_rad18" />
 
     <TextView
         android:id="@+id/txtvName"
@@ -22,14 +21,15 @@
         android:layout_below="@id/imgvPreview"
         tools:text="TextSurface" />
 
-    <com.nex3z.flowlayout.FlowLayout
+    <org.apmem.tools.layouts.FlowLayout xmlns:f="http://schemas.android.com/apk/res-auto"
         android:id="@+id/flowLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/txtvName"
-        android:gravity="start|top"
-        app:childSpacing="auto" />
+        f:layoutDirection="ltr"
+        android:gravity="fill"
+        f:weightDefault="1.0" />
 
 
-    <include layout="@layout/item_star"/>
+    <include layout="@layout/item_star" />
 </RelativeLayout>

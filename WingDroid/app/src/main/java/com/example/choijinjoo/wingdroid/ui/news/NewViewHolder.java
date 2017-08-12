@@ -1,7 +1,6 @@
 package com.example.choijinjoo.wingdroid.ui.news;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,9 +8,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
-import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.ui.base.BaseViewHolder;
-import com.nex3z.flowlayout.FlowLayout;
 
 import butterknife.BindView;
 

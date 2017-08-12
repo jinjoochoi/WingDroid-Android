@@ -38,7 +38,7 @@ ext {
     glide_version = '4.0.0'
     rxbinding_version = '2.0.0'
     rxandroid_version = '2.0.1'
-    flowlayout_version = '0.1.4'
+    flowlayout_version = '1.10@aar'
     flowlayoutmanager_version = '1.2.3.2'
     realm_adapter_version = '2.1.0'
 
