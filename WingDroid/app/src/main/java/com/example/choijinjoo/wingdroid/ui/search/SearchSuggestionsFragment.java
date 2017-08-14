@@ -71,10 +71,9 @@ public class SearchSuggestionsFragment extends BaseFragment {
 
     private void moveToSearchResultFragment(String name) {
         ((SearchFragment)getParentFragment()).hideSearchViewText();
-        ((SearchFragment)getParentFragment()).showSuggestions(name);
+        ((SearchFragment)getParentFragment()).showResults(name);
     }
 
-    // TODO: 2017. 8. 8. MOVETO DETAIL
     private void moveToDetailActivity(Repository repository) {
         Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(),repository);
         startActivity(intent);

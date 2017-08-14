@@ -2,6 +2,7 @@ package com.example.choijinjoo.wingdroid.ui.search;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -26,15 +27,21 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  */
 
 public class SearchFragment extends BaseFragment {
-    private static final String TAG_SUGGESTIONS = "fragment_suggestions";
-    private static final String TAG_HISTORY = "fragment_history";
-    private static final String TAG_RESULT = "fragment_result";
+    private static final int KEY_SUGGESTIONS = 101;
+    private static final int KEY_HISTORY = 102;
+    private static final int KEY_RESULT = 103;
 
     @BindView(R.id.searchView) SearchView searchView;
     @BindView(R.id.frameLayout) FrameLayout frameLayout;
     @BindView(R.id.txtvHint) TextView txtvHint;
     @BindView(R.id.imgvEmoji) ImageView imgvEmoji;
     @BindView(R.id.border) View border;
+
+    SparseArray<BaseFragment> fragments = new SparseArray<>();
+
+    interface FragmentInteractor {
+        void showResults(String str);
+    }
 
 
     public static SearchFragment newInstance() {
@@ -50,83 +57,71 @@ public class SearchFragment extends BaseFragment {
     protected void initLayout() {
         SearchSuggestionsFragment searchSuggestionsFragment = SearchSuggestionsFragment.newInstance();
         SearchHistoryFragment searchHistoryFragment = SearchHistoryFragment.newInstance();
+        SearchResultFragment searchResultFragment = SearchResultFragment.newInstance();
 
-        addFragment(searchSuggestionsFragment, TAG_SUGGESTIONS);
+        fragments.put(KEY_SUGGESTIONS, searchSuggestionsFragment);
+        fragments.put(KEY_HISTORY, searchHistoryFragment);
+        fragments.put(KEY_RESULT, searchResultFragment);
 
+        replaceFragment(fragments.get(KEY_SUGGESTIONS));
 
         RxSearchView.queryTextChanges(searchView)
                 .debounce(1000, TimeUnit.MILLISECONDS)
                 .filter(c -> !StringUtils.isEmpty(c))
                 .map(c -> c.toString())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showSuggestions);
-
+                .subscribe(this::showResults);
 
         searchView.setOnQueryTextFocusChangeListener(((view, focus) -> {
-            if(focus) {
+            if (focus) {
                 hideSearchViewText();
-                addFragment(searchHistoryFragment, TAG_HISTORY);
-            }else{
-                if(!getActivity().isFinishing()) {
-                    txtvHint.setVisibility(View.VISIBLE);
-                    imgvEmoji.setVisibility(View.VISIBLE);
-                    border.setVisibility(View.VISIBLE);
-
-                    // SuggestionsFrag or SearchResultFrag
-                    if (getActiveFragment() instanceof SearchResultFragment) {
-                        removeFragment(getActiveFragment());
-                        removeFragment(searchHistoryFragment);
-                    } else if (getActiveFragment() instanceof SearchHistoryFragment) {
-                        removeFragment(getActiveFragment());
-                    }
-                }
+                addFragment(searchHistoryFragment);
+            } else {
+                txtvHint.setVisibility(View.VISIBLE);
+                imgvEmoji.setVisibility(View.VISIBLE);
+                border.setVisibility(View.VISIBLE);
+                getChildFragmentManager().popBackStack();
             }
 
         }));
 
     }
 
-    public void hideSearchViewText(){
+    public void hideSearchViewText() {
         txtvHint.setVisibility(View.GONE);
         imgvEmoji.setVisibility(View.GONE);
         border.setVisibility(View.GONE);
         searchView.setIconified(false);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        searchView.setOnQueryTextFocusChangeListener(null);
+    }
 
-    public void showSuggestions(String str){
+    public void showResults(String str) {
         //FIXME DELETE
         WingDroidApp.getInstance().searchHistoryLocalSource().saveSearchHistory(new SearchHistory(str, Calendar.getInstance().getTime()));
-
-        searchView.setQuery(str,false);
-        Fragment fragment = getChildFragmentManager().findFragmentByTag(TAG_RESULT);
-        if(fragment == null) {
-            SearchResultFragment resultFragment = SearchResultFragment.newInstance();
-            addFragment(resultFragment,TAG_RESULT);
-        }
-        SearchResultFragment resultFragment = (SearchResultFragment)getChildFragmentManager().findFragmentByTag(TAG_RESULT);
-        resultFragment.showSuggestions(str);
+        searchView.setQuery(str, false);
+        FragmentInteractor fragment = (FragmentInteractor) addFragment(fragments.get(KEY_RESULT));
+        fragment.showResults(str);
     }
 
 
-    public void addFragment(Fragment fragment, String tag){
+    public Fragment addFragment(Fragment fragment) {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
-        transaction.add(R.id.frameLayout, fragment, tag);
-        transaction.commitNow();
+        transaction.replace(R.id.frameLayout, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+        return fragment;
     }
-
-    private void removeFragment(Fragment fragment){
+    public Fragment replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_EXIT_MASK);
-        transaction.remove(fragment);
-        transaction.commitNow();
+        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
+        transaction.replace(R.id.frameLayout, fragment);
+        transaction.commit();
+        return fragment;
     }
-
-    public BaseFragment getActiveFragment() {
-        int index = getChildFragmentManager().getFragments().size()-1;
-        return (BaseFragment)getChildFragmentManager().getFragments().get(index);
-    }
-
-
 }

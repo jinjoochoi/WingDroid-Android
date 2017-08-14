@@ -23,9 +23,11 @@ import io.realm.RealmResults;
  * Created by choijinjoo on 2017. 8. 8..
  */
 
-public class SearchResultFragment extends BaseFragment {
+public class SearchResultFragment extends BaseFragment implements SearchFragment.FragmentInteractor{
     @BindView(R.id.recvResults) RecyclerView recvResults;
     SearchResultAdapter adapter;
+
+    SearchFragment.FragmentInteractor interactor;
 
     public static SearchResultFragment newInstance() {
         return new SearchResultFragment();
@@ -42,17 +44,22 @@ public class SearchResultFragment extends BaseFragment {
         recvResults.setHasFixedSize(true);
     }
 
-    public void showSuggestions(String str){
+
+    private void setData(RealmResults<Repository> repositories){
+        if(recvResults != null) {
+            adapter = new SearchResultAdapter(getActivity(), makeMockRepository(),
+                    this::moveToDetailActivity);
+            recvResults.setAdapter(adapter);
+        }
+    }
+
+
+    @Override
+    public void showResults(String str) {
         WingDroidApp.getInstance()
                 .repositoryLocalSource()
                 .getSuggestionRepository(str)
                 .subscribe(this::setData);
-    }
-
-    private void setData(RealmResults<Repository> repositories){
-        adapter = new SearchResultAdapter(getActivity(),makeMockRepository(),
-                this::moveToDetailActivity);
-        recvResults.setAdapter(adapter);
     }
 
     private List<Repository> makeMockRepository() {

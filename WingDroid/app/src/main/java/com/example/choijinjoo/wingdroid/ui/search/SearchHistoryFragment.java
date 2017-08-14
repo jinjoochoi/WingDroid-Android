@@ -48,7 +48,7 @@ public class SearchHistoryFragment extends BaseFragment {
                 new SearchHistoryAdapter.SearchHistoryListener() {
                     @Override
                     public void selected(int position) {
-                        ((SearchFragment)getParentFragment()).showSuggestions(adapter.getItem(position).getSearch());
+                        ((SearchFragment)getParentFragment()).showResults(adapter.getItem(position).getSearch());
                     }
 
                     @Override

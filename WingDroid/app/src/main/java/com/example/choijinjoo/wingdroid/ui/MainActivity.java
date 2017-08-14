@@ -4,6 +4,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.SparseArray;
 import android.view.MenuItem;
 
 import com.example.choijinjoo.wingdroid.R;
@@ -25,6 +26,7 @@ import static com.example.choijinjoo.wingdroid.ui.MainActivity.ViewPagerAdapter.
 public class MainActivity extends BaseActivity {
     @BindView(R.id.viewPager) ScrollDisabledViewPager viewPager;
     @BindView(R.id.bottomNav) BottomNavigationView bottomNav;
+    ViewPagerAdapter viewPagerAdapter;
 
     @Override
     protected int getLayoutId() {
@@ -34,7 +36,8 @@ public class MainActivity extends BaseActivity {
     @Override
     public void initLayout() {
         bottomNav.getMenu().getItem(0).setChecked(true);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(viewPagerAdapter);
         bottomNav.setOnNavigationItemSelectedListener(this::swtichFragment);
         BottomNavigationViewHelper.disableShiftMode(bottomNav);
 
@@ -73,25 +76,23 @@ public class MainActivity extends BaseActivity {
         public static final int FRAG_NEWS = 2;
         public static final int FRAG_BOOKMARK = 3;
 
+        SparseArray<Fragment> fragments = new SparseArray<>();
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
+            init();
+        }
+
+        private void init(){
+            fragments.put(FRAG_FEED, FeedContainerFragment.newInstance());
+            fragments.put(FRAG_SEARCH, SearchFragment.newInstance());
+            fragments.put(FRAG_NEWS, NewsFragment.newInstance());
+            fragments.put(FRAG_BOOKMARK, BookMarkFragment.newInstance());
         }
 
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case FRAG_FEED:
-                    return FeedContainerFragment.newInstance();
-                case FRAG_SEARCH:
-                    return SearchFragment.newInstance();
-                case FRAG_NEWS:
-                    return NewsFragment.newInstance();
-                case FRAG_BOOKMARK:
-                    return BookMarkFragment.newInstance();
-                default:
-                    throw new IndexOutOfBoundsException();
-            }
+            return fragments.get(position);
         }
 
         @Override
@@ -99,11 +100,17 @@ public class MainActivity extends BaseActivity {
             return 4;
         }
 
+        public SparseArray<Fragment> getFragments() {
+            return fragments;
+        }
     }
-
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if(viewPager.getCurrentItem() == FRAG_SEARCH && viewPagerAdapter.getFragments().get(FRAG_SEARCH).getChildFragmentManager().getBackStackEntryCount()>0){
+            viewPagerAdapter.getFragments().get(FRAG_SEARCH).getChildFragmentManager().popBackStack();
+        }else{
+            super.onBackPressed();
+        }
     }
 }
