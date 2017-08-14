@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.example.choijinjoo.wingdroid.source.RepositoryLocalSource;
 import com.example.choijinjoo.wingdroid.source.SearchHistoryLocalSource;
+import com.facebook.stetho.Stetho;
+import com.google.firebase.FirebaseApp;
 
 import io.realm.Realm;
 
@@ -24,7 +26,8 @@ public class WingDroidApp extends Application {
         super.onCreate();
         instance = this;
         Realm.init(this);
-
+        FirebaseApp.initializeApp(this);
+        Stetho.initializeWithDefaults(this);
     }
 
     public final SearchHistoryLocalSource searchHistoryLocalSource() {

@@ -1,5 +1,7 @@
 package com.example.choijinjoo.wingdroid.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +17,7 @@ import com.example.choijinjoo.wingdroid.ui.bookmark.BookMarkFragment;
 import com.example.choijinjoo.wingdroid.ui.feed.FeedContainerFragment;
 import com.example.choijinjoo.wingdroid.ui.news.NewsFragment;
 import com.example.choijinjoo.wingdroid.ui.search.SearchFragment;
+import com.google.firebase.crash.FirebaseCrash;
 
 import butterknife.BindView;
 
@@ -28,6 +31,9 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.bottomNav) BottomNavigationView bottomNav;
     ViewPagerAdapter viewPagerAdapter;
 
+    public static Intent getStartIntent(Context context){
+        return new Intent(context,MainActivity.class);
+    }
     @Override
     protected int getLayoutId() {
         return R.layout.actv_main;
@@ -35,16 +41,13 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initLayout() {
+        FirebaseCrash.report(new Exception("My first Android non-fatal error"));
+
         bottomNav.getMenu().getItem(0).setChecked(true);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
         bottomNav.setOnNavigationItemSelectedListener(this::swtichFragment);
         BottomNavigationViewHelper.disableShiftMode(bottomNav);
-
-        FragmentManager fm = getSupportFragmentManager();
-        fm.addOnBackStackChangedListener(()->{
-            if(getFragmentManager().getBackStackEntryCount() == 0) finish();
-        });
 
         viewPager.setOffscreenPageLimit(3);
 

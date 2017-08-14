@@ -72,6 +72,7 @@ public class SearchFragment extends BaseFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showResults);
 
+
         searchView.setOnQueryTextFocusChangeListener(((view, focus) -> {
             if (focus) {
                 hideSearchViewText();
