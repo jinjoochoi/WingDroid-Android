@@ -4,16 +4,11 @@ import org.parceler.Parcel;
 
 import java.util.Date;
 
-import io.realm.RealmObject;
-import io.realm.SearchHistoryRealmProxy;
-
 /**
  * Created by choijinjoo on 2017. 8. 10..
  */
-@Parcel(implementations = { SearchHistoryRealmProxy.class },
-        value = Parcel.Serialization.BEAN,
-        analyze = { SearchHistory.class })
-public class SearchHistory extends RealmObject{
+@Parcel(value = Parcel.Serialization.BEAN)
+public class SearchHistory {
     private String search;
     private Date insertedAt;
 

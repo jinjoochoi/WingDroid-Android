@@ -12,20 +12,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.model.Gif;
 import com.example.choijinjoo.wingdroid.model.Repository;
-import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 
 import org.parceler.Parcels;
 
-import java.util.List;
-
 import butterknife.BindView;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import io.realm.RealmList;
 
 /**
  * Created by choijinjoo on 2017. 8. 8..
@@ -61,7 +53,7 @@ public class RepositoryDetailActivity extends BaseActivity {
     protected void initLayout() {
         Repository repository = Parcels.unwrap(getIntent().getParcelableExtra("repository"));
         Glide.with(this)
-                .load(repository.getGifs().get(0).getUrl())
+                .load(repository.getImage())
                 .into(imgvPreview);
         txtvName.setText(repository.getName());
         txtvDescription.setText(repository.getDescription());
@@ -74,10 +66,10 @@ public class RepositoryDetailActivity extends BaseActivity {
         simmilarsAdapter = new SimmilarsAdapter(this,position -> moveToDetailActivity(simmilarsAdapter.getItem(position)));
         recvSimmilarLibs.setAdapter(simmilarsAdapter);
 
-        makeMockRepository()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(repositories -> simmilarsAdapter.setItems(repositories));
+//        makeMockRepository()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(repositories -> simmilarsAdapter.setItems(repositories));
     }
 
 
@@ -88,28 +80,6 @@ public class RepositoryDetailActivity extends BaseActivity {
 
     private void moveToDetailActivity(Repository repository){
         startActivity(RepositoryDetailActivity.getStartIntent(RepositoryDetailActivity.this,repository));
-    }
-
-    private Observable<List<Repository>> makeMockRepository() {
-        RealmList<Repository> repositories = new RealmList<>();
-        RealmList<Gif> gifs = new RealmList<>();
-        gifs.add(new Gif("https://github.com/airbnb/lottie-android/blob/master/gifs/Example2.gif?raw=true"));
-        RealmList<Gif> gifs2 = new RealmList<>();
-        gifs2.add(new Gif("https://github.com/wasabeef/awesome-android-ui/raw/master/art/discrollview.gif?raw-true"));
-        RealmList<Tag> tags = new RealmList<>();
-        tags.add(new Tag("1"));
-        tags.add(new Tag("2"));
-        tags.add(new Tag("3"));
-        tags.add(new Tag("Expanding"));
-        RealmList<Tag> tags2 = new RealmList<>();
-        tags2.add(new Tag("Shimmer"));
-        tags2.add(new Tag("ripple"));
-
-        repositories.add(new Repository("lottie", gifs, tags, 850));
-        repositories.add(new Repository("discrollview", gifs2, tags, 1500));
-        repositories.add(new Repository("lottie", gifs, tags2, 250));
-
-        return Observable.just(repositories);
     }
 
     public void addFragment(Fragment fragment){

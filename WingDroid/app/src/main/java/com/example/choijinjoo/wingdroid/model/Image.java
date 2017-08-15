@@ -2,17 +2,12 @@ package com.example.choijinjoo.wingdroid.model;
 
 import org.parceler.Parcel;
 
-import io.realm.ImageRealmProxy;
-import io.realm.RealmObject;
-
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel(implementations = { ImageRealmProxy.class },
-        value = Parcel.Serialization.BEAN,
-        analyze = { Image.class })
-public class Image extends RealmObject{
+@Parcel(value = Parcel.Serialization.BEAN)
+public class Image {
     Integer id;
     String url;
 

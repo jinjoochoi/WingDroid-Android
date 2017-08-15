@@ -1,38 +1,35 @@
 package com.example.choijinjoo.wingdroid.model;
 
-import com.example.choijinjoo.wingdroid.model.converter.GifListParcelConverter;
-import com.example.choijinjoo.wingdroid.model.converter.ImageListParcelConverter;
-import com.example.choijinjoo.wingdroid.model.converter.TagListParcelConverter;
+import com.example.choijinjoo.wingdroid.tools.StringUtils;
 import com.example.choijinjoo.wingdroid.tools.Utils;
 
 import org.parceler.Parcel;
-import org.parceler.ParcelPropertyConverter;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.RepositoryRealmProxy;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel(implementations = { RepositoryRealmProxy.class },
-        value = Parcel.Serialization.BEAN,
-        analyze = { Repository.class })
-public class Repository extends RealmObject{
-    Integer id;
+@Parcel(value = Parcel.Serialization.BEAN)
+public class Repository {
+    String id;
     String name;
     String author;
     String git;
     String description;
-    Integer watch;
-    Integer star;
-    Integer fork;
-    Integer issue;
-    RealmList<Image> images;
-    RealmList<Gif> gifs;
-    RealmList<Tag> tags;
+    Long watch;
+    Long star;
+    Long fork;
+    Long issue;
+    String image;
+    List<String> tags;
+    Long createdAt;
+    Long updatedAt;
+
 
     public Repository() {}
 
@@ -40,26 +37,11 @@ public class Repository extends RealmObject{
         this.name = name;
     }
 
-    public Repository(String name, RealmList<Gif> gifs, RealmList<Tag> tags, Integer star) {
-        this.name = name;
-        this.gifs = gifs;
-        this.tags = tags;
-        this.star = star;
-        this.description = "this is description";
-    }
-
-    public Repository(String name, RealmList<Gif> gifs, Integer star) {
-        this.name = name;
-        this.gifs = gifs;
-        this.star = star;
-        this.description = "this is description";
-    }
-
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -95,63 +77,72 @@ public class Repository extends RealmObject{
         this.description = description;
     }
 
-    public Integer getWatch() {
+    public Long getWatch() {
         return watch;
     }
 
-    public void setWatch(Integer watch) {
+    public void setWatch(Long watch) {
         this.watch = watch;
     }
 
-    public Integer getStar() {
+    public Long getStar() {
         return star;
     }
 
-    public void setStar(Integer star) {
+    public void setStar(Long star) {
         this.star = star;
     }
 
-    public Integer getFork() {
+    public Long getFork() {
         return fork;
     }
 
-    public void setFork(Integer fork) {
+    public void setFork(Long fork) {
         this.fork = fork;
     }
 
-    public Integer getIssue() {
+    public Long getIssue() {
         return issue;
     }
 
-    public void setIssue(Integer issue) {
+    public void setIssue(Long issue) {
         this.issue = issue;
     }
 
-    public RealmList<Image> getImages() {
-        return images;
+    public String getImage() {
+        return image;
     }
 
-    @ParcelPropertyConverter(ImageListParcelConverter.class)
-    public void setImages(RealmList<Image> images) {
-        this.images = images;
+    public void setImages(String image) {
+        this.image = image;
     }
 
-    public RealmList<Gif> getGifs() {
-        return gifs;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    @ParcelPropertyConverter(GifListParcelConverter.class)
-    public void setGifs(RealmList<Gif> gifs) {
-        this.gifs = gifs;
-    }
-
-    public RealmList<Tag> getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    @ParcelPropertyConverter(TagListParcelConverter.class)
-    public void setTags(RealmList<Tag> tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     /*
@@ -159,6 +150,28 @@ public class Repository extends RealmObject{
      */
 
     public String getFormattedStarString() {
-        return Utils.getStarString(star);
+        return Utils.getStarString(Long.valueOf(star));
     }
+
+    public Date getCreatedAtDate() {
+        Timestamp stamp = new Timestamp(createdAt);
+        return new Date(stamp.getTime());
+    }
+
+    public Date getUpdatedAtDate() {
+        Timestamp stamp = new Timestamp(updatedAt);
+        return new Date(stamp.getTime());
+    }
+
+    public String getCreatedAtDateFormattedString() {
+        Timestamp stamp = new Timestamp(createdAt);
+
+        return StringUtils.toFormattedDateString(new Date(stamp.getTime()));
+    }
+
+    public String getUpdatedAtDateFormattedString() {
+        Timestamp stamp = new Timestamp(updatedAt);
+        return StringUtils.toFormattedDateString(new Date(stamp.getTime()));
+    }
+
 }

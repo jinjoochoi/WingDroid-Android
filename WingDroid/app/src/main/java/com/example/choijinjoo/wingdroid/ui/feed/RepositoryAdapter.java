@@ -7,24 +7,21 @@ import android.view.ViewGroup;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
-import com.example.choijinjoo.wingdroid.ui.base.BaseAdapter;
-
-import java.util.ArrayList;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.Query;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-public class RepositoryAdapter extends BaseAdapter<Repository,RepositoryViewHolder> {
+public class RepositoryAdapter extends FirebaseRecyclerAdapter<Repository,RepositoryViewHolder> {
     RepositoryClickedListener listener;
+    Context context;
 
-    public interface RepositoryClickedListener{
-        void clicked(int position);
-    }
-
-    public RepositoryAdapter(Context context, RepositoryClickedListener listener) {
-        super(context, new ArrayList<>());
+    public RepositoryAdapter(Class<Repository> modelClass, int modelLayout, Class<RepositoryViewHolder> viewHolderClass, Query ref, Context context, RepositoryClickedListener listener) {
+        super(modelClass, modelLayout, viewHolderClass, ref);
         this.listener = listener;
+        this.context = context;
     }
 
     @Override
@@ -36,7 +33,12 @@ public class RepositoryAdapter extends BaseAdapter<Repository,RepositoryViewHold
     }
 
     @Override
-    public void onBindViewHolder(RepositoryViewHolder holder, int position) {
-        holder.bindData(items.get(position));
+    protected void populateViewHolder(RepositoryViewHolder viewHolder, Repository model, int position) {
+        viewHolder.bindData(model);
     }
+
+    public interface RepositoryClickedListener{
+        void clicked(int position);
+    }
+
 }

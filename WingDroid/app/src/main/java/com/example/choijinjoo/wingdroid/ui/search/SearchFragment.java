@@ -10,13 +10,10 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.WingDroidApp;
-import com.example.choijinjoo.wingdroid.model.SearchHistory;
 import com.example.choijinjoo.wingdroid.tools.StringUtils;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import com.jakewharton.rxbinding2.widget.RxSearchView;
 
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -102,8 +99,6 @@ public class SearchFragment extends BaseFragment {
     }
 
     public void showResults(String str) {
-        //FIXME DELETE
-        WingDroidApp.getInstance().searchHistoryLocalSource().saveSearchHistory(new SearchHistory(str, Calendar.getInstance().getTime()));
         searchView.setQuery(str, false);
         FragmentInteractor fragment = (FragmentInteractor) addFragment(fragments.get(KEY_RESULT));
         fragment.showResults(str);

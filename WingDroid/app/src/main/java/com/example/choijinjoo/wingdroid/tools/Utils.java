@@ -27,7 +27,7 @@ public class Utils {
         return "";
     }
 
-    public static String getStarString(int star) {
+    public static String getStarString(long star) {
         if (star > 1000 && ((star - (star / 1000) * 1000) / 100) == 0)
             return String.format("%dk", star / 1000);
         else

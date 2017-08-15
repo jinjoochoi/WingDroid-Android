@@ -11,8 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.model.Gif;
-import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.event.Event;
 import com.example.choijinjoo.wingdroid.model.event.EventType;
 import com.example.choijinjoo.wingdroid.model.event.Issue;
@@ -31,7 +29,6 @@ import butterknife.BindView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import io.realm.RealmList;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -70,10 +67,10 @@ public class NewsFragment extends BaseFragment {
         recvEvents.setAdapter(eventAdapter);
 
         // TODO: 2017. 8. 8. data load는 onCrateView() 시점으로 이동
-        makeMockRepositories()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(news-> newAdapter.setItems(news));
+//        makeMockRepositories()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(news-> newAdapter.setItems(news));
 
         imgvFilter.setOnClickListener(it -> showSelectSortCriteriaDialog());
 
@@ -117,18 +114,6 @@ public class NewsFragment extends BaseFragment {
         return Observable.just(events);
     }
 
-    private Observable<List<Repository>> makeMockRepositories() {
-        RealmList<Repository> repositories = new RealmList<>();
-        RealmList<Gif> gifs = new RealmList<>();
-        gifs.add(new Gif("https://github.com/airbnb/lottie-android/blob/master/gifs/Example2.gif?raw=true"));
-
-        repositories.add(new Repository("lottie", gifs, 1700));
-        repositories.add(new Repository("lottie", gifs, 840));
-        repositories.add( new Repository("lottie", gifs, 2400));
-        repositories.add(new Repository("lottie", gifs, 380));
-
-        return Observable.just(repositories);
-    }
 
     public void addFragment(Fragment fragment){
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();

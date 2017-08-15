@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
-import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.ui.base.BaseViewHolder;
 
 import org.apmem.tools.layouts.FlowLayout;
@@ -25,6 +24,7 @@ public class RepositoryViewHolder extends BaseViewHolder<Repository> {
     @BindView(R.id.txtvName) TextView txtvName;
     @BindView(R.id.flowLayout) FlowLayout flowLayout;
     @BindView(R.id.txtvStar) TextView txtvStar;
+    @BindView(R.id.txtvDate) TextView txtvDate;
 
 
     public RepositoryViewHolder(Context context, View itemView) {
@@ -34,14 +34,15 @@ public class RepositoryViewHolder extends BaseViewHolder<Repository> {
     @Override
     public void bindData(Repository item) {
         Glide.with(context)
-                .load(item.getGifs().get(0).getUrl())
+                .load(item.getImage())
                 .into(imgvPreview);
         txtvName.setText(item.getName());
         txtvStar.setText(item.getFormattedStarString());
+        txtvDate.setText(item.getCreatedAtDateFormattedString());
 
-        for (Tag tag : item.getTags()) {
+        for (String tag : item.getTags()) {
             TextView txtvTag = LayoutInflater.from(context).inflate(R.layout.item_tag, null, false).findViewById(R.id.txtvTag);
-            txtvTag.setText(tag.toString());
+            txtvTag.setText(tag);
             flowLayout.addView(txtvTag);
         }
 

@@ -1,4 +1,4 @@
-package com.example.choijinjoo.wingdroid.source.remote;
+package com.example.choijinjoo.wingdroid.source.remote.api;
 
 import com.example.choijinjoo.wingdroid.config.Config;
 import com.facebook.stetho.okhttp3.StethoInterceptor;

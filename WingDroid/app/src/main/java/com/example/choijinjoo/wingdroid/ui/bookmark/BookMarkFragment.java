@@ -9,21 +9,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.model.Gif;
-import com.example.choijinjoo.wingdroid.model.Repository;
-import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.ui.CategoryFilterDialog;
 import com.example.choijinjoo.wingdroid.ui.SelectSortCriteriaDialog;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
 
-import java.util.List;
-
 import butterknife.BindView;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import io.realm.RealmList;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -54,15 +45,19 @@ public class BookMarkFragment extends BaseFragment {
         recvRepositories.setDrawingCacheEnabled(true);
         recvRepositories.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         // TODO: 2017. 8. 8. data load는 onCrateView() 시점으로 이동
-        makeMockRepository()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(repositories -> adapter.setItems(repositories));
+//        makeMockRepository()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(repositories -> adapter.setItems(repositories));
 
         containerSort.setOnClickListener(it -> showSelectSortCriteriaDialog());
         imgvFilter.setOnClickListener(it -> showCategoryFilterDialog());
     }
 
+    @Override
+    protected void loadData() {
+
+    }
 
     private void moveToDetailActivity(int position){
         Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(),adapter.getItem(position));
@@ -83,36 +78,5 @@ public class BookMarkFragment extends BaseFragment {
                 }).show();
     }
 
-    private Observable<List<Repository>> makeMockRepository() {
-        RealmList<Repository> repositories = new RealmList<>();
-        RealmList<Gif> gifs = new RealmList<>();
-        gifs.add(new Gif("https://github.com/airbnb/lottie-android/blob/master/gifs/Example2.gif?raw=true"));
-        RealmList<Gif> gifs2 = new RealmList<>();
-        gifs2.add(new Gif("https://github.com/wasabeef/awesome-android-ui/raw/master/art/discrollview.gif?raw-true"));
-        RealmList<Tag> tags = new RealmList<>();
-        tags.add(new Tag("Expanding"));
-        tags.add(new Tag("Snap"));
-        tags.add(new Tag("span"));
-        tags.add(new Tag("Expanding"));
-        RealmList<Tag> tags2 = new RealmList<>();
-        tags.add(new Tag("Shimmer"));
-        tags.add(new Tag("ripple"));
-
-
-        repositories.add(new Repository("lottie", gifs, tags, 850));
-        repositories.add(new Repository("discrollview", gifs2, tags, 1500));
-        repositories.add(new Repository("lottie", gifs, tags2, 250));
-        repositories.add(new Repository("discrollview", gifs2, tags2, 12000));
-        repositories.add(new Repository("lottie", gifs, tags2, 1800));
-        repositories.add(new Repository("discrollview", gifs2, tags, 20));
-        repositories.add(new Repository("lottie", gifs, tags, 30));
-        repositories.add(new Repository("discrollview", gifs2, tags, 450));
-        repositories.add(new Repository("lottie", gifs, tags2, 1804));
-        repositories.add(new Repository("discrollview", gifs2, tags2, 250));
-        repositories.add(new Repository("lottie", gifs, tags2, 250));
-        repositories.add(new Repository("discrollview", gifs2, tags2, 350));
-
-        return Observable.just(repositories);
-    }
 
 }

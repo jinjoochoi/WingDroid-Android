@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
 
-import static android.R.attr.fragment;
-
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
@@ -22,9 +20,13 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void initLayout();
 
+    protected void loadData(){}
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        loadData();
         return LayoutInflater.from(getActivity()).inflate(getLayoutId(), container, false);
     }
 

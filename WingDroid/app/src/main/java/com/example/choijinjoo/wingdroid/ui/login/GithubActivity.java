@@ -8,7 +8,7 @@ import android.webkit.WebViewClient;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.config.Config;
 import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
-import com.example.choijinjoo.wingdroid.source.remote.GithubAPI;
+import com.example.choijinjoo.wingdroid.source.remote.api.GithubAPI;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragmentActivity;
 
 import butterknife.BindView;

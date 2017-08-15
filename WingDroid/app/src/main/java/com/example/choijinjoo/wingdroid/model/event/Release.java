@@ -9,18 +9,13 @@ import org.parceler.Parcel;
 import java.util.Calendar;
 import java.util.Date;
 
-import io.realm.RealmObject;
-import io.realm.ReleaseRealmProxy;
-
 import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_RELEASE;
 
 /**
  * Created by choijinjoo on 2017. 8. 9..
  */
-@Parcel(implementations = { ReleaseRealmProxy.class },
-        value = Parcel.Serialization.BEAN,
-        analyze = { Release.class })
-public class Release extends RealmObject implements IEvent {
+@Parcel(value = Parcel.Serialization.BEAN)
+public class Release implements IEvent {
     Integer id;
     String action;
     String url;

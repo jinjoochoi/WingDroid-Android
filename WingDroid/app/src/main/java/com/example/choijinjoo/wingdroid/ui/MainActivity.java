@@ -17,7 +17,6 @@ import com.example.choijinjoo.wingdroid.ui.bookmark.BookMarkFragment;
 import com.example.choijinjoo.wingdroid.ui.feed.FeedContainerFragment;
 import com.example.choijinjoo.wingdroid.ui.news.NewsFragment;
 import com.example.choijinjoo.wingdroid.ui.search.SearchFragment;
-import com.google.firebase.crash.FirebaseCrash;
 
 import butterknife.BindView;
 
@@ -41,8 +40,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initLayout() {
-        FirebaseCrash.report(new Exception("My first Android non-fatal error"));
-
         bottomNav.getMenu().getItem(0).setChecked(true);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
@@ -50,7 +47,6 @@ public class MainActivity extends BaseActivity {
         BottomNavigationViewHelper.disableShiftMode(bottomNav);
 
         viewPager.setOffscreenPageLimit(3);
-
     }
 
     private boolean swtichFragment(MenuItem item) {

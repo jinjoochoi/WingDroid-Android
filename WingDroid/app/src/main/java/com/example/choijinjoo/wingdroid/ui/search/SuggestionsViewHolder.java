@@ -29,7 +29,7 @@ public class SuggestionsViewHolder extends BaseViewHolder<Repository> {
     @Override
     public void bindData(Repository item) {
         Glide.with(context)
-                .load(item.getGifs().get(0).getUrl())
+                .load(item.getImage())
                 .into(imgvPreview);
         txtvName.setText(item.getName());
         txtvStar.setText(item.getFormattedStarString());

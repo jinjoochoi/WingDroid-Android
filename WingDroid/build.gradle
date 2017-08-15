@@ -8,7 +8,6 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.6.0'
         classpath 'me.tatarka:gradle-retrolambda:3.2.2'
-        classpath "io.realm:realm-gradle-plugin:3.5.0"
         classpath 'com.google.gms:google-services:3.1.0'
 
 
@@ -34,18 +33,30 @@ ext {
     // App dependencies
     support_version = '26.0.1'
     parceler_version = '1.1.9'
+
     butterknife_version = '8.7.0'
     butterknife_compiler_version = '8.6.0'
+
     glide_version = '4.0.0'
+
     rxbinding_version = '2.0.0'
     rxandroid_version = '2.0.1'
+    rxjava2_adapter_version = '2.2.0'
+
     flowlayout_version = '1.10@aar'
     flowlayoutmanager_version = '1.2.3.2'
+
     realm_adapter_version = '2.1.0'
+
     firebase_auth_version = '10.0.1'
     firebase_crash_version = '10.0.1'
     firebase_database_version = '10.0.1'
+    firebase_ui_database_version = '1.1.1'
+
     retrofit_version = '2.3.0'
     retrofit_gson_version = '2.1.0'
+    stetho_okhttp3_version = '1.5.0'
+    okhttp3_version = '3.4.2'
+    okhttp3_logging_interceptor = '3.4.2'
 
 }

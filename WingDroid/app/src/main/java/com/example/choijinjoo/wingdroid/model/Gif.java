@@ -2,17 +2,12 @@ package com.example.choijinjoo.wingdroid.model;
 
 import org.parceler.Parcel;
 
-import io.realm.GifRealmProxy;
-import io.realm.RealmObject;
-
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel(implementations = { GifRealmProxy.class },
-        value = Parcel.Serialization.BEAN,
-        analyze = { Gif.class })
-public class Gif extends RealmObject{
+@Parcel(value = Parcel.Serialization.BEAN)
+public class Gif {
     Integer id;
     String url;
 

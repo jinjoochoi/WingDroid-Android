@@ -9,19 +9,14 @@ import org.parceler.Parcel;
 import java.util.Calendar;
 import java.util.Date;
 
-import io.realm.PushRealmProxy;
-import io.realm.RealmObject;
-
 import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_PUSH;
 
 /**
  * Created by choijinjoo on 2017. 8. 9..
  */
 
-@Parcel(implementations = { PushRealmProxy.class },
-        value = Parcel.Serialization.BEAN,
-        analyze = { Push.class })
-public class Push extends RealmObject implements IEvent {
+@Parcel(value = Parcel.Serialization.BEAN)
+public class Push implements IEvent {
     User pusher;
     Commit headCommit;
     Repository repository;

@@ -30,15 +30,15 @@ public class SearchResultViewHolder extends BaseViewHolder<Repository> {
     @Override
     public void bindData(Repository item) {
         Glide.with(context)
-                .load(item.getGifs().get(0).getUrl())
+                .load(item.getImage())
                 .into(imgvPreview);
         txtvName.setText(item.getName());
         txtvStar.setText(item.getFormattedStarString());
         txtvDescription.setText(item.getDescription());
 
-        for (Tag tag : item.getTags()) {
+        for (String tag : item.getTags()) {
             TextView txtvTag = LayoutInflater.from(context).inflate(R.layout.item_tag, null, false).findViewById(R.id.txtvTag);
-            txtvTag.setText(tag.toString());
+            txtvTag.setText(tag);
             flowLayout.addView(txtvTag);
         }
     }

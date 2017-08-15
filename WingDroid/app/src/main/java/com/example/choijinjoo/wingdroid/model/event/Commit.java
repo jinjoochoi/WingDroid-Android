@@ -4,17 +4,12 @@ import com.example.choijinjoo.wingdroid.model.User;
 
 import org.parceler.Parcel;
 
-import io.realm.CommitRealmProxy;
-import io.realm.RealmObject;
-
 /**
  * Created by choijinjoo on 2017. 8. 9..
  */
 
-@Parcel(implementations = { CommitRealmProxy.class },
-        value = Parcel.Serialization.BEAN,
-        analyze = { Commit.class })
-public class Commit extends RealmObject{
+@Parcel(value = Parcel.Serialization.BEAN)
+public class Commit {
     String id;
     String message;
     String timestamp;

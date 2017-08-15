@@ -2,15 +2,12 @@ package com.example.choijinjoo.wingdroid.model;
 
 import org.parceler.Parcel;
 
-import io.realm.RealmObject;
-import io.realm.TagRealmProxy;
-
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-@Parcel(implementations = {TagRealmProxy.class})
-public class Tag extends RealmObject{
+@Parcel(value = Parcel.Serialization.BEAN)
+public class Tag {
     Integer id;
     String name;
 
