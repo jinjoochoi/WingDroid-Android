@@ -7,7 +7,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.choijinjoo.wingdroid.R;
+import com.example.choijinjoo.wingdroid.model.User;
 import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
+import com.example.choijinjoo.wingdroid.source.remote.firebase.UserDataSource;
 import com.example.choijinjoo.wingdroid.ui.MainActivity;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 import com.google.firebase.auth.AuthCredential;
@@ -81,14 +83,21 @@ public class LoginActivity extends BaseActivity {
         finish();
     }
 
+    private void saveUser(){
+        User me = new User(FirebaseAuth.getInstance().getCurrentUser());
+        UserDataSource.getInstance().addUser(me);
+    }
+
     private void signInWithCredential() {
         String token = SharedPreferenceHelper.getStringValue(this, AUTH_TOKEN, "");
         AuthCredential credential = GithubAuthProvider.getCredential(token);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this,
                         (task) -> {
-                            if (task.isSuccessful())
+                            if (task.isSuccessful()) {
+                                saveUser();
                                 moveToMainActivity();
+                            }
                             else
                                 Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         });

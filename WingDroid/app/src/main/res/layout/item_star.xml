@@ -3,16 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/containerStar"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="20dp"
     android:layout_alignParentRight="true"
     android:layout_below="@id/flowLayout"
+    android:layout_marginLeft="5dp"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
     <ImageView
         android:layout_width="@dimen/ic_star_width"
         android:layout_height="@dimen/ic_star_height"
-        android:layout_marginRight="2dp"
+        android:layout_marginLeft="2dp"
         android:src="@drawable/ic_star"
         android:tint="@color/grey" />
 
@@ -20,6 +21,7 @@
         android:id="@+id/txtvStar"
         style="@style/TextStyle.Star"
         android:layout_width="wrap_content"
+        android:layout_margin="2dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/textsize_min"
         tools:text="1.8K" />

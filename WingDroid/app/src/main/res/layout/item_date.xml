@@ -2,10 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_above="@id/flowLayout"
-    android:layout_alignParentRight="true"
-    android:layout_below="@+id/txtvName"
+    android:layout_height="20dp"
+    android:layout_toLeftOf="@+id/containerStar"
+    android:layout_below="@+id/flowLayout"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 

@@ -3,21 +3,16 @@ package com.example.choijinjoo.wingdroid.ui.feed;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Category;
+import com.example.choijinjoo.wingdroid.source.remote.firebase.CategoryDataSource;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.choijinjoo.wingdroid.ui.base.FirebaseViewPagerAdapter;
+import com.google.firebase.database.Query;
 
 import butterknife.BindView;
-import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -28,7 +23,7 @@ public class FeedContainerFragment extends BaseFragment {
     TabLayout tabLayout;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
-
+    Query ref;
 
     public static FeedContainerFragment newInstance() {
         return new FeedContainerFragment();
@@ -41,53 +36,32 @@ public class FeedContainerFragment extends BaseFragment {
 
     @Override
     protected void initLayout() {
-        makeMockCategories()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(categories -> {
-                    viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), categories));
-                    tabLayout.setupWithViewPager(viewPager, true);
-                });
+        viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), ref, Category.class));
+        tabLayout.setupWithViewPager(viewPager, true);
     }
 
-    private Observable<List<Category>> makeMockCategories() {
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Button"));
-        categories.add(new Category("Calendar"));
-        categories.add(new Category("Effect"));
-        categories.add(new Category("Graph"));
-        categories.add(new Category("Image"));
-        categories.add(new Category("Label/Form"));
-        categories.add(new Category("List/Grid"));
-        categories.add(new Category("Loading"));
-        categories.add(new Category("Menu"));
-        categories.add(new Category("Progress"));
-        categories.add(new Category("SeekBar"));
-        categories.add(new Category("SideBar"));
-        return Observable.just(categories);
+    @Override
+    protected void loadData() {
+        super.loadData();
+        ref = CategoryDataSource.getInstance().categories();
     }
 
-    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
-        List<Category> categories;
 
-        public ViewPagerAdapter(FragmentManager fm, List<Category> categories) {
-            super(fm);
-            this.categories = categories;
+    private class ViewPagerAdapter extends FirebaseViewPagerAdapter<Category> {
+
+        public ViewPagerAdapter(FragmentManager fm, Query ref, Class<Category> clazz) {
+            super(fm, ref, clazz);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return FeedFragment.newInstance();
+            return FeedFragment.newInstance(datas.get(position));
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return categories.get(position).getName();
+            return datas.get(position).getName();
         }
 
-        @Override
-        public int getCount() {
-            return categories != null ? categories.size() : 0;
-        }
     }
 }

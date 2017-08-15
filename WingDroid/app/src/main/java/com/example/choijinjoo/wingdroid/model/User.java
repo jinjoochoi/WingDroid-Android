@@ -1,6 +1,10 @@
 package com.example.choijinjoo.wingdroid.model;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import org.parceler.Parcel;
+
+import java.util.List;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -8,24 +12,19 @@ import org.parceler.Parcel;
 
 @Parcel(value = Parcel.Serialization.BEAN)
 public class User {
-    Integer id;
+    String id;
     String name;
-    String avatarUrl;
-    String git;
-    String introduction;
-    Integer followers;
+    String email;
+    String photoUrl;
+    List<String> bookmarks;
 
     public User() {}
 
-    public User(String name) {
-        this.name = name;
-    }
-
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -37,35 +36,43 @@ public class User {
         this.name = name;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public String getEmail() {
+        return email;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getGit() {
-        return git;
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
-    public void setGit(String git) {
-        this.git = git;
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
-    public String getIntroduction() {
-        return introduction;
+    public List<String> getBookmarks() {
+        return bookmarks;
     }
 
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
+    public void setBookmarks(List<String> bookmarks) {
+        this.bookmarks = bookmarks;
     }
 
-    public Integer getFollowers() {
-        return followers;
+    public User(String name) {
+        this.name = name;
+    }
+    /*
+     *  Copy Constructor
+     */
+
+    public User(FirebaseUser firebaseUser) {
+        this.id = firebaseUser.getUid();
+        this.name = firebaseUser.getDisplayName();
+        this.email = firebaseUser.getEmail();
+        if (firebaseUser.getPhotoUrl() != null)
+            this.photoUrl = firebaseUser.getPhotoUrl().toString();
     }
 
-    public void setFollowers(Integer followers) {
-        this.followers = followers;
-    }
 }

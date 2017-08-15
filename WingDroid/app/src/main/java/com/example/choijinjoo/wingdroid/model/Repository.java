@@ -21,10 +21,10 @@ public class Repository {
     String author;
     String git;
     String description;
-    Long watch;
-    Long star;
-    Long fork;
-    Long issue;
+    Integer watch;
+    Integer star;
+    Integer fork;
+    Integer issue;
     String image;
     List<String> tags;
     Long createdAt;
@@ -77,35 +77,35 @@ public class Repository {
         this.description = description;
     }
 
-    public Long getWatch() {
+    public Integer getWatch() {
         return watch;
     }
 
-    public void setWatch(Long watch) {
+    public void setWatch(Integer watch) {
         this.watch = watch;
     }
 
-    public Long getStar() {
+    public Integer getStar() {
         return star;
     }
 
-    public void setStar(Long star) {
+    public void setStar(Integer star) {
         this.star = star;
     }
 
-    public Long getFork() {
+    public Integer getFork() {
         return fork;
     }
 
-    public void setFork(Long fork) {
+    public void setFork(Integer fork) {
         this.fork = fork;
     }
 
-    public Long getIssue() {
+    public Integer getIssue() {
         return issue;
     }
 
-    public void setIssue(Long issue) {
+    public void setIssue(Integer issue) {
         this.issue = issue;
     }
 
@@ -172,6 +172,10 @@ public class Repository {
     public String getUpdatedAtDateFormattedString() {
         Timestamp stamp = new Timestamp(updatedAt);
         return StringUtils.toFormattedDateString(new Date(stamp.getTime()));
+    }
+
+    public String getTagString(String tag){
+        return "#" + tag;
     }
 
 }

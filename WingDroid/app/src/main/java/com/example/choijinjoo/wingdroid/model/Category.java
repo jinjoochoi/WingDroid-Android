@@ -8,8 +8,7 @@ import org.parceler.Parcel;
  */
 
 @Parcel(value = Parcel.Serialization.BEAN)
-public class Category {
-    Integer id;
+public class Category extends FBModel{
     String name;
     boolean selected;
     boolean simulatable;
@@ -18,14 +17,6 @@ public class Category {
 
     public Category(String name) {
         this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
