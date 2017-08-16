@@ -101,26 +101,53 @@
                         android:layout_marginTop="20dp"
                         android:background="@color/grey" />
 
-                    <TextView
-                        android:id="@+id/txtvIssue"
-                        style="@style/TextStyle.Medium"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
+                    <LinearLayout
+                        android:id="@+id/btnIssue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="10dp"
-                        android:gravity="center_vertical"
-                        android:text="@string/detail_issues"
-                        android:textStyle="bold" />
+                        android:gravity="center"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/txtvGithub"
-                        style="@style/TextStyle.Medium"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="center_vertical"
-                        android:text="@string/detail_github"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/txtvIssueCount"
+                            style="@style/TextStyle.Title.Large"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="88" />
+
+                        <TextView
+                            style="@style/TextStyle.Medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:gravity="center_vertical"
+                            android:text="@string/detail_issues"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"                        android:layout_marginBottom="10dp"
+
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/arrow"
+                            android:layout_width="20dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_chevron_right_black_24dp" />
+
+                        <ImageView
+                            android:id="@+id/imgvGithub"
+                            android:layout_width="50dp"
+                            android:layout_height="30dp"
+                            android:layout_toLeftOf="@id/arrow"
+                            android:gravity="center_vertical"
+                            android:src="@drawable/ic_github" />
+
+                    </RelativeLayout>
 
                     <include layout="@layout/space" />
 
@@ -168,10 +195,5 @@
 
         </ScrollView>
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </RelativeLayout>

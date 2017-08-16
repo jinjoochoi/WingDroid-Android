@@ -1,13 +1,10 @@
 package com.example.choijinjoo.wingdroid.ui.news;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.example.choijinjoo.wingdroid.R;
@@ -20,7 +17,7 @@ import com.example.choijinjoo.wingdroid.model.event.Release;
 import com.example.choijinjoo.wingdroid.ui.SelectSortCriteriaDialog;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
-import com.example.choijinjoo.wingdroid.ui.detail.WebViewFragment;
+import com.example.choijinjoo.wingdroid.ui.detail.WebViewAcitivty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +35,6 @@ public class NewsFragment extends BaseFragment {
     @BindView(R.id.recvNew) RecyclerView recvNew;
     @BindView(R.id.recvEvents) RecyclerView recvEvents;
     @BindView(R.id.imgvFilter) ImageView imgvFilter;
-    @BindView(R.id.frameLayout) FrameLayout frameLayout;
     NewAdapter newAdapter;
     EventAdapter eventAdapter;
 
@@ -81,7 +77,9 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void moveToWebViewActivity(int position){
-        addFragment(WebViewFragment.newInstance(eventAdapter.getItem(position).getEvent().getMainUrl()));
+        Intent intent = WebViewAcitivty.getStartIntent(getActivity(),eventAdapter.getItem(position).getEvent().getMainUrl());
+        startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     private void showSelectSortCriteriaDialog() {
@@ -114,13 +112,6 @@ public class NewsFragment extends BaseFragment {
         return Observable.just(events);
     }
 
-
-    public void addFragment(Fragment fragment){
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
-        transaction.add(R.id.frameLayout, fragment);
-        transaction.commitNow();
-    }
 
 
 }

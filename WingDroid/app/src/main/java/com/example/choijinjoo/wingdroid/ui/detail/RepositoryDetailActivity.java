@@ -2,13 +2,12 @@ package com.example.choijinjoo.wingdroid.ui.detail;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -36,10 +35,11 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.imgvPreview) ImageView imgvPreview;
     @BindView(R.id.txtvName) TextView txtvName;
     @BindView(R.id.txtvDescription) TextView txtvDescription;
-    @BindView(R.id.txtvIssue) TextView txtvIssue;
+    @BindView(R.id.btnIssue) LinearLayout btnIssue;
+    @BindView(R.id.txtvIssueCount) TextView txtvIssueCount;
     @BindView(R.id.txtvStar) TextView txtvStar;
     @BindView(R.id.txtvAuthor) TextView txtvAuthor;
-    @BindView(R.id.txtvGithub) TextView txtvGithub;
+    @BindView(R.id.imgvGithub) ImageView imgvGithub;
     @BindView(R.id.recvSimmilarLibs) RecyclerView recvSimmilarLibs;
     SimmilarsAdapter simmilarsAdapter;
     Repository repository;
@@ -67,9 +67,10 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
         txtvName.setText(repository.getName());
         txtvDescription.setText(repository.getDescription());
         txtvAuthor.setText("by. " + repository.getAuthor());
-        txtvIssue.setOnClickListener(it -> moveToWebViewActivity("https://github.com/MengTo/Spring/issues/272"));
-        txtvGithub.setOnClickListener(it -> moveToWebViewActivity("https://github.com/MengTo/Spring/issues/272"));
+        btnIssue.setOnClickListener(it -> showWebViewActivity(repository.getIssueUrl()));
+        imgvGithub.setOnClickListener(it -> showWebViewActivity(repository.getGit()));
         txtvStar.setText(repository.getFormattedStarString());
+        txtvIssueCount.setText(Integer.toString(repository.getIssue()));
 
         recvSimmilarLibs.setLayoutManager(new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false));
         simmilarsAdapter = new SimmilarsAdapter(this, position -> moveToDetailActivity(simmilarsAdapter.getItem(position)));
@@ -78,22 +79,16 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     }
 
 
-    private void moveToWebViewActivity(String url) {
-        addFragment(WebViewFragment.newInstance(url));
+    private void showWebViewActivity(String url) {
+        Intent intent = WebViewAcitivty.getStartIntent(this,url);
+        startActivity(intent);
+        overridePendingTransition(0,0);
     }
 
 
     private void moveToDetailActivity(Repository repository) {
         startActivity(RepositoryDetailActivity.getStartIntent(RepositoryDetailActivity.this, repository));
     }
-
-    public void addFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
-        transaction.add(R.id.frameLayout, fragment);
-        transaction.commitNow();
-    }
-
 
     @Override
     protected void onStart() {

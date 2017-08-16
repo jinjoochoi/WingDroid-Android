@@ -29,8 +29,8 @@ public class Utils {
 
     public static String getStarString(long star) {
         if (star > 1000 && ((star - (star / 1000) * 1000) / 100) == 0)
-            return String.format("%dk", star / 1000);
+            return String.format("%dK", star / 1000);
         else
-            return star > 1000 ? String.format("%d.%dk", star / 1000, (star - (star / 1000) * 1000) / 100) : String.valueOf(star);
+            return star > 1000 ? String.format("%d.%dK", star / 1000, (star - (star / 1000) * 1000) / 100) : String.valueOf(star);
     }
 }

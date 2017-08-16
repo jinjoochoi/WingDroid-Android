@@ -2,6 +2,7 @@ package com.example.choijinjoo.wingdroid.model;
 
 import com.example.choijinjoo.wingdroid.tools.StringUtils;
 import com.example.choijinjoo.wingdroid.tools.Utils;
+import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
@@ -25,10 +26,13 @@ public class Repository {
     Integer star;
     Integer fork;
     Integer issue;
+    @SerializedName("issue_url")
+    String issueUrl;
     String image;
     List<String> tags;
     Long createdAt;
     Long updatedAt;
+    Integer simulatable;
 
 
     public Repository() {}
@@ -144,6 +148,14 @@ public class Repository {
     public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public String getIssueUrl() { return issueUrl; }
+
+    public void setIssueUrl(String issueUrl) { this.issueUrl = issueUrl; }
+
+    public Integer getSimulatable() { return simulatable; }
+
+    public void setSimulatable(Integer simulatable) { this.simulatable = simulatable; }
 
     /*
      * Custom method
