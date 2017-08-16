@@ -38,9 +38,7 @@ public class RepositoryDataSource {
                             listener.empty();
                         else
                             listener.added(dataSnapshot.getValue(Repository.class));
-
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 

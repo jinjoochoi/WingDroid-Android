@@ -40,6 +40,11 @@
     <string name="empty_issue">No issue about your bookmarks.</string>
 
 
+    <!-- Toast message string -->
+    <string name="toast_message_no_auth"></string>
+
+
+
 
 
 

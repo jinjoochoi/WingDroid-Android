@@ -28,10 +28,8 @@ import butterknife.BindView;
  */
 
 public class FeedFragment extends BaseFragment implements FirebaseArray.OnChangedListener{
-    @BindView(R.id.recvRepositories)
-    RecyclerView recvRepositories;
-    @BindView(R.id.containerSort)
-    LinearLayout containerSort;
+    @BindView(R.id.recvRepositories) RecyclerView recvRepositories;
+    @BindView(R.id.containerSort) LinearLayout containerSort;
     RepositoryAdapter adapter;
     Query ref;
     StaggeredGridLayoutManager layoutManager;
@@ -61,6 +59,7 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
             adapter = new RepositoryAdapter(getActivity(), this::moveToDetailActivity);
             recvRepositories.setAdapter(adapter);
             containerSort.setOnClickListener(this::showSelectSortCriteriaDialog);
+            firebaseArray.setOnChangedListener(this);
         }
     }
 
@@ -72,7 +71,6 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
                 ref = RepositoryDataSource.getInstance().repositories();
             else
                 ref = RepositoryDataSource.getInstance().repositoriesByCategory(category);
-
             firebaseArray = new FirebaseArray(ref);
         }
     }
@@ -100,18 +98,15 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
 
 
     @Override
-    public void onStart() {
-        super.onStart();
-        firebaseArray.setOnChangedListener(this);
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroyView() {
+        super.onDestroyView();
         firebaseArray.setOnChangedListener(null);
         firebaseArray.cleanup();
     }
+
+    /*
+     *  Repository DataReference change listener
+     */
 
     @Override
     public void onChildChanged(EventType type, int index, int oldIndex) {
@@ -119,7 +114,9 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
             case ADDED:
                 // Category가 All인 경우에는  모든 Repository를 불러옵니다.
                 if(category.getName().equals("All")){
-                    adapter.add(firebaseArray.getItem(index).getValue(Repository.class));
+                    Repository repository = firebaseArray.getItem(index).getValue(Repository.class);
+                    repository.setId(firebaseArray.getItem(index).getKey());
+                    adapter.add(repository);
                     adapter.notifyItemInserted(index);
                 }else {
                     // Category가 있는 경우에는 Category DataReference에서 해당 카테고리를 가지고 있는 Repository의 id를 가져온 뒤,
@@ -129,6 +126,7 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
                             repositoryId, new RepositoryDataSource.RepositoryListener() {
                                 @Override
                                 public void added(Repository repository) {
+                                    repository.setId(repositoryId);
                                     adapter.add(repository);
                                     adapter.notifyItemInserted(index);
                                 }

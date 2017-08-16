@@ -1,9 +1,9 @@
 package com.example.choijinjoo.wingdroid.ui.base;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 
@@ -24,6 +24,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         initLayout();
+    }
+
+    protected void showToastMessage(int messageId){
+        Toast.makeText(this,getString(messageId),Toast.LENGTH_SHORT).show();
     }
 
 

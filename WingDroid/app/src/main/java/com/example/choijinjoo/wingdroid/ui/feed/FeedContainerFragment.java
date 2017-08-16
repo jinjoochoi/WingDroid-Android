@@ -19,10 +19,9 @@ import butterknife.BindView;
  */
 
 public class FeedContainerFragment extends BaseFragment {
-    @BindView(R.id.tabLayout)
-    TabLayout tabLayout;
-    @BindView(R.id.viewPager)
-    ViewPager viewPager;
+    @BindView(R.id.tabLayout) TabLayout tabLayout;
+    @BindView(R.id.viewPager) ViewPager viewPager;
+    ViewPagerAdapter viewPagerAdapter;
     Query ref;
 
     public static FeedContainerFragment newInstance() {
@@ -36,7 +35,8 @@ public class FeedContainerFragment extends BaseFragment {
 
     @Override
     protected void initLayout() {
-        viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), ref, Category.class));
+        viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), ref, Category.class);
+        viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager, true);
     }
 
@@ -63,5 +63,17 @@ public class FeedContainerFragment extends BaseFragment {
             return datas.get(position).getName();
         }
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        viewPagerAdapter.addChildEventListener();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        viewPagerAdapter.removeChildEventListener();
     }
 }

@@ -20,6 +20,7 @@ public abstract class FirebaseViewPagerAdapter<T extends FBModel> extends Fragme
     Query ref;
     Class<T> clazz;
     protected List<T> datas;
+    ChildEventListener childEventListener;
 
     public FirebaseViewPagerAdapter(FragmentManager fm, Query ref, Class<T> clazz){
         super(fm);
@@ -30,7 +31,7 @@ public abstract class FirebaseViewPagerAdapter<T extends FBModel> extends Fragme
     }
 
     private void init(){
-        ref.addChildEventListener(new ChildEventListener() {
+        childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 T data = dataSnapshot.getValue(clazz);
@@ -58,7 +59,15 @@ public abstract class FirebaseViewPagerAdapter<T extends FBModel> extends Fragme
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+    }
+
+    public void removeChildEventListener(){
+        ref.removeEventListener(childEventListener);
+    }
+
+    public void addChildEventListener(){
+        ref.addChildEventListener(childEventListener);
     }
 
 
