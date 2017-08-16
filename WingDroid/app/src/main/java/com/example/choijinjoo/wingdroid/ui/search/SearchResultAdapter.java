@@ -9,7 +9,7 @@ import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.ui.base.BaseAdapter;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class SearchResultAdapter extends BaseAdapter<Repository, SearchResultViewHolder> {
     SearchResultListener listener;
@@ -18,8 +18,8 @@ public class SearchResultAdapter extends BaseAdapter<Repository, SearchResultVie
         void selected(int position);
     }
 
-    public SearchResultAdapter(Context context, List<Repository> items, SearchResultListener listener) {
-        super(context, items);
+    public SearchResultAdapter(Context context, SearchResultListener listener) {
+        super(context, new ArrayList<>());
         this.listener = listener;
     }
 

@@ -11,7 +11,6 @@ import org.parceler.Parcel;
 public class Category extends FBModel{
     String name;
     boolean selected;
-    boolean simulatable;
 
     public Category() {}
 
@@ -31,9 +30,6 @@ public class Category extends FBModel{
 
     public void setSelected(boolean selected) { this.selected = selected; }
 
-    public boolean isSimulatable() { return simulatable; }
-
-    public void setSimulatable(boolean simulatable) { this.simulatable = simulatable; }
 
     /*
      * Custom method

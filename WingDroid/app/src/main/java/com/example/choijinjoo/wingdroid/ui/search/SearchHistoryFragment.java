@@ -15,7 +15,7 @@ import butterknife.BindView;
 
 public class SearchHistoryFragment extends BaseFragment {
     @BindView(R.id.recvHistories) RecyclerView recvHistories;
-//    SearchHistoryAdapter adapter;
+    SearchHistoryAdapter adapter;
 
     public static SearchHistoryFragment newInstance() {
         return new SearchHistoryFragment();

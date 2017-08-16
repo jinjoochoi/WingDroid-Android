@@ -26,6 +26,7 @@
         </activity>
         <activity android:name=".ui.login.GithubActivity"/>
         <activity android:name=".ui.detail.WebViewAcitivty"/>
+        <activity android:name=".ui.search.SearchResultActivity"/>
     </application>
 
 

@@ -12,9 +12,6 @@ import com.google.firebase.FirebaseApp;
 public class WingDroidApp extends Application {
     private static WingDroidApp instance;
 
-//    SearchHistoryLocalSource searchHistoryLocalSource;
-//    RepositoryLocalSource repositoryLocalSource;
-
     public static WingDroidApp getInstance() { return instance; }
 
     @Override
@@ -25,19 +22,4 @@ public class WingDroidApp extends Application {
         Stetho.initializeWithDefaults(this);
     }
 
-//    public final SearchHistoryLocalSource searchHistoryLocalSource() {
-//        return searchHistoryLocalSource == null ? searchHistoryLocalSource = createSearchHistoryLocalSource() : searchHistoryLocalSource;
-//    }
-
-//    public final RepositoryLocalSource repositoryLocalSource() {
-//        return repositoryLocalSource == null ? repositoryLocalSource = createRepositoryLocalSource() : repositoryLocalSource;
-//    }
-
-//    private SearchHistoryLocalSource createSearchHistoryLocalSource(){
-//        return new SearchHistoryLocalSource();
-//    }
-
-//    private RepositoryLocalSource createRepositoryLocalSource(){
-//        return new RepositoryLocalSource();
-//    }
 }

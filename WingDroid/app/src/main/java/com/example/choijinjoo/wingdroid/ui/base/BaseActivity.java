@@ -24,11 +24,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         initLayout();
+        loadData();
     }
 
     protected void showToastMessage(int messageId){
         Toast.makeText(this,getString(messageId),Toast.LENGTH_SHORT).show();
     }
+
+    protected void loadData(){}
 
 
 }

@@ -53,4 +53,9 @@ public class RepositoryDataSource {
     public Query repositoriesByCategory(Category category) {
         return FirebaseDatabase.getInstance().getReference("categories").child(category.getId()).child("repositories");
     }
+
+    public Query repositoriesByName(String name) {
+        return FirebaseDatabase.getInstance().getReference("repositories").orderByChild("name")
+                .startAt(name).endAt(name+"~");
+    }
 }

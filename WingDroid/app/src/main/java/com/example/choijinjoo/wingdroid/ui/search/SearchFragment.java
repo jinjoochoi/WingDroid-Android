@@ -1,44 +1,33 @@
 package com.example.choijinjoo.wingdroid.ui.search;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.SparseArray;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.SearchView;
-import android.widget.TextView;
+import android.content.Intent;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.RelativeLayout;
 
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.tools.StringUtils;
+import com.example.choijinjoo.wingdroid.model.Category;
+import com.example.choijinjoo.wingdroid.model.Repository;
+import com.example.choijinjoo.wingdroid.source.remote.firebase.CategoryDataSource;
+import com.example.choijinjoo.wingdroid.tools.FirebaseArray;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
-import com.jakewharton.rxbinding2.widget.RxSearchView;
-
-import java.util.concurrent.TimeUnit;
+import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
+import com.google.firebase.database.DatabaseError;
+import com.xiaofeng.flowlayoutmanager.FlowLayoutManager;
 
 import butterknife.BindView;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by choijinjoo on 2017. 8. 8..
  */
 
-public class SearchFragment extends BaseFragment {
-    private static final int KEY_SUGGESTIONS = 101;
-    private static final int KEY_HISTORY = 102;
-    private static final int KEY_RESULT = 103;
-
-    @BindView(R.id.searchView) SearchView searchView;
-    @BindView(R.id.frameLayout) FrameLayout frameLayout;
-    @BindView(R.id.txtvHint) TextView txtvHint;
-    @BindView(R.id.imgvEmoji) ImageView imgvEmoji;
-    @BindView(R.id.border) View border;
-
-    SparseArray<BaseFragment> fragments = new SparseArray<>();
-
-    interface FragmentInteractor {
-        void showResults(String str);
-    }
+public class SearchFragment extends BaseFragment implements FirebaseArray.OnChangedListener{
+    @BindView(R.id.recvCategories) RecyclerView recvCategories;
+    @BindView(R.id.recvSuggestions) RecyclerView recvSuggestions;
+    @BindView(R.id.btnSearch) RelativeLayout btnSearch;
+    CategorySearchAdapter categoryAdapter;
+    SuggestionsAdapter suggestionsAdapter;
 
 
     public static SearchFragment newInstance() {
@@ -52,72 +41,142 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     protected void initLayout() {
-        SearchSuggestionsFragment searchSuggestionsFragment = SearchSuggestionsFragment.newInstance();
-        SearchHistoryFragment searchHistoryFragment = SearchHistoryFragment.newInstance();
-        SearchResultFragment searchResultFragment = SearchResultFragment.newInstance();
+//        SearchSuggestionsFragment searchSuggestionsFragment = SearchSuggestionsFragment.newInstance();
+//        SearchHistoryFragment searchHistoryFragment = SearchHistoryFragment.newInstance();
+//        SearchResultFragment searchResultFragment = SearchResultFragment.newInstance();
+//
+//        fragments.put(KEY_SUGGESTIONS, searchSuggestionsFragment);
+//        fragments.put(KEY_HISTORY, searchHistoryFragment);
+//        fragments.put(KEY_RESULT, searchResultFragment);
 
-        fragments.put(KEY_SUGGESTIONS, searchSuggestionsFragment);
-        fragments.put(KEY_HISTORY, searchHistoryFragment);
-        fragments.put(KEY_RESULT, searchResultFragment);
+//        replaceFragment(fragments.get(KEY_SUGGESTIONS));
 
-        replaceFragment(fragments.get(KEY_SUGGESTIONS));
+//        RxSearchView.queryTextChanges(searchView)
+//                .debounce(1000, TimeUnit.MILLISECONDS)
+//                .filter(c -> !StringUtils.isEmpty(c))
+//                .map(c -> c.toString())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(this::showResults);
+//
+//
+//        searchView.setOnQueryTextFocusChangeListener(((view, focus) -> {
+//            if (focus) {
+//                hideSearchViewText();
+//                addFragment(searchHistoryFragment);
+//            } else {
+//                txtvHint.setVisibility(View.VISIBLE);
+//                imgvEmoji.setVisibility(View.VISIBLE);
+//                border.setVisibility(View.VISIBLE);
+//                getChildFragmentManager().popBackStack();
+//            }
+//
+//        }));
 
-        RxSearchView.queryTextChanges(searchView)
-                .debounce(1000, TimeUnit.MILLISECONDS)
-                .filter(c -> !StringUtils.isEmpty(c))
-                .map(c -> c.toString())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showResults);
 
+        categoryAdapter = new CategorySearchAdapter(getActivity(), position -> {
+//            categoryAdapter.getItem(position).selected();
+            categoryAdapter.notifyItemChanged(position);
+            moveToSearchResultActivity(categoryAdapter.getItem(position));
+        });
+        suggestionsAdapter = new SuggestionsAdapter(getActivity(),
+                position -> moveToDetailActivity(suggestionsAdapter.getItem(position)));
+        recvCategories.setAdapter(categoryAdapter);
+        recvCategories.setLayoutManager(new FlowLayoutManager());
 
-        searchView.setOnQueryTextFocusChangeListener(((view, focus) -> {
-            if (focus) {
-                hideSearchViewText();
-                addFragment(searchHistoryFragment);
-            } else {
-                txtvHint.setVisibility(View.VISIBLE);
-                imgvEmoji.setVisibility(View.VISIBLE);
-                border.setVisibility(View.VISIBLE);
-                getChildFragmentManager().popBackStack();
-            }
+        recvSuggestions.setLayoutManager(new GridLayoutManager(getActivity(),3, LinearLayoutManager.VERTICAL,false));
+        recvSuggestions.setAdapter(suggestionsAdapter);
 
-        }));
+        btnSearch.setOnClickListener(it -> {
+            Intent intent = SearchResultActivity.getStartIntent(getActivity());
+            startActivity(intent);
+            getActivity().overridePendingTransition(0,0);
+        });
 
     }
 
-    public void hideSearchViewText() {
-        txtvHint.setVisibility(View.GONE);
-        imgvEmoji.setVisibility(View.GONE);
-        border.setVisibility(View.GONE);
-        searchView.setIconified(false);
+    FirebaseArray categoryFBArray;
+
+    @Override
+    protected void loadData() {
+        super.loadData();
+        categoryFBArray = new FirebaseArray(CategoryDataSource.getInstance().categories());
+        categoryFBArray.setOnChangedListener(this);
+    }
+
+    private void moveToSearchResultActivity(Category category) {
+        Intent intent = SearchResultActivity.getStartIntent(getActivity(),category);
+        startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
+    }
+
+    private void moveToDetailActivity(Repository repository) {
+        Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(),repository);
+        startActivity(intent);
+    }
+
+    /*
+     *   Category DataSource change listener
+     */
+
+    @Override
+    public void onChildChanged(EventType type, int index, int oldIndex) {
+        switch (type){
+            case ADDED:
+                String id = categoryFBArray.getItem(index).getKey();
+                Category category = categoryFBArray.getItem(index).getValue(Category.class);
+                category.setId(id);
+                categoryAdapter.add(category);
+                break;
+            case CHANGED:
+                categoryAdapter.change(index,categoryFBArray.getItem(index).getValue(Category.class));
+                break;
+            case REMOVED:
+                categoryAdapter.remove(index);
+                break;
+            case MOVED:
+                categoryAdapter.notifyItemMoved(oldIndex, index);
+                break;
+            default:
+                throw new IllegalStateException("Incomplete case statement");
+        }
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        searchView.setOnQueryTextFocusChangeListener(null);
+    public void onDataChanged() {
+
     }
 
-    public void showResults(String str) {
-        searchView.setQuery(str, false);
-        FragmentInteractor fragment = (FragmentInteractor) addFragment(fragments.get(KEY_RESULT));
-        fragment.showResults(str);
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
     }
 
+    //    @Override
+//    public void onPause() {
+//        super.onPause();
+//        searchView.setOnQueryTextFocusChangeListener(null);
+//    }
+//
+//    public void showResults(String str) {
+//        searchView.setQuery(str, false);
+//        FragmentInteractor fragment = (FragmentInteractor) addFragment(fragments.get(KEY_RESULT));
+//        fragment.showResults(str);
+//    }
 
-    public Fragment addFragment(Fragment fragment) {
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
-        transaction.replace(R.id.frameLayout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-        return fragment;
-    }
-    public Fragment replaceFragment(Fragment fragment) {
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
-        transaction.replace(R.id.frameLayout, fragment);
-        transaction.commit();
-        return fragment;
-    }
+
+//    public Fragment addFragment(Fragment fragment) {
+//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
+//        transaction.replace(R.id.frameLayout, fragment);
+//        transaction.addToBackStack(null);
+//        transaction.commit();
+//        return fragment;
+//    }
+//    public Fragment replaceFragment(Fragment fragment) {
+//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
+//        transaction.replace(R.id.frameLayout, fragment);
+//        transaction.commit();
+//        return fragment;
+//    }
 }

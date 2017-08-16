@@ -27,9 +27,11 @@ import butterknife.BindView;
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-public class FeedFragment extends BaseFragment implements FirebaseArray.OnChangedListener{
-    @BindView(R.id.recvRepositories) RecyclerView recvRepositories;
-    @BindView(R.id.containerSort) LinearLayout containerSort;
+public class FeedFragment extends BaseFragment implements FirebaseArray.OnChangedListener {
+    @BindView(R.id.recvRepositories)
+    RecyclerView recvRepositories;
+    @BindView(R.id.containerSort)
+    LinearLayout containerSort;
     RepositoryAdapter adapter;
     Query ref;
     StaggeredGridLayoutManager layoutManager;
@@ -55,6 +57,7 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
     protected void initLayout() {
         if (ref != null) {
             layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
             recvRepositories.setLayoutManager(layoutManager);
             adapter = new RepositoryAdapter(getActivity(), this::moveToDetailActivity);
             recvRepositories.setAdapter(adapter);
@@ -84,11 +87,11 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
         SelectSortCriteriaDialog.getInstance(
                 getActivity(), it -> {
                     if (it == SortCriteria.RECENT) {
-                        layoutManager.setReverseLayout(false);
+//                        layoutManager.setReverseLayout(false);
                         firebaseArray = new FirebaseArray(ref.orderByChild("updatedAt"));
                     } else {
                         firebaseArray = new FirebaseArray(ref.orderByChild("star"));
-                        layoutManager.setReverseLayout(true);
+//                        layoutManager.setReverseLayout(true);
                     }
                     adapter.clear();
                     recvRepositories.setLayoutManager(layoutManager);
@@ -113,38 +116,52 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
         switch (type) {
             case ADDED:
                 // Category가 All인 경우에는  모든 Repository를 불러옵니다.
-                if(category.getName().equals("All")){
+                if (category.getName().equals("All")) {
                     Repository repository = firebaseArray.getItem(index).getValue(Repository.class);
                     repository.setId(firebaseArray.getItem(index).getKey());
                     adapter.add(repository);
-                    adapter.notifyItemInserted(index);
-                }else {
+                } else {
                     // Category가 있는 경우에는 Category DataReference에서 해당 카테고리를 가지고 있는 Repository의 id를 가져온 뒤,
                     // Repository DataReference에서 id로 Repository를 가져옵니다.
                     String repositoryId = (String) firebaseArray.getItem(index).getValue();
-                    RepositoryDataSource.getInstance().getRepositoryById(
-                            repositoryId, new RepositoryDataSource.RepositoryListener() {
-                                @Override
-                                public void added(Repository repository) {
-                                    repository.setId(repositoryId);
-                                    adapter.add(repository);
-                                    adapter.notifyItemInserted(index);
-                                }
-                                @Override
-                                public void empty() {
+                    RepositoryDataSource.getInstance().getRepositoryById(repositoryId, new RepositoryDataSource.RepositoryListener() {
+                        @Override
+                        public void added(Repository repository) {
+                            repository.setId(repositoryId);
+                            adapter.add(repository);
+                        }
 
-                                }
-                            });
+                        @Override
+                        public void empty() {
+
+                        }
+                    });
                 }
                 break;
             case CHANGED:
-                adapter.notifyItemChanged(index);
+                if (category.getName().equals("All")) {
+                    String repositoryId = (String) firebaseArray.getItem(index).getValue();
+                    RepositoryDataSource.getInstance().getRepositoryById(repositoryId, new RepositoryDataSource.RepositoryListener() {
+                        @Override
+                        public void added(Repository repository) {
+                            repository.setId(repositoryId);
+                            adapter.change(index, repository);
+                        }
+
+                        @Override
+                        public void empty() {
+
+                        }
+                    });
+                } else {
+                    adapter.change(index, firebaseArray.getItem(index).getValue(Repository.class));
+                }
                 break;
             case REMOVED:
-                adapter.notifyItemRemoved(index);
+                adapter.remove(index);
                 break;
             case MOVED:
-                adapter.notifyItemMoved(oldIndex, index);
+                    adapter.notifyItemMoved(oldIndex, index);
                 break;
             default:
                 throw new IllegalStateException("Incomplete case statement");
@@ -153,6 +170,7 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
 
     @Override
     public void onDataChanged() {
+        layoutManager.setReverseLayout(true);
 
     }
 
