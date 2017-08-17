@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
+import com.example.choijinjoo.wingdroid.model.SortCriteria;
 import com.example.choijinjoo.wingdroid.source.remote.firebase.RepositoryDataSource;
 import com.example.choijinjoo.wingdroid.source.remote.firebase.UserDataSource;
 import com.example.choijinjoo.wingdroid.tools.FirebaseArray;
@@ -33,6 +34,9 @@ public class BookMarkFragment extends BaseFragment implements FirebaseArray.OnCh
     BookMarkAdapter adapter;
     FirebaseArray firebaseArray;
 
+    private SortCriteria order_by;
+
+
     public static BookMarkFragment newInstance() {
         return new BookMarkFragment();
     }
@@ -55,6 +59,7 @@ public class BookMarkFragment extends BaseFragment implements FirebaseArray.OnCh
 
     @Override
     protected void loadData() {
+        order_by = SortCriteria.RECENT;
         if(FirebaseAuth.getInstance().getCurrentUser() != null){
             Query query = UserDataSource.getInstance().getBookmark(FirebaseAuth.getInstance().getCurrentUser().getUid());
             firebaseArray = new FirebaseArray(query);
@@ -75,7 +80,7 @@ public class BookMarkFragment extends BaseFragment implements FirebaseArray.OnCh
     }
 
     private void showSelectSortCriteriaDialog() {
-        SelectSortCriteriaDialog.getInstance(getActivity(),
+        SelectSortCriteriaDialog.getInstance(getActivity(), order_by,
                 criteria -> {
 
                 }).show();

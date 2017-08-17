@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Category;
@@ -32,10 +33,9 @@ import butterknife.BindView;
  */
 
 public class FeedFragment extends BaseFragment implements FirebaseArray.OnChangedListener {
-    @BindView(R.id.recvRepositories)
-    RecyclerView recvRepositories;
-    @BindView(R.id.containerSort)
-    LinearLayout containerSort;
+    @BindView(R.id.recvRepositories) RecyclerView recvRepositories;
+    @BindView(R.id.containerSort) LinearLayout containerSort;
+    @BindView(R.id.txtvSort) TextView txtvSort;
     RepositoryAdapter adapter;
     Query ref;
     StaggeredGridLayoutManager layoutManager;
@@ -47,8 +47,7 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
 
     private static final String KEY_CATEGORY = "category";
 
-
-    private Enum order_by;
+    private SortCriteria order_by;
 
     public static FeedFragment newInstance(Category category) {
         FeedFragment fragment = new FeedFragment();
@@ -97,15 +96,17 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
 
     private void showSelectSortCriteriaDialog(View view) {
         SelectSortCriteriaDialog.getInstance(
-                getActivity(), it -> {
+                getActivity(), order_by, it -> {
                     firebaseArray.cleanup();
                     if (it == SortCriteria.RECENT) {
                         order_by = SortCriteria.RECENT;
                         firebaseArray = new FirebaseArray(ref.orderByChild("updatedAt"));
+                        txtvSort.setText(getString(R.string.order_by_recent));
                     } else {
                         order_by = SortCriteria.STAR;
                         firebaseArray = new FirebaseArray(ref.orderByChild("star"));
                         resultOrderByStar = new ArrayList();
+                        txtvSort.setText(getString(R.string.order_by_star));
                     }
                     adapter.clear();
                     firebaseArray.setOnChangedListener(this);

@@ -1,7 +1,6 @@
 package com.example.choijinjoo.wingdroid.ui;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
@@ -20,13 +19,14 @@ public class SelectSortCriteriaDialog extends BaseBottomSheetDialog implements V
     @BindView(R.id.txtvRecent) TextView txtvRecent;
     @BindView(R.id.txtvStar) TextView txtvStar;
     CriteriaSelectedListener listener;
+    SortCriteria order_by;
 
     public interface CriteriaSelectedListener{
         void seleted(SortCriteria criteria);
     }
 
-    public static SelectSortCriteriaDialog getInstance(Context context, CriteriaSelectedListener listener){
-        return new SelectSortCriteriaDialog(context,listener);
+    public static SelectSortCriteriaDialog getInstance(Context context, SortCriteria order_by, CriteriaSelectedListener listener){
+        return new SelectSortCriteriaDialog(context,order_by,listener);
     }
 
     @Override
@@ -34,15 +34,20 @@ public class SelectSortCriteriaDialog extends BaseBottomSheetDialog implements V
         return R.layout.dialog_select_sort_criteria;
     }
 
-    public SelectSortCriteriaDialog(@NonNull Context context, CriteriaSelectedListener listener) {
+    public SelectSortCriteriaDialog(@NonNull Context context, SortCriteria order_by, CriteriaSelectedListener listener) {
         super(context);
         this.listener = listener;
+        this.order_by = order_by;
+        initLayout();
     }
 
     @Override
     protected void initLayout() {
         txtvRecent.setOnClickListener(this);
         txtvStar.setOnClickListener(this);
+        txtvStar.setSelected(order_by == SortCriteria.STAR);
+        txtvRecent.setSelected(order_by == SortCriteria.RECENT);
+
         setCancelable(true);
     }
 

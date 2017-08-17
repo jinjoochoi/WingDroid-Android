@@ -25,6 +25,5 @@ public abstract class BaseBottomSheetDialog extends BottomSheetDialog {
         View view = LayoutInflater.from(context).inflate(getLayoutId(), null);
         setContentView(view);
         ButterKnife.bind(this,view);
-        initLayout();
     }
 }

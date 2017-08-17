@@ -43,6 +43,7 @@ public class CategoryFilterDialog extends BaseBottomSheetDialog {
     public CategoryFilterDialog(@NonNull Context context, CategorySelectedListener listener) {
         super(context);
         this.listener = listener;
+        initLayout();
 
     }
 

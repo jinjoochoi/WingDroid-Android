@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.choijinjoo.wingdroid.R;
+import com.example.choijinjoo.wingdroid.model.SortCriteria;
 import com.example.choijinjoo.wingdroid.model.event.Event;
 import com.example.choijinjoo.wingdroid.model.event.EventType;
 import com.example.choijinjoo.wingdroid.model.event.Issue;
@@ -37,6 +38,8 @@ public class NewsFragment extends BaseFragment {
     @BindView(R.id.imgvFilter) ImageView imgvFilter;
     NewAdapter newAdapter;
     EventAdapter eventAdapter;
+
+    private SortCriteria order_by;
 
     public static NewsFragment newInstance() {
         return new NewsFragment();
@@ -76,6 +79,12 @@ public class NewsFragment extends BaseFragment {
                 .subscribe(events -> eventAdapter.setItems(events));
     }
 
+    @Override
+    protected void loadData() {
+        super.loadData();
+        order_by = SortCriteria.RECENT;
+    }
+
     private void moveToWebViewActivity(int position){
         Intent intent = WebViewAcitivty.getStartIntent(getActivity(),eventAdapter.getItem(position).getEvent().getMainUrl());
         startActivity(intent);
@@ -83,7 +92,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void showSelectSortCriteriaDialog() {
-        SelectSortCriteriaDialog.getInstance(getActivity(),
+        SelectSortCriteriaDialog.getInstance(getActivity(), order_by,
                 criteria -> {
 
                 }).show();
