@@ -31,6 +31,9 @@
     <dimen name="bookmark_img_height">110dp</dimen>
     <dimen name="bookmark_padding">10dp</dimen>
 
+    <!-- Book mark dimen -->
+    <dimen name="search_result_height">140dp</dimen>
+
     <!-- Event dimen -->
     <dimen name="news_new_height">120dp</dimen>
     <dimen name="news_issue_height">110dp</dimen>

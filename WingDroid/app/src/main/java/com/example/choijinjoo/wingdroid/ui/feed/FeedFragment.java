@@ -21,6 +21,9 @@ import com.google.firebase.database.Query;
 
 import org.parceler.Parcels;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import butterknife.BindView;
 
 /**
@@ -86,15 +89,14 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
     private void showSelectSortCriteriaDialog(View view) {
         SelectSortCriteriaDialog.getInstance(
                 getActivity(), it -> {
+                    firebaseArray.cleanup();
                     if (it == SortCriteria.RECENT) {
-//                        layoutManager.setReverseLayout(false);
                         firebaseArray = new FirebaseArray(ref.orderByChild("updatedAt"));
                     } else {
                         firebaseArray = new FirebaseArray(ref.orderByChild("star"));
-//                        layoutManager.setReverseLayout(true);
                     }
                     adapter.clear();
-                    recvRepositories.setLayoutManager(layoutManager);
+//                    recvRepositories.setLayoutManager(layoutManager);
                     firebaseArray.setOnChangedListener(this);
                 }).show();
     }
@@ -111,6 +113,8 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
      *  Repository DataReference change listener
      */
 
+    Queue resultOrderByStar = new LinkedList();
+
     @Override
     public void onChildChanged(EventType type, int index, int oldIndex) {
         switch (type) {
@@ -119,7 +123,8 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
                 if (category.getName().equals("All")) {
                     Repository repository = firebaseArray.getItem(index).getValue(Repository.class);
                     repository.setId(firebaseArray.getItem(index).getKey());
-                    adapter.add(repository);
+                    resultOrderByStar.add(repository);
+                    adapter.add(repository,index);
                 } else {
                     // Category가 있는 경우에는 Category DataReference에서 해당 카테고리를 가지고 있는 Repository의 id를 가져온 뒤,
                     // Repository DataReference에서 id로 Repository를 가져옵니다.
@@ -170,7 +175,6 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
 
     @Override
     public void onDataChanged() {
-        layoutManager.setReverseLayout(true);
 
     }
 

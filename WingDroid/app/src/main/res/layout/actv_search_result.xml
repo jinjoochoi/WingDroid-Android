@@ -4,10 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <SearchView
-        android:id="@+id/searchView"
+    <RelativeLayout
+        android:id="@+id/btnSearch"
         android:layout_width="match_parent"
-        android:layout_height="43dp" />
+        android:layout_height="wrap_content">
+
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="43dp" />
+    </RelativeLayout>
 
     <include layout="@layout/border" />
 

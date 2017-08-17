@@ -5,6 +5,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Category;
@@ -26,6 +27,7 @@ public class SearchFragment extends BaseFragment implements FirebaseArray.OnChan
     @BindView(R.id.recvCategories) RecyclerView recvCategories;
     @BindView(R.id.recvSuggestions) RecyclerView recvSuggestions;
     @BindView(R.id.btnSearch) RelativeLayout btnSearch;
+    @BindView(R.id.searchView) SearchView searchView;
     CategorySearchAdapter categoryAdapter;
     SuggestionsAdapter suggestionsAdapter;
 
@@ -41,40 +43,7 @@ public class SearchFragment extends BaseFragment implements FirebaseArray.OnChan
 
     @Override
     protected void initLayout() {
-//        SearchSuggestionsFragment searchSuggestionsFragment = SearchSuggestionsFragment.newInstance();
-//        SearchHistoryFragment searchHistoryFragment = SearchHistoryFragment.newInstance();
-//        SearchResultFragment searchResultFragment = SearchResultFragment.newInstance();
-//
-//        fragments.put(KEY_SUGGESTIONS, searchSuggestionsFragment);
-//        fragments.put(KEY_HISTORY, searchHistoryFragment);
-//        fragments.put(KEY_RESULT, searchResultFragment);
-
-//        replaceFragment(fragments.get(KEY_SUGGESTIONS));
-
-//        RxSearchView.queryTextChanges(searchView)
-//                .debounce(1000, TimeUnit.MILLISECONDS)
-//                .filter(c -> !StringUtils.isEmpty(c))
-//                .map(c -> c.toString())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(this::showResults);
-//
-//
-//        searchView.setOnQueryTextFocusChangeListener(((view, focus) -> {
-//            if (focus) {
-//                hideSearchViewText();
-//                addFragment(searchHistoryFragment);
-//            } else {
-//                txtvHint.setVisibility(View.VISIBLE);
-//                imgvEmoji.setVisibility(View.VISIBLE);
-//                border.setVisibility(View.VISIBLE);
-//                getChildFragmentManager().popBackStack();
-//            }
-//
-//        }));
-
-
         categoryAdapter = new CategorySearchAdapter(getActivity(), position -> {
-//            categoryAdapter.getItem(position).selected();
             categoryAdapter.notifyItemChanged(position);
             moveToSearchResultActivity(categoryAdapter.getItem(position));
         });
@@ -91,6 +60,7 @@ public class SearchFragment extends BaseFragment implements FirebaseArray.OnChan
             startActivity(intent);
             getActivity().overridePendingTransition(0,0);
         });
+        searchView.setIconified(false);
 
     }
 
@@ -151,32 +121,4 @@ public class SearchFragment extends BaseFragment implements FirebaseArray.OnChan
 
     }
 
-    //    @Override
-//    public void onPause() {
-//        super.onPause();
-//        searchView.setOnQueryTextFocusChangeListener(null);
-//    }
-//
-//    public void showResults(String str) {
-//        searchView.setQuery(str, false);
-//        FragmentInteractor fragment = (FragmentInteractor) addFragment(fragments.get(KEY_RESULT));
-//        fragment.showResults(str);
-//    }
-
-
-//    public Fragment addFragment(Fragment fragment) {
-//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-//        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
-//        transaction.replace(R.id.frameLayout, fragment);
-//        transaction.addToBackStack(null);
-//        transaction.commit();
-//        return fragment;
-//    }
-//    public Fragment replaceFragment(Fragment fragment) {
-//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-//        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
-//        transaction.replace(R.id.frameLayout, fragment);
-//        transaction.commit();
-//        return fragment;
-//    }
 }

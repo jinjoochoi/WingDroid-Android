@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/bookmark_height"
+    android:layout_height="@dimen/search_result_height"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/news_padding">
@@ -33,6 +33,7 @@
             android:id="@+id/txtvDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLength="30"
             android:layout_below="@id/txtvName"
             tools:text="this is description!!" />
 

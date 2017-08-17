@@ -49,6 +49,7 @@ public class SearchResultActivity extends BaseActivity  {
     @BindView(R.id.containerEmpty) RelativeLayout containerEmpty;
     @BindView(R.id.recvResults) RecyclerView recvResults;
     @BindView(R.id.recvHistories) RecyclerView recvHistories;
+    @BindView(R.id.btnSearch) RelativeLayout btnSearch;
     FirebaseArray resultFBArray;
     FirebaseArray resultHistoryFBArray;
 
@@ -104,6 +105,15 @@ public class SearchResultActivity extends BaseActivity  {
                     }
                 });
         recvHistories.setAdapter(searchHistoryAdapter);
+        btnSearch.setOnClickListener(it -> {
+            searchView.onActionViewExpanded();
+        });
+        searchView.setOnQueryTextFocusChangeListener(((view, b) -> {
+            if(!view.isFocused()) {
+                containerHistory.setVisibility(View.VISIBLE);
+                containerResult.setVisibility(View.GONE);
+            }
+        }));
 
         // result container
         resultAdapter = new SearchResultAdapter(this,this::moveToDetailActivity);
@@ -112,7 +122,10 @@ public class SearchResultActivity extends BaseActivity  {
         recvResults.setAdapter(resultAdapter);
 
         // result history container
-        recvHistories.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        LinearLayoutManager linearLayout = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        linearLayout.setStackFromEnd(true);
+        linearLayout.setReverseLayout(true);
+        recvHistories.setLayoutManager(linearLayout);
         recvHistories.setHasFixedSize(true);
 
 
@@ -131,16 +144,12 @@ public class SearchResultActivity extends BaseActivity  {
         Query query = RepositoryDataSource.getInstance().repositoriesByName(name);
         resultFBArray = new FirebaseArray(query);
         resultFBArray.setOnChangedListener(resultArrayListener);
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(firebaseUser != null) {
-            UserDataSource.getInstance().addSearchHistory(firebaseUser.getUid(),
-                    new SearchHistory(name, Calendar.getInstance().getTime(), SEARCH_BY_NAME));
-        }
     }
 
     private void searchWithCategory(Category category) {
         searchType = SEARCH_BY_CATEGORY;
         searchView.onActionViewExpanded();
+
         searchView.setQuery(category.getName(), false);
         containerHistory.setVisibility(View.GONE);
         containerResult.setVisibility(View.VISIBLE);
@@ -156,6 +165,13 @@ public class SearchResultActivity extends BaseActivity  {
 
 
     private void moveToDetailActivity(int position){
+        if(searchType == SEARCH_BY_NAME){
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            if(firebaseUser != null) {
+                UserDataSource.getInstance().addSearchHistory(firebaseUser.getUid(),
+                        new SearchHistory(searchView.getQuery().toString(), Calendar.getInstance().getTime(), SEARCH_BY_NAME));
+            }
+        }
         Intent intent = RepositoryDetailActivity.getStartIntent(this, resultAdapter.getItem(position));
         startActivity(intent);
     }
@@ -172,7 +188,6 @@ public class SearchResultActivity extends BaseActivity  {
         Query query = UserDataSource.getInstance().getSearchHistories(FirebaseAuth.getInstance().getCurrentUser().getUid());
         resultHistoryFBArray = new FirebaseArray(query);
         resultHistoryFBArray.setOnChangedListener(resultHistoryArrayListener);
-
     }
 
 
@@ -202,7 +217,6 @@ public class SearchResultActivity extends BaseActivity  {
                                         repository.setId(repositoryId);
                                         resultAdapter.add(repository);
                                     }
-
                                     @Override
                                     public void empty() {
 

@@ -50,6 +50,7 @@ public class UserDataSource {
 
     public void deleteSearchHistory(String userId, String historyId) {
         FirebaseDatabase.getInstance().getReference().child("users")
+                .child(userId)
                 .child("searchHistories")
                 .child(historyId)
                 .removeValue();

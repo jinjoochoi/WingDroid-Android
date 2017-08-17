@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
-import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.ui.base.BaseViewHolder;
 
 import org.apmem.tools.layouts.FlowLayout;
@@ -34,7 +33,7 @@ public class SearchResultViewHolder extends BaseViewHolder<Repository> {
                 .into(imgvPreview);
         txtvName.setText(item.getName());
         txtvStar.setText(item.getFormattedStarString());
-        txtvDescription.setText(item.getDescription());
+        txtvDescription.setText(item.getDescription().length() > 30 ? item.getDescription().substring(0,29) + "..." : item.getDescription());
 
         for (String tag : item.getTags()) {
             TextView txtvTag = LayoutInflater.from(context).inflate(R.layout.item_tag, null, false).findViewById(R.id.txtvTag);
