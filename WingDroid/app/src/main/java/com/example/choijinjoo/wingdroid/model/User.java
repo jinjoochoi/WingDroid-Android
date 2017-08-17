@@ -16,6 +16,7 @@ public class User {
     String name;
     String email;
     String photoUrl;
+    String fcmToken;
     List<String> bookmarks;
 
     public User() {}
@@ -60,17 +61,25 @@ public class User {
         this.bookmarks = bookmarks;
     }
 
+    public String getFcmToken() { return fcmToken; }
+
+    public void setFcmToken(String fcmToken) { this.fcmToken = fcmToken; }
+
     public User(String name) {
         this.name = name;
     }
+
+
+
     /*
      *  Copy Constructor
      */
 
-    public User(FirebaseUser firebaseUser) {
+    public User(FirebaseUser firebaseUser, String fcmToken) {
         this.id = firebaseUser.getUid();
         this.name = firebaseUser.getDisplayName();
         this.email = firebaseUser.getEmail();
+        this.fcmToken = fcmToken;
         if (firebaseUser.getPhotoUrl() != null)
             this.photoUrl = firebaseUser.getPhotoUrl().toString();
     }

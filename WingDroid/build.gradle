@@ -52,6 +52,8 @@ ext {
     firebase_crash_version = '10.0.1'
     firebase_database_version = '10.0.1'
     firebase_ui_database_version = '1.1.1'
+    firebase_messaging_version = '10.0.1'
+
 
     retrofit_version = '2.3.0'
     retrofit_gson_version = '2.1.0'

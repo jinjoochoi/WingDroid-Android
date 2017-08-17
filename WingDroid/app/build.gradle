@@ -52,19 +52,22 @@ dependencies {
     compile "org.apmem.tools:layouts:$rootProject.flowlayout_version"
     compile "com.xiaofeng.android:flowlayoutmanager:$rootProject.flowlayoutmanager_version"
 
-    compile "com.google.firebase:firebase-auth:$rootProject.firebase_auth_version"
-    compile "com.google.firebase:firebase-database:$rootProject.firebase_database_version"
 
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit_version"
     compile "com.squareup.retrofit2:adapter-rxjava2:$rootProject.rxjava2_adapter_version"
     compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofit_gson_version"
 
+    compile "com.google.firebase:firebase-auth:$rootProject.firebase_auth_version"
+    compile "com.google.firebase:firebase-database:$rootProject.firebase_database_version"
     compile "com.google.firebase:firebase-crash:$rootProject.firebase_crash_version"
     compile "com.firebaseui:firebase-ui-database:$rootProject.firebase_ui_database_version"
+    compile "com.google.firebase:firebase-messaging:$rootProject.firebase_messaging_version"
+
 
     compile "com.facebook.stetho:stetho-okhttp3:$rootProject.stetho_okhttp3_version"
     compile "com.squareup.okhttp3:okhttp:$rootProject.okhttp3_version"
     compile "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttp3_logging_interceptor"
+
 
 
     testCompile 'junit:junit:4.12'

@@ -84,12 +84,13 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void saveUser(){
-        User me = new User(FirebaseAuth.getInstance().getCurrentUser());
+        User me = new User(FirebaseAuth.getInstance().getCurrentUser(),
+                SharedPreferenceHelper.getInstance().getStringValue(this, SharedPreferenceHelper.Config.FCM_TOKEN,""));
         UserDataSource.getInstance().addUser(me);
     }
 
     private void signInWithCredential() {
-        String token = SharedPreferenceHelper.getStringValue(this, AUTH_TOKEN, "");
+        String token = SharedPreferenceHelper.getInstance().getStringValue(this, AUTH_TOKEN, "");
         AuthCredential credential = GithubAuthProvider.getCredential(token);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this,
