@@ -224,7 +224,6 @@ public class SearchResultActivity extends BaseActivity  {
                                 });
                     } else {
                         // name으로 검색한 경우
-                        resultAdapter.clear();
                         Repository repository = resultFBArray.getItem(index).getValue(Repository.class);
                         repository.setId(resultFBArray.getItem(index).getKey());
                         resultAdapter.add(repository);

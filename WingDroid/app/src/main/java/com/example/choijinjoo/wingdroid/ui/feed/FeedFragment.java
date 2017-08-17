@@ -21,8 +21,9 @@ import com.google.firebase.database.Query;
 
 import org.parceler.Parcels;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -41,7 +42,13 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
     Category category;
     FirebaseArray firebaseArray;
 
+    List resultOrderByStar = new ArrayList();
+
+
     private static final String KEY_CATEGORY = "category";
+
+
+    private Enum order_by;
 
     public static FeedFragment newInstance(Category category) {
         FeedFragment fragment = new FeedFragment();
@@ -79,6 +86,8 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
                 ref = RepositoryDataSource.getInstance().repositoriesByCategory(category);
             firebaseArray = new FirebaseArray(ref);
         }
+        order_by = SortCriteria.RECENT;
+
     }
 
     private void moveToDetailActivity(int position) {
@@ -91,12 +100,14 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
                 getActivity(), it -> {
                     firebaseArray.cleanup();
                     if (it == SortCriteria.RECENT) {
+                        order_by = SortCriteria.RECENT;
                         firebaseArray = new FirebaseArray(ref.orderByChild("updatedAt"));
                     } else {
+                        order_by = SortCriteria.STAR;
                         firebaseArray = new FirebaseArray(ref.orderByChild("star"));
+                        resultOrderByStar = new ArrayList();
                     }
                     adapter.clear();
-//                    recvRepositories.setLayoutManager(layoutManager);
                     firebaseArray.setOnChangedListener(this);
                 }).show();
     }
@@ -113,18 +124,21 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
      *  Repository DataReference change listener
      */
 
-    Queue resultOrderByStar = new LinkedList();
 
     @Override
     public void onChildChanged(EventType type, int index, int oldIndex) {
         switch (type) {
             case ADDED:
+                Repository repository = null;
                 // Category가 All인 경우에는  모든 Repository를 불러옵니다.
                 if (category.getName().equals("All")) {
-                    Repository repository = firebaseArray.getItem(index).getValue(Repository.class);
+                    repository = firebaseArray.getItem(index).getValue(Repository.class);
                     repository.setId(firebaseArray.getItem(index).getKey());
-                    resultOrderByStar.add(repository);
-                    adapter.add(repository,index);
+
+                    if(order_by == SortCriteria.RECENT)
+                        adapter.add(repository);
+                    else
+                        resultOrderByStar.add(index, repository);
                 } else {
                     // Category가 있는 경우에는 Category DataReference에서 해당 카테고리를 가지고 있는 Repository의 id를 가져온 뒤,
                     // Repository DataReference에서 id로 Repository를 가져옵니다.
@@ -133,7 +147,10 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
                         @Override
                         public void added(Repository repository) {
                             repository.setId(repositoryId);
-                            adapter.add(repository);
+                            if(order_by == SortCriteria.RECENT)
+                                adapter.add(repository);
+                            else
+                                resultOrderByStar.add(index, repository);
                         }
 
                         @Override
@@ -149,8 +166,12 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
                     RepositoryDataSource.getInstance().getRepositoryById(repositoryId, new RepositoryDataSource.RepositoryListener() {
                         @Override
                         public void added(Repository repository) {
-                            repository.setId(repositoryId);
-                            adapter.change(index, repository);
+                            if(order_by == SortCriteria.RECENT) {
+                                repository.setId(repositoryId);
+                                adapter.change(index, repository);
+                            }else{
+                                resultOrderByStar.set(index,repository);
+                            }
                         }
 
                         @Override
@@ -159,11 +180,19 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
                         }
                     });
                 } else {
-                    adapter.change(index, firebaseArray.getItem(index).getValue(Repository.class));
+                    if(order_by == SortCriteria.RECENT) {
+                        adapter.change(index, firebaseArray.getItem(index).getValue(Repository.class));
+                    }else{
+                        resultOrderByStar.set(index,firebaseArray.getItem(index).getValue(Repository.class));
+                    }
                 }
                 break;
             case REMOVED:
-                adapter.remove(index);
+                if(order_by == SortCriteria.RECENT) {
+                    adapter.remove(index);
+                }else{
+                    resultOrderByStar.remove(index);
+                }
                 break;
             case MOVED:
                     adapter.notifyItemMoved(oldIndex, index);
@@ -175,7 +204,12 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
 
     @Override
     public void onDataChanged() {
+        if(order_by == SortCriteria.STAR) {
+            List adapterItems = resultOrderByStar;
+            Collections.reverse(adapterItems);
+            adapter.setItems(adapterItems);
 
+        }
     }
 
     @Override
