@@ -72,6 +72,7 @@ public class SharedPreferenceHelper {
         public static String LOADED_REPOSITORY = "loaded_repository";
         public static String LOADED_TAG = "loaded_tag";
         public static String LOAD_UPDATEDAT = "load_updatedat";
+        public static String LOAD= "load";
     }
 
 }

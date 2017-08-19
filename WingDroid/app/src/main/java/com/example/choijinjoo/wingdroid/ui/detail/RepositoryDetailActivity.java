@@ -34,9 +34,12 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.txtvName) TextView txtvName;
     @BindView(R.id.txtvDescription) TextView txtvDescription;
     @BindView(R.id.btnIssue) LinearLayout btnIssue;
-    @BindView(R.id.txtvIssueCount) TextView txtvIssueCount;
+    @BindView(R.id.txtvIssue) TextView txtvIssueCount;
     @BindView(R.id.txtvStar) TextView txtvStar;
+    @BindView(R.id.txtvInnerStar) TextView txtvInnerStar;
     @BindView(R.id.txtvAuthor) TextView txtvAuthor;
+    @BindView(R.id.txtvWatch) TextView txtvWatch;
+    @BindView(R.id.txtvFork) TextView txtvFork;
     @BindView(R.id.imgvGithub) ImageView imgvGithub;
     @BindView(R.id.recvSimmilarLibs) RecyclerView recvSimmilarLibs;
     RepositoryRepository repositoryRepository;
@@ -60,13 +63,12 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     protected void initLayout() {
         repositoryRepository = new RepositoryRepository(this);
         tagRepository = new TagRepository(this);
-        String repoId = getIntent().getStringExtra("repoId");
-        loadData(repoId);
-
         recvSimmilarLibs.setLayoutManager(new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false));
         simmilarsAdapter = new SimmilarsAdapter(this, position -> moveToDetailActivity(simmilarsAdapter.getItem(position)));
         recvSimmilarLibs.setAdapter(simmilarsAdapter);
         imgvBookMark.setOnClickListener(this);
+        String repoId = getIntent().getStringExtra("repoId");
+        loadData(repoId);
     }
 
     protected void loadData(String repoId) {
@@ -79,8 +81,13 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
         btnIssue.setOnClickListener(it -> showWebViewActivity(repository.getIssueUrl()));
         imgvGithub.setOnClickListener(it -> showWebViewActivity(repository.getGit()));
         txtvStar.setText(repository.getFormattedStarString());
+        txtvInnerStar.setText(repository.getFormattedStarString());
         txtvIssueCount.setText(Integer.toString(repository.getIssue()));
         imgvBookMark.setSelected(repository.getBookmark());
+        txtvWatch.setText(String.valueOf(repository.getWatch()));
+        txtvFork.setText(String.valueOf(repository.getFork()));
+
+        simmilarsAdapter.setItems(repositoryRepository.getRelatedRepo(repository));
         addClick();
     }
 
@@ -95,6 +102,8 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
             tag.click();
             tagRepository.updateTag(tag);
         }
+        repository.click();
+        repositoryRepository.updateRepository(repository);
     }
 
 

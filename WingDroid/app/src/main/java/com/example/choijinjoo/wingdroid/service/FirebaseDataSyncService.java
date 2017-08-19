@@ -3,6 +3,7 @@ package com.example.choijinjoo.wingdroid.service;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
 import com.example.choijinjoo.wingdroid.tools.IntentService;
 
 import io.reactivex.Observable;
@@ -10,6 +11,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper.Config.LOAD;
 
 /**
  * Created by choijinjoo on 2017. 8. 17..
@@ -43,6 +45,7 @@ public class FirebaseDataSyncService extends IntentService {
     private void sendBRToSplashActv(){
         Intent receiverIntent = new Intent("initial-load");
         receiverIntent.putExtra("result", RESULT_OK);
+        SharedPreferenceHelper.getInstance().putBooleanValue(this,LOAD,true);
         LocalBroadcastManager.getInstance(this).sendBroadcast(receiverIntent);
     }
 

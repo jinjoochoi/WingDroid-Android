@@ -17,7 +17,7 @@ public class WingDroidFCMService extends FirebaseMessagingService{
         super.onMessageReceived(remoteMessage);
         String body = "";
         if (remoteMessage.getNotification() != null) {
-             body = remoteMessage.getNotification().getBody();
+             body = remoteMessage.getNotification().getTitle();
         }
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())

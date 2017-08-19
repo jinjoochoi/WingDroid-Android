@@ -11,9 +11,7 @@ import com.example.choijinjoo.wingdroid.service.DataSyncResultReceiver;
 import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 
-import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper.Config.LOADED_CATEGORY;
-import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper.Config.LOADED_REPOSITORY;
-import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper.Config.LOADED_TAG;
+import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper.Config.LOAD;
 
 /**
  * Created by choijinjoo on 2017. 8. 18..
@@ -33,12 +31,6 @@ public class SplashActivity extends BaseActivity {
 
     }
 
-    private boolean isDataLoaded() {
-        return SharedPreferenceHelper.getInstance().getBooleanValue(this, LOADED_CATEGORY, false) &&
-                SharedPreferenceHelper.getInstance().getBooleanValue(this, LOADED_REPOSITORY, false) &&
-                SharedPreferenceHelper.getInstance().getBooleanValue(this, LOADED_TAG, false);
-    }
-
     @Override
     protected void loadData() {
         super.loadData();
@@ -48,6 +40,10 @@ public class SplashActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
+        if(SharedPreferenceHelper.getInstance().getBooleanValue(this,LOAD,false)){
+            moveToNextActivity();
+        }
+
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(messageReceiver,
                         new IntentFilter("initial-load"));
@@ -57,12 +53,16 @@ public class SplashActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(RESULT_OK == intent.getIntExtra("result",-1)){
-                Intent startIntent = new Intent(SplashActivity.this, LoginActivity.class);
-                startActivity(startIntent);
-                finish();
+                moveToNextActivity();
             }
         }
     };
+
+    private void moveToNextActivity(){
+        Intent startIntent = new Intent(SplashActivity.this, LoginActivity.class);
+        startActivity(startIntent);
+        finish();
+    }
 
     @Override
     protected void onPause() {

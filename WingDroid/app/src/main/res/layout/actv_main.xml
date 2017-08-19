@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomNav"/>
 
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
@@ -19,5 +20,9 @@
         app:menu="@menu/bottom_nav_items"
         app:layout_behavior="tech.thdev.app.view.BottomNavigationBehavior"
         android:layout_height="wrap_content"/>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_above="@id/bottomNav"
+        android:background="@color/border"/>
 </RelativeLayout>

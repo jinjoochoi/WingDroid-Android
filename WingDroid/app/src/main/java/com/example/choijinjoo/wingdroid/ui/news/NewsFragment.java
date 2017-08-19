@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.choijinjoo.wingdroid.R;
+import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.model.SortCriteria;
 import com.example.choijinjoo.wingdroid.model.event.Event;
 import com.example.choijinjoo.wingdroid.model.event.EventType;
@@ -19,6 +20,7 @@ import com.example.choijinjoo.wingdroid.ui.SelectSortCriteriaDialog;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
 import com.example.choijinjoo.wingdroid.ui.detail.WebViewAcitivty;
+import com.j256.ormlite.dao.Dao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +34,13 @@ import io.reactivex.schedulers.Schedulers;
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-public class NewsFragment extends BaseFragment {
+public class NewsFragment extends BaseFragment implements Dao.DaoObserver{
     @BindView(R.id.recvNew) RecyclerView recvNew;
     @BindView(R.id.recvEvents) RecyclerView recvEvents;
     @BindView(R.id.imgvFilter) ImageView imgvFilter;
     NewAdapter newAdapter;
     EventAdapter eventAdapter;
+    RepositoryRepository repositoryRepository;
 
     private SortCriteria order_by;
 
@@ -64,14 +67,10 @@ public class NewsFragment extends BaseFragment {
         recvEvents.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recvEvents.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
         recvEvents.setAdapter(eventAdapter);
-
-        // TODO: 2017. 8. 8. data load는 onCrateView() 시점으로 이동
-//        makeMockRepositories()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(news-> newAdapter.setItems(news));
-
         imgvFilter.setOnClickListener(it -> showSelectSortCriteriaDialog());
+
+        repositoryRepository = new RepositoryRepository(getContext());
+        repositoryRepository.registerDaoObserver(this);
 
         makeMockEvents()
                 .subscribeOn(Schedulers.io())
@@ -83,6 +82,7 @@ public class NewsFragment extends BaseFragment {
     protected void loadData() {
         super.loadData();
         order_by = SortCriteria.RECENT;
+        newAdapter.setItems(repositoryRepository.getRecentRepo());
     }
 
     private void moveToWebViewActivity(int position){
@@ -121,6 +121,14 @@ public class NewsFragment extends BaseFragment {
         return Observable.just(events);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        repositoryRepository.unregisterDaoObserver(this);
+    }
 
-
+    @Override
+    public void onChange() {
+        loadData();
+    }
 }

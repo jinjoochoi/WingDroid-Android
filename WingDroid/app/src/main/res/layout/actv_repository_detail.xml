@@ -13,6 +13,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
+            android:scrollbars="none"
             android:layout_height="match_parent">
 
             <LinearLayout
@@ -26,23 +27,50 @@
                     android:layout_height="wrap_content" />
 
                 <LinearLayout
-                    android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
                     android:orientation="vertical">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:padding="5dp">
 
                         <TextView
                             android:id="@+id/txtvName"
+                            android:layout_centerVertical="true"
                             style="@style/TextStyle.Title.Large"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             tools:text="TextSurface" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="28dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="20dp"
+                            android:background="@drawable/bd_green_rad18"
+                            android:gravity="center"
+                            android:layout_centerVertical="true"
+                            android:orientation="horizontal"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp">
+
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:src="@drawable/ic_simulate"
+                                android:tint="@color/issue_open" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="@string/detail_simulate"
+                                android:textColor="@color/issue_open" />
+                        </LinearLayout>
 
                     </RelativeLayout>
 
@@ -87,12 +115,12 @@
 
                     <TextView
                         android:id="@+id/txtvDescription"
+                        style="@style/TextStyle.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="10dp"
                         android:lineSpacingExtra="2dp"
-                        style="@style/TextStyle.Small"
                         android:maxWidth="340dp"
                         tools:text="To customize the theme's base colors to fit your brand, define your custom colors using theme attributes when you inherit from the material theme:" />
 
@@ -101,43 +129,135 @@
                         android:layout_height="0.1dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
-                        android:layout_marginTop="20dp"
-                        android:background="@color/grey" />
+                        android:layout_marginTop="40dp"
+                        android:background="@color/border" />
 
                     <LinearLayout
-                        android:id="@+id/btnIssue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:padding="10dp">
 
-                        <TextView
-                            android:id="@+id/txtvIssueCount"
-                            style="@style/TextStyle.Title.Large"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            tools:text="88" />
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
 
-                        <TextView
-                            style="@style/TextStyle.Medium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="30dp"
-                            android:gravity="center_vertical"
-                            android:text="@string/detail_issues"
-                            android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/txtvWatch"
+                                style="@style/TextStyle.Title.Large"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="88" />
+
+                            <TextView
+                                style="@style/TextStyle.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/detail_watches"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/txtvInnerStar"
+                                style="@style/TextStyle.Title.Large"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="88" />
+
+                            <TextView
+                                style="@style/TextStyle.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/detail_star"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/txtvFork"
+                                style="@style/TextStyle.Title.Large"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="88" />
+
+                            <TextView
+                                style="@style/TextStyle.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/detail_fork"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/btnIssue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/txtvIssue"
+                                style="@style/TextStyle.Title.Large"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="88" />
+
+                            <TextView
+                                style="@style/TextStyle.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/detail_issues"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/border" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="10dp">
 
                         <ImageView
                             android:id="@+id/arrow"
-                            android:layout_width="20dp"
+                            android:layout_width="15dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
@@ -160,7 +280,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="20dp"
                         android:text="@string/related_libraries" />
 
 
@@ -168,31 +288,7 @@
                         android:id="@+id/recvSimmilarLibs"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:layout_marginTop="10dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_alignParentRight="true"
-                    android:background="@color/issue_open"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp">
-
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:src="@drawable/ic_simulate"
-                        android:tint="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="@string/detail_simulate"
-                        android:textColor="@color/white" />
+                        android:layout_marginTop="20dp" />
                 </LinearLayout>
 
             </LinearLayout>

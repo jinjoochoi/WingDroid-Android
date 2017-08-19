@@ -29,6 +29,10 @@
         <item name="android:textSize">@dimen/textsize_large</item>
     </style>
 
+    <style name="TextStyle.Title.Small" parent="TextStyle.Title">
+        <item name="android:textSize">@dimen/textsize_tag</item>
+    </style>
+
     <style name="TextStyle.Tag" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textSize">@dimen/textsize_tag</item>
         <item name="android:textColor">@color/grey</item>

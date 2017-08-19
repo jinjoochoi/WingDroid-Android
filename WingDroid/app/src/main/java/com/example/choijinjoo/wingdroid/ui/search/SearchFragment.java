@@ -74,8 +74,12 @@ public class SearchFragment extends BaseFragment{
         categoryRepository = new CategoryRepository(getContext());
         repositoryRepository = new RepositoryRepository(getContext());
         categoryAdapter.setItems(categoryRepository.getCategories());
-        List<Repository> repositories = repositoryRepository.getSuggestedRepo().subList(0,2);
-        suggestionsAdapter.setItems(repositories);
+        List<Repository> repositories = repositoryRepository.getSuggestedRepo();
+        if(repositories.size() > 2){
+            suggestionsAdapter.setItems(repositories.subList(0,2));
+        }else {
+            suggestionsAdapter.setItems(repositories);
+        }
     }
 
     private void moveToSearchResultActivity(Category category) {

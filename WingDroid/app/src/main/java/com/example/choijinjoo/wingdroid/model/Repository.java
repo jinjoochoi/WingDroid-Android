@@ -261,4 +261,8 @@ public class Repository {
         this.bookmark = !this.bookmark;
     }
 
+    public void click(){
+        this.clicks++;
+    }
+
 }

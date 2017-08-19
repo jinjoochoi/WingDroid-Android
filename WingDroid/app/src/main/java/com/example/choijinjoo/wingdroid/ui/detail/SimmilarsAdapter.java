@@ -26,7 +26,7 @@ public class SimmilarsAdapter extends BaseAdapter<Repository, SimmilarsViewHolde
 
     @Override
     public SimmilarsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_simmilars, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_related, parent, false);
         SimmilarsViewHolder viewHolder = new SimmilarsViewHolder(context, view);
         view.setOnClickListener(it -> listener.clicked(viewHolder.getSafeAdapterPosition()));
         return viewHolder;

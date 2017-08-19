@@ -20,6 +20,7 @@ public class NewViewHolder extends BaseViewHolder<Repository> {
     @BindView(R.id.imgvPreview) ImageView imgvPreview;
     @BindView(R.id.txtvName) TextView txtvName;
     @BindView(R.id.txtvStar) TextView txtvStar;
+    @BindView(R.id.imgvRead) View imgvRead;
 
     public NewViewHolder(Context context, View itemView) {
         super(context, itemView);
@@ -32,5 +33,10 @@ public class NewViewHolder extends BaseViewHolder<Repository> {
                 .into(imgvPreview);
         txtvName.setText(item.getName());
         txtvStar.setText(item.getFormattedStarString());
+        if(item.getClicks() > 0){
+            imgvRead.setVisibility(View.INVISIBLE);
+        }else{
+            imgvRead.setVisibility(View.VISIBLE);
+        }
     }
 }

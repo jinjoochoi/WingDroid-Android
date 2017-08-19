@@ -92,10 +92,10 @@ public class FirebaseSyncRepository {
             repository.setId(repoFirebaseArray.getItem(index).getKey());
             switch (type) {
                 case ADDED:
-                    repositoryRepository.createOrUpdateRepository(repository);
-                    // relation table
                     rtCategoryRepository.createOrUpdateRepository(repository);
                     rtTagRepositoryRepository.createOrUpdateRepository(repository);
+                    repositoryRepository.createOrUpdateRepository(repository);
+                    // relation table
                     break;
                 case REMOVED:
                     repositoryRepository.deleteRepository(repository);

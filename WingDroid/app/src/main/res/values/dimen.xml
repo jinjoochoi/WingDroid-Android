@@ -23,7 +23,7 @@
 
     <!-- Button dimen -->
     <dimen name="btn_radius">30dp</dimen>
-    <dimen name="btn_stroke">1dp</dimen>
+    <dimen name="btn_stroke">0.5dp</dimen>
 
     <!-- Book mark dimen -->
     <dimen name="bookmark_height">120dp</dimen>
