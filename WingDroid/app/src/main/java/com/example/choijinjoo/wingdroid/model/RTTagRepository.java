@@ -18,9 +18,9 @@ public class RTTagRepository {
 
     @DatabaseField(generatedId = true)
     private int id;
-    @DatabaseField(foreign = true, columnName = REPO_ID_FIELD_NAME)
+    @DatabaseField(foreign = true, columnName = REPO_ID_FIELD_NAME, foreignAutoRefresh = true)
     private Repository repository;
-    @DatabaseField(foreign = true, columnName = TAG_ID_FIELD_NAME)
+    @DatabaseField(foreign = true, columnName = TAG_ID_FIELD_NAME, foreignAutoRefresh = true)
     private Tag tag;
 
     public RTTagRepository() {}

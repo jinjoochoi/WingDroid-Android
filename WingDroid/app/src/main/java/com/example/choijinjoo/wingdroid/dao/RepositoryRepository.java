@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.choijinjoo.wingdroid.model.Category;
+import com.example.choijinjoo.wingdroid.model.RTCategoryRepository;
 import com.example.choijinjoo.wingdroid.model.RTTagRepository;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.Tag;
@@ -17,23 +18,32 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.example.choijinjoo.wingdroid.model.Repository.DESCRIPTION_FIELD;
+import static com.example.choijinjoo.wingdroid.model.Repository.NAME_FIELD;
+
 /**
  * Created by choijinjoo on 2017. 7. 13..
  */
 
 public class RepositoryRepository extends BaseRepository {
     private final String TAG = "RepositoryRepository";
+    private TagDao tagDao;
+    private CategoryDao categoryDao;
     private RepositoryDao repositoryDao;
     private RTTagRepositoryDao rtTagRepositoryDao;
-    private TagDao tagDao;
+    private RTCategoryRepositoryDao rtCategoryRepositoryDao;
     private PreparedQuery<Tag> tagForRepoPreparedQuery = null;
-
+    private PreparedQuery<Repository> repoForTagPreparedQuery = null;
+    private PreparedQuery<Repository> repoForCategoryPreparedQuery = null;
+    private PreparedQuery<Repository> repoForCategoryOrderByStarPreparedQuery = null;
 
     public RepositoryRepository(Context context) {
         super(context);
         repositoryDao = dbHelper.getRepoDao();
         rtTagRepositoryDao = dbHelper.getRTTagRepositoryDao();
+        rtCategoryRepositoryDao = dbHelper.getRTCategoryRepositoryDao();
         tagDao = dbHelper.getTagDao();
+        categoryDao = dbHelper.getCategoryDao();
 
     }
 
@@ -57,18 +67,74 @@ public class RepositoryRepository extends BaseRepository {
         return results;
     }
 
+
+    private Repository setTagsForRepo(Repository repository) {
+        Repository result = null;
+        try {
+            if (tagForRepoPreparedQuery == null)
+                tagForRepoPreparedQuery = makeTagForRepoQuery();
+
+            tagForRepoPreparedQuery.setArgumentHolderValue(0, repository);
+            List<Tag> tagsForRepo = tagDao.query(tagForRepoPreparedQuery);
+            repository.setTags(tagsForRepo);
+
+            result = repository;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private List<Repository> setTagsForRepo(List<Repository> repositories) {
+        try {
+            if (tagForRepoPreparedQuery == null)
+                tagForRepoPreparedQuery = makeTagForRepoQuery();
+
+            for (Repository repository : repositories) {
+                tagForRepoPreparedQuery.setArgumentHolderValue(0, repository);
+                List<Tag> tagsForRepo = tagDao.query(tagForRepoPreparedQuery);
+                repository.setTags(tagsForRepo);
+            }
+
+            return repositories;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    //TODO : distinct
     public List<Repository> getRepositoryByText(String text) {
         List<Repository> results = new ArrayList<>();
         try {
-            QueryBuilder<Repository,Integer> repoQB = repositoryDao.queryBuilder();
-            QueryBuilder<Category,Integer> categoryQB = dbHelper.getCategoryDao().queryBuilder();
-            QueryBuilder<Tag,Integer> tagQB = tagDao.queryBuilder();
+            if (repoForTagPreparedQuery == null)
+                repoForTagPreparedQuery = makeRepoForTag();
 
-            QueryBuilder<Repository,Integer> repoCategoryQB = repoQB.join(categoryQB);
-            QueryBuilder<Repository,Integer> repoCategoryTagQB = repoCategoryQB.join(tagQB);
+            if (repoForCategoryPreparedQuery == null)
+                repoForCategoryPreparedQuery = makeRepoForTag();
 
-            repoCategoryTagQB.where().eq(Category.NAME_FIELD,text).or().eq(Repository.NAME_FIELD,text).or().eq(Tag.NAME_FIELD,text).query();
+            if(repoForCategoryOrderByStarPreparedQuery == null)
+                repoForCategoryOrderByStarPreparedQuery = makeRepoForCategoryOrderByStarQuery();
 
+            // search with repo's name, repo's description
+            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().where().like(DESCRIPTION_FIELD, text + "%").or().like(NAME_FIELD, text + "%").query()));
+
+            // search with tag'name
+            List<Tag> tags = tagDao.queryBuilder().where().like(Tag.NAME_FIELD, text + "%").query();
+
+            for (Tag tag : tags) {
+                repoForTagPreparedQuery.setArgumentHolderValue(0, tag);
+                results.addAll(setTagsForRepo(repositoryDao.query(repoForTagPreparedQuery)));
+            }
+            // search with category'name
+            List<Category> categories = categoryDao.queryBuilder().where().like(Category.NAME_FIELD,text+"%").query();
+
+            for(Category category : categories){
+                repoForCategoryOrderByStarPreparedQuery.setArgumentHolderValue(0,category);
+                results.addAll(setTagsForRepo(repositoryDao.query(repoForCategoryOrderByStarPreparedQuery)));
+            }
             return results;
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
@@ -95,7 +161,6 @@ public class RepositoryRepository extends BaseRepository {
         }
         return results;
     }
-
 
 
     public void createOrUpdateRepository(Repository repository) {
@@ -128,45 +193,6 @@ public class RepositoryRepository extends BaseRepository {
     }
 
 
-    private Repository setTagsForRepo(Repository repository) {
-        Repository result = null;
-        try {
-            if (tagForRepoPreparedQuery == null)
-                tagForRepoPreparedQuery = makeTagForRepoQuery();
-
-            tagForRepoPreparedQuery.setArgumentHolderValue(0, repository);
-            List<Tag> tagsForRepo = tagDao.query(tagForRepoPreparedQuery);
-            repository.setTags(tagsForRepo);
-
-            result = repository;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-
-    private List<Repository> setTagsForRepo(List<Repository> repositories) {
-        try {
-            if (tagForRepoPreparedQuery == null)
-                tagForRepoPreparedQuery = makeTagForRepoQuery();
-
-            for (Repository repository : repositories) {
-                tagForRepoPreparedQuery.setArgumentHolderValue(0, repository);
-                List<Tag> tagsForRepo = tagDao.query(tagForRepoPreparedQuery);
-                repository.setTags(tagsForRepo);
-            }
-
-            return repositories;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-
     public void registerDaoObserver(Dao.DaoObserver observer) {
         repositoryDao.registerObserver(observer);
     }
@@ -179,6 +205,7 @@ public class RepositoryRepository extends BaseRepository {
      * Build our repositories for repository objects that match a category
      */
 
+
     private PreparedQuery<Tag> makeTagForRepoQuery() throws SQLException {
         QueryBuilder<RTTagRepository, Integer> rtTRQb = rtTagRepositoryDao.queryBuilder();
         rtTRQb.selectColumns(RTTagRepository.TAG_ID_FIELD_NAME);
@@ -189,4 +216,32 @@ public class RepositoryRepository extends BaseRepository {
         tagQb.where().in(Tag.ID_FIELD, rtTRQb);
         return tagQb.prepare();
     }
+
+    private PreparedQuery<Repository> makeRepoForCategoryOrderByStarQuery() throws SQLException {
+        QueryBuilder<RTCategoryRepository, Integer> rtCRQb = rtCategoryRepositoryDao.queryBuilder();
+        rtCRQb.selectColumns(RTCategoryRepository.REPO_ID_FIELD_NAME);
+        SelectArg categorySA = new SelectArg();
+        rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
+
+        QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
+        repositoryQb.orderBy(Repository.STAR_FIELD, false).where().in(Repository.ID_FIELD, rtCRQb);
+        return repositoryQb.prepare();
+    }
+
+    private PreparedQuery<Repository> makeRepoForTag() {
+        try {
+            QueryBuilder<RTTagRepository, Integer> rtTRQB = rtTagRepositoryDao.queryBuilder();
+            rtTRQB.selectColumns(RTTagRepository.REPO_ID_FIELD_NAME);
+            SelectArg tabSA = new SelectArg();
+            rtTRQB.where().eq(RTTagRepository.TAG_ID_FIELD_NAME, tabSA);
+
+            QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
+            repositoryQb.where().in(Repository.ID_FIELD, rtTRQB);
+            return repositoryQb.prepare();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

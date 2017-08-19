@@ -89,9 +89,9 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
         RxSearchView.queryTextChanges(searchView)
                 .doOnNext(this::init)
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .filter(c -> !StringUtils.isEmpty(c) && !searchType.equals(SearchHistory.SEARCH_TYPE_CATEGORY))
-                .map(c -> c.toString())
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(this::isEmpty)
+                .map(c -> c.toString())
                 .subscribe(this::searchWithText);
 
 
@@ -139,6 +139,14 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
 
     }
 
+    private boolean isEmpty(CharSequence c){
+        if(StringUtils.isEmpty(c)) {
+            containerHistory.setVisibility(View.VISIBLE);
+            containerResult.setVisibility(View.GONE);
+        }
+        return !StringUtils.isEmpty(c) && !searchType.equals(SearchHistory.SEARCH_TYPE_CATEGORY);
+    }
+
     private void init(CharSequence str) {
         if (containerEmpty.getVisibility() == View.VISIBLE)
             containerEmpty.setVisibility(View.GONE);
@@ -149,7 +157,8 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
         searchType = SEARCH_TYPE_TEXT;
         containerHistory.setVisibility(View.GONE);
         containerResult.setVisibility(View.VISIBLE);
-        repositoryRepository.getRepositoryByText(text);
+        resultAdapter.setItems(repositoryRepository.getRepositoryByText(text));
+        resultAdapter.notifyDataSetChanged();
     }
 
     private void searchWithCategory(Category category) {
