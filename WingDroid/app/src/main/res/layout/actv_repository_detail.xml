@@ -26,6 +26,7 @@
                     android:layout_height="wrap_content" />
 
                 <LinearLayout
+                    android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -90,6 +91,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="10dp"
+                        android:lineSpacingExtra="2dp"
+                        style="@style/TextStyle.Small"
                         android:maxWidth="340dp"
                         tools:text="To customize the theme's base colors to fit your brand, define your custom colors using theme attributes when you inherit from the material theme:" />
 
@@ -127,9 +130,10 @@
                     </LinearLayout>
 
                     <RelativeLayout
-                        android:layout_width="match_parent"                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
 
-                        android:layout_height="wrap_content">
+                        android:layout_marginBottom="10dp">
 
                         <ImageView
                             android:id="@+id/arrow"

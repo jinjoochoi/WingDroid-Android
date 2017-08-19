@@ -8,34 +8,38 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.model.Repository;
+import com.example.choijinjoo.wingdroid.dao.CategoryRepository;
+import com.example.choijinjoo.wingdroid.dao.RTCategoryRepositoryRepository;
+import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
+import com.example.choijinjoo.wingdroid.model.Category;
 import com.example.choijinjoo.wingdroid.model.SortCriteria;
-import com.example.choijinjoo.wingdroid.source.remote.firebase.RepositoryDataSource;
-import com.example.choijinjoo.wingdroid.source.remote.firebase.UserDataSource;
-import com.example.choijinjoo.wingdroid.tools.FirebaseArray;
 import com.example.choijinjoo.wingdroid.ui.CategoryFilterDialog;
 import com.example.choijinjoo.wingdroid.ui.SelectSortCriteriaDialog;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
+import com.j256.ormlite.dao.Dao;
+
+import java.util.List;
 
 import butterknife.BindView;
+
+import static com.example.choijinjoo.wingdroid.model.Repository.ID_FIELD_BOOKMARKED_AT;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-public class BookMarkFragment extends BaseFragment implements FirebaseArray.OnChangedListener{
+public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
     @BindView(R.id.recvRepositories) RecyclerView recvRepositories;
     @BindView(R.id.containerSort) LinearLayout containerSort;
     @BindView(R.id.imgvFilter) ImageView imgvFilter;
     BookMarkAdapter adapter;
-    FirebaseArray firebaseArray;
+    RTCategoryRepositoryRepository rtCategoryRepositoryRepository;
+    RepositoryRepository repositoryRepository;
+    CategoryRepository categoryRepository;
+    List<Category> categories;
 
     private SortCriteria order_by;
-
 
     public static BookMarkFragment newInstance() {
         return new BookMarkFragment();
@@ -48,88 +52,55 @@ public class BookMarkFragment extends BaseFragment implements FirebaseArray.OnCh
 
     @Override
     protected void initLayout() {
-        recvRepositories.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
-        adapter = new BookMarkAdapter(getActivity(),this::moveToDetailActivity);
+        recvRepositories.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        adapter = new BookMarkAdapter(getActivity(), this::moveToDetailActivity);
         recvRepositories.setAdapter(adapter);
         recvRepositories.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         containerSort.setOnClickListener(it -> showSelectSortCriteriaDialog());
         imgvFilter.setOnClickListener(it -> showCategoryFilterDialog());
-        firebaseArray.setOnChangedListener(this);
-    }
-
-    @Override
-    protected void loadData() {
+        rtCategoryRepositoryRepository = new RTCategoryRepositoryRepository(getContext());
+        categoryRepository = new CategoryRepository(getContext());
+        repositoryRepository = new RepositoryRepository(getContext());
+        rtCategoryRepositoryRepository.registerDaoObserver(this);
+        repositoryRepository.registerDaoObserver(this);
         order_by = SortCriteria.RECENT;
-        if(FirebaseAuth.getInstance().getCurrentUser() != null){
-            Query query = UserDataSource.getInstance().getBookmark(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            firebaseArray = new FirebaseArray(query);
-        }else{
+        categories = categoryRepository.getCategoriesOrderByName();
+        loadData(categories);
 
-        }
     }
-    private void moveToDetailActivity(int position){
-        Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(),adapter.getItem(position));
+
+    protected void loadData(List<Category> categories) {
+        if (order_by == SortCriteria.RECENT)
+            adapter.setItems(rtCategoryRepositoryRepository.getBookmarkForCategories(ID_FIELD_BOOKMARKED_AT,categories));
+        else
+         this.categories = categories;
+    }
+
+    private void moveToDetailActivity(int position) {
+        Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(), adapter.getItem(position).getId());
         startActivity(intent);
     }
 
     private void showCategoryFilterDialog() {
-        CategoryFilterDialog.getInstance(getActivity(),
-                category -> {
-
-                }).show();
+        CategoryFilterDialog.getInstance(getActivity(),categories, this::loadData).show();
     }
 
     private void showSelectSortCriteriaDialog() {
-        SelectSortCriteriaDialog.getInstance(getActivity(), order_by,
-                criteria -> {
-
-                }).show();
-    }
-
-
-    @Override
-    public void onChildChanged(EventType type, int index, int oldIndex) {
-        switch (type) {
-            case ADDED:
-                RepositoryDataSource.getInstance().getRepositoryById((String) firebaseArray.getItem(index).getValue(),
-                        new RepositoryDataSource.RepositoryListener() {
-                            @Override
-                            public void added(Repository repository) {
-                                repository.setId((String)firebaseArray.getItem(index).getValue());
-                                adapter.add(repository);
-                                adapter.notifyItemChanged(index);
-                            }
-
-                            @Override
-                            public void empty() {
-
-                            }
-                        });
-                break;
-            case REMOVED:
-                adapter.remove(index);
-                adapter.notifyItemRemoved(index);
-                break;
-            default:
-                throw new IllegalStateException("Incomplete case statement");
-        }
+        SelectSortCriteriaDialog.getInstance(getActivity(), order_by, criteria -> {
+            order_by = criteria;
+            loadData(categories);
+        }).show();
     }
 
     @Override
-    public void onDataChanged() {
-
+    public void onDestroy() {
+        super.onDestroy();
+        repositoryRepository.unregisterDaoObserver(this);
+        rtCategoryRepositoryRepository.unregisterDaoObserver(this);
     }
 
     @Override
-    public void onCancelled(DatabaseError databaseError) {
-
+    public void onChange() {
+        loadData(categories);
     }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        firebaseArray.cleanup();
-    }
-
 }

@@ -172,7 +172,7 @@ public class SearchResultActivity extends BaseActivity  {
                         new SearchHistory(searchView.getQuery().toString(), Calendar.getInstance().getTime(), SEARCH_BY_NAME));
             }
         }
-        Intent intent = RepositoryDetailActivity.getStartIntent(this, resultAdapter.getItem(position));
+        Intent intent = RepositoryDetailActivity.getStartIntent(this, resultAdapter.getItem(position).getId());
         startActivity(intent);
     }
 

@@ -1,5 +1,8 @@
 package com.example.choijinjoo.wingdroid.model;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import org.parceler.Parcel;
 
 
@@ -7,12 +10,23 @@ import org.parceler.Parcel;
  * Created by choijinjoo on 2017. 8. 4..
  */
 
+@DatabaseTable(tableName = "category")
 @Parcel(value = Parcel.Serialization.BEAN)
-public class Category extends FBModel{
+public class Category {
+    public final static String ID_FIELD_NAME = "id";
+
+    @DatabaseField(unique = true, id = true, columnName = ID_FIELD_NAME)
+    String id;
+    @DatabaseField
     String name;
-    boolean selected;
+    @DatabaseField
+    boolean selected = true;
 
     public Category() {}
+
+    public String getId() { return id; }
+
+    public void setId(String id) { this.id = id; }
 
     public Category(String name) {
         this.name = name;
@@ -36,6 +50,8 @@ public class Category extends FBModel{
      */
 
 
-    public void selected() { this.selected = !this.selected; }
+    public void selected() {
+        this.selected = !this.selected;
+    }
 
 }

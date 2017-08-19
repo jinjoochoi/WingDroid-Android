@@ -80,7 +80,7 @@ public class SearchFragment extends BaseFragment implements FirebaseArray.OnChan
     }
 
     private void moveToDetailActivity(Repository repository) {
-        Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(),repository);
+        Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(),repository.getId());
         startActivity(intent);
     }
 

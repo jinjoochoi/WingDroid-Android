@@ -8,6 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.choijinjoo.wingdroid.dao.BaseRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.ButterKnife;
 
 /**
@@ -22,11 +27,12 @@ public abstract class BaseFragment extends Fragment {
 
     protected void loadData(){}
 
+    protected List<BaseRepository> repositories = new ArrayList<>();
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        loadData();
         return LayoutInflater.from(getActivity()).inflate(getLayoutId(), container, false);
     }
 
@@ -36,5 +42,14 @@ public abstract class BaseFragment extends Fragment {
         getView().setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, view);
         initLayout();
+        loadData();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        for(BaseRepository repository : repositories){
+            repository.release();
+        }
     }
 }

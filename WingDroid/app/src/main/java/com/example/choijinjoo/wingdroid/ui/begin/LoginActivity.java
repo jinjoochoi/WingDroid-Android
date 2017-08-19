@@ -1,4 +1,4 @@
-package com.example.choijinjoo.wingdroid.ui.login;
+package com.example.choijinjoo.wingdroid.ui.begin;
 
 import android.content.Intent;
 import android.os.Bundle;

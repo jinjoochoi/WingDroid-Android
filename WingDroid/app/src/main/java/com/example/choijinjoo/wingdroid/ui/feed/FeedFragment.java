@@ -9,22 +9,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.choijinjoo.wingdroid.R;
+import com.example.choijinjoo.wingdroid.dao.RTCategoryRepositoryRepository;
+import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.model.Category;
-import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.SortCriteria;
-import com.example.choijinjoo.wingdroid.source.remote.firebase.RepositoryDataSource;
-import com.example.choijinjoo.wingdroid.tools.FirebaseArray;
 import com.example.choijinjoo.wingdroid.ui.SelectSortCriteriaDialog;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
 
 import org.parceler.Parcels;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import butterknife.BindView;
 
@@ -32,18 +25,19 @@ import butterknife.BindView;
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-public class FeedFragment extends BaseFragment implements FirebaseArray.OnChangedListener {
-    @BindView(R.id.recvRepositories) RecyclerView recvRepositories;
-    @BindView(R.id.containerSort) LinearLayout containerSort;
-    @BindView(R.id.txtvSort) TextView txtvSort;
+public class FeedFragment extends BaseFragment {
+    @BindView(R.id.recvRepositories)
+    RecyclerView recvRepositories;
+    @BindView(R.id.containerSort)
+    LinearLayout containerSort;
+    @BindView(R.id.txtvSort)
+    TextView txtvSort;
     RepositoryAdapter adapter;
-    Query ref;
     StaggeredGridLayoutManager layoutManager;
     Category category;
-    FirebaseArray firebaseArray;
 
-    List resultOrderByStar = new ArrayList();
-
+    RepositoryRepository repoRepository;
+    RTCategoryRepositoryRepository rtCategoryRepository;
 
     private static final String KEY_CATEGORY = "category";
 
@@ -64,157 +58,44 @@ public class FeedFragment extends BaseFragment implements FirebaseArray.OnChange
 
     @Override
     protected void initLayout() {
-        if (ref != null) {
-            layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-            layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-            recvRepositories.setLayoutManager(layoutManager);
-            adapter = new RepositoryAdapter(getActivity(), this::moveToDetailActivity);
-            recvRepositories.setAdapter(adapter);
-            containerSort.setOnClickListener(this::showSelectSortCriteriaDialog);
-            firebaseArray.setOnChangedListener(this);
-        }
+        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        recvRepositories.setLayoutManager(layoutManager);
+        adapter = new RepositoryAdapter(getActivity(), this::moveToDetailActivity);
+        recvRepositories.setAdapter(adapter);
+        containerSort.setOnClickListener(this::showSelectSortCriteriaDialog);
+
+        repositories.add(repoRepository = new RepositoryRepository(getContext()));
+        repositories.add(rtCategoryRepository = new RTCategoryRepositoryRepository(getContext()));
+        loadData(SortCriteria.RECENT);
     }
 
-    @Override
-    protected void loadData() {
+    protected void loadData(SortCriteria criteria) {
         category = Parcels.unwrap(getArguments().getParcelable(KEY_CATEGORY));
         if (category != null) {
-            if (category.getName().equals("All"))
-                ref = RepositoryDataSource.getInstance().repositories();
-            else
-                ref = RepositoryDataSource.getInstance().repositoriesByCategory(category);
-            firebaseArray = new FirebaseArray(ref);
+            if (category.getName().equals("All")) {
+                if (criteria == SortCriteria.RECENT)
+                    adapter.setItems(repoRepository.getAllReposOrderByDate());
+                else
+                    adapter.setItems(repoRepository.getAllReposOrderByStar());
+            } else {
+                if (criteria == SortCriteria.RECENT)
+                    adapter.setItems(rtCategoryRepository.getRepoForCategoryOrderByDate(category));
+                else
+                    adapter.setItems(rtCategoryRepository.getRepoForCategoryOrderByStar(category));
+            }
         }
-        order_by = SortCriteria.RECENT;
-
+        order_by = criteria;
+        txtvSort.setText(criteria == SortCriteria.RECENT ? getString(R.string.sort_recent) : getString(R.string.sort_star));
     }
 
     private void moveToDetailActivity(int position) {
-        Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(), adapter.getItem(position));
+        Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(), adapter.getItem(position).getId());
         startActivity(intent);
     }
 
     private void showSelectSortCriteriaDialog(View view) {
-        SelectSortCriteriaDialog.getInstance(
-                getActivity(), order_by, it -> {
-                    firebaseArray.cleanup();
-                    if (it == SortCriteria.RECENT) {
-                        order_by = SortCriteria.RECENT;
-                        firebaseArray = new FirebaseArray(ref.orderByChild("updatedAt"));
-                        txtvSort.setText(getString(R.string.order_by_recent));
-                    } else {
-                        order_by = SortCriteria.STAR;
-                        firebaseArray = new FirebaseArray(ref.orderByChild("star"));
-                        resultOrderByStar = new ArrayList();
-                        txtvSort.setText(getString(R.string.order_by_star));
-                    }
-                    adapter.clear();
-                    firebaseArray.setOnChangedListener(this);
-                }).show();
+        SelectSortCriteriaDialog.getInstance(getActivity(), order_by, this::loadData).show();
     }
 
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        firebaseArray.setOnChangedListener(null);
-        firebaseArray.cleanup();
-    }
-
-    /*
-     *  Repository DataReference change listener
-     */
-
-
-    @Override
-    public void onChildChanged(EventType type, int index, int oldIndex) {
-        switch (type) {
-            case ADDED:
-                Repository repository = null;
-                // Category가 All인 경우에는  모든 Repository를 불러옵니다.
-                if (category.getName().equals("All")) {
-                    repository = firebaseArray.getItem(index).getValue(Repository.class);
-                    repository.setId(firebaseArray.getItem(index).getKey());
-
-                    if(order_by == SortCriteria.RECENT)
-                        adapter.add(repository);
-                    else
-                        resultOrderByStar.add(index, repository);
-                } else {
-                    // Category가 있는 경우에는 Category DataReference에서 해당 카테고리를 가지고 있는 Repository의 id를 가져온 뒤,
-                    // Repository DataReference에서 id로 Repository를 가져옵니다.
-                    String repositoryId = (String) firebaseArray.getItem(index).getValue();
-                    RepositoryDataSource.getInstance().getRepositoryById(repositoryId, new RepositoryDataSource.RepositoryListener() {
-                        @Override
-                        public void added(Repository repository) {
-                            repository.setId(repositoryId);
-                            if(order_by == SortCriteria.RECENT)
-                                adapter.add(repository);
-                            else
-                                resultOrderByStar.add(index, repository);
-                        }
-
-                        @Override
-                        public void empty() {
-
-                        }
-                    });
-                }
-                break;
-            case CHANGED:
-                if (category.getName().equals("All")) {
-                    String repositoryId = (String) firebaseArray.getItem(index).getValue();
-                    RepositoryDataSource.getInstance().getRepositoryById(repositoryId, new RepositoryDataSource.RepositoryListener() {
-                        @Override
-                        public void added(Repository repository) {
-                            if(order_by == SortCriteria.RECENT) {
-                                repository.setId(repositoryId);
-                                adapter.change(index, repository);
-                            }else{
-                                resultOrderByStar.set(index,repository);
-                            }
-                        }
-
-                        @Override
-                        public void empty() {
-
-                        }
-                    });
-                } else {
-                    if(order_by == SortCriteria.RECENT) {
-                        adapter.change(index, firebaseArray.getItem(index).getValue(Repository.class));
-                    }else{
-                        resultOrderByStar.set(index,firebaseArray.getItem(index).getValue(Repository.class));
-                    }
-                }
-                break;
-            case REMOVED:
-                if(order_by == SortCriteria.RECENT) {
-                    adapter.remove(index);
-                }else{
-                    resultOrderByStar.remove(index);
-                }
-                break;
-            case MOVED:
-                    adapter.notifyItemMoved(oldIndex, index);
-                break;
-            default:
-                throw new IllegalStateException("Incomplete case statement");
-        }
-    }
-
-    @Override
-    public void onDataChanged() {
-        if(order_by == SortCriteria.STAR) {
-            List adapterItems = resultOrderByStar;
-            Collections.reverse(adapterItems);
-            adapter.setItems(adapterItems);
-
-        }
-    }
-
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-
-    }
 }

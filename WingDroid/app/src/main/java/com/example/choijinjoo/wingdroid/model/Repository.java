@@ -1,10 +1,14 @@
 package com.example.choijinjoo.wingdroid.model;
 
+import com.example.choijinjoo.wingdroid.model.converter.TagListParcelConverter;
 import com.example.choijinjoo.wingdroid.tools.StringUtils;
 import com.example.choijinjoo.wingdroid.tools.Utils;
 import com.google.gson.annotations.SerializedName;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import org.parceler.Parcel;
+import org.parceler.ParcelPropertyConverter;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -14,28 +18,54 @@ import java.util.List;
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
-
 @Parcel(value = Parcel.Serialization.BEAN)
+@DatabaseTable(tableName = "repository")
 public class Repository {
+    public final static String ID_FIELD_NAME = "id";
+    public final static String ID_FIELD_BOOKMARKED_AT = "bookmarkedAt";
+    public final static String ID_FIELD_STAR = "star";
+
+    @DatabaseField(unique = true, id = true, columnName = ID_FIELD_NAME)
     String id;
+    @DatabaseField
     String name;
+    @DatabaseField
     String author;
+    @DatabaseField
     String git;
+    @DatabaseField
     String description;
+    @DatabaseField
     Integer watch;
+    @DatabaseField(columnName = ID_FIELD_STAR)
     Integer star;
+    @DatabaseField
     Integer fork;
+    @DatabaseField
     Integer issue;
+    @DatabaseField
     @SerializedName("issue_url")
     String issueUrl;
+    @DatabaseField
     String image;
-    List<String> tags;
+    @DatabaseField
     Long createdAt;
+    @DatabaseField
     Long updatedAt;
+    @DatabaseField
     Integer simulatable;
+    @DatabaseField
+    boolean bookmark;
+    @DatabaseField(columnName = ID_FIELD_BOOKMARKED_AT)
+    Date bookmarkedAt;
+
+    @ParcelPropertyConverter(TagListParcelConverter.class)
+    List<Tag> tags;
+    Category category;
 
 
-    public Repository() {}
+    public Repository() {
+    }
 
     public Repository(String name) {
         this.name = name;
@@ -47,6 +77,14 @@ public class Repository {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getName() {
@@ -125,11 +163,11 @@ public class Repository {
         this.image = image;
     }
 
-    public List<String> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 
@@ -149,13 +187,33 @@ public class Repository {
         this.updatedAt = updatedAt;
     }
 
-    public String getIssueUrl() { return issueUrl; }
+    public String getIssueUrl() {
+        return issueUrl;
+    }
 
-    public void setIssueUrl(String issueUrl) { this.issueUrl = issueUrl; }
+    public void setIssueUrl(String issueUrl) {
+        this.issueUrl = issueUrl;
+    }
 
-    public Integer getSimulatable() { return simulatable; }
+    public Integer getSimulatable() {
+        return simulatable;
+    }
 
-    public void setSimulatable(Integer simulatable) { this.simulatable = simulatable; }
+    public void setSimulatable(Integer simulatable) {
+        this.simulatable = simulatable;
+    }
+
+    public boolean getBookmark() {
+        return bookmark;
+    }
+
+    public void setBookmark(boolean bookmark) {
+        this.bookmark = bookmark;
+    }
+
+    public Date getBookmarkedAt() { return bookmarkedAt; }
+
+    public void setBookmarkedAt(Date bookmarkedAt) { this.bookmarkedAt = bookmarkedAt; }
 
     /*
      * Custom method
@@ -186,8 +244,12 @@ public class Repository {
         return StringUtils.toFormattedDateString(new Date(stamp.getTime()));
     }
 
-    public String getTagString(String tag){
+    public String getTagString(String tag) {
         return "#" + tag;
+    }
+
+    public void clickBookmark() {
+        this.bookmark = !this.bookmark;
     }
 
 }

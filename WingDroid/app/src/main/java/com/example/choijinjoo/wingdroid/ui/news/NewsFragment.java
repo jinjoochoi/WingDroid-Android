@@ -99,7 +99,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void moveToDetailActivity(int position){
-        Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(),newAdapter.getItem(position));
+        Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(),newAdapter.getItem(position).getId());
         startActivity(intent);
     }
 

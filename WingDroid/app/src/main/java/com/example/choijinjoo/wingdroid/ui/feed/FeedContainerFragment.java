@@ -3,14 +3,15 @@ package com.example.choijinjoo.wingdroid.ui.feed;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.example.choijinjoo.wingdroid.R;
+import com.example.choijinjoo.wingdroid.dao.CategoryRepository;
 import com.example.choijinjoo.wingdroid.model.Category;
-import com.example.choijinjoo.wingdroid.source.remote.firebase.CategoryDataSource;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
-import com.example.choijinjoo.wingdroid.ui.base.FirebaseViewPagerAdapter;
-import com.google.firebase.database.Query;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -21,8 +22,8 @@ import butterknife.BindView;
 public class FeedContainerFragment extends BaseFragment {
     @BindView(R.id.tabLayout) TabLayout tabLayout;
     @BindView(R.id.viewPager) ViewPager viewPager;
+    CategoryRepository categoryRepository;
     ViewPagerAdapter viewPagerAdapter;
-    Query ref;
 
     public static FeedContainerFragment newInstance() {
         return new FeedContainerFragment();
@@ -35,45 +36,34 @@ public class FeedContainerFragment extends BaseFragment {
 
     @Override
     protected void initLayout() {
-        viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), ref, Category.class);
+        repositories.add(categoryRepository = new CategoryRepository(getContext()));
+        viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), categoryRepository.getCategoriesOrderByName());
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager, true);
     }
 
-    @Override
-    protected void loadData() {
-        super.loadData();
-        ref = CategoryDataSource.getInstance().categories();
-    }
+    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
+        List<Category> items;
 
-
-    private class ViewPagerAdapter extends FirebaseViewPagerAdapter<Category> {
-
-        public ViewPagerAdapter(FragmentManager fm, Query ref, Class<Category> clazz) {
-            super(fm, ref, clazz);
+        public ViewPagerAdapter(FragmentManager fm, List<Category> items) {
+            super(fm);
+            this.items = items;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return FeedFragment.newInstance(datas.get(position));
+            return FeedFragment.newInstance(items.get(position));
+        }
+
+        @Override
+        public int getCount() {
+            return items != null ? items.size() : 0;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return datas.get(position).getName();
+            return items.get(position).getName();
         }
-
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        viewPagerAdapter.addChildEventListener();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        viewPagerAdapter.removeChildEventListener();
-    }
 }

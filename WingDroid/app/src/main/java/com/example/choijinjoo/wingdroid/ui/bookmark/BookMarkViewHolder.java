@@ -38,9 +38,9 @@ public class BookMarkViewHolder extends BaseViewHolder<Repository> {
         txtvName.setText(item.getName());
         txtvStar.setText(item.getFormattedStarString());
 
-        for (String tag : item.getTags()) {
-            TextView txtvTag = LayoutInflater.from(context).inflate(R.layout.item_tag, null, false).findViewById(R.id.txtvTag);
-            txtvTag.setText(tag);
+        for (Tag tag : item.getTags()) {
+            TextView txtvTag = (TextView)LayoutInflater.from(context).inflate(R.layout.item_tag, null, false).findViewById(R.id.txtvTag);
+            txtvTag.setText(tag.toString());
             flowLayout.addView(txtvTag);
         }
     }

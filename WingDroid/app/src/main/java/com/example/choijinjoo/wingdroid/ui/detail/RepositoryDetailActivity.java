@@ -12,16 +12,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.choijinjoo.wingdroid.R;
+import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.source.remote.firebase.UserDataSource;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
-
-import org.parceler.Parcels;
+import com.j256.ormlite.dao.Dao;
 
 import butterknife.BindView;
 
@@ -29,7 +25,7 @@ import butterknife.BindView;
  * Created by choijinjoo on 2017. 8. 8..
  */
 
-public class RepositoryDetailActivity extends BaseActivity implements View.OnClickListener, ChildEventListener{
+public class RepositoryDetailActivity extends BaseActivity implements View.OnClickListener, Dao.DaoObserver{
     @BindView(R.id.imgvBookMark) ImageView imgvBookMark;
     @BindView(R.id.imgvShare) ImageView imgvShare;
     @BindView(R.id.imgvPreview) ImageView imgvPreview;
@@ -41,16 +37,15 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.txtvAuthor) TextView txtvAuthor;
     @BindView(R.id.imgvGithub) ImageView imgvGithub;
     @BindView(R.id.recvSimmilarLibs) RecyclerView recvSimmilarLibs;
+    RepositoryRepository repositoryRepository;
     SimmilarsAdapter simmilarsAdapter;
     Repository repository;
-    Query query;
 
 
-    public static Intent getStartIntent(Context context, Repository repository) {
+    public static Intent getStartIntent(Context context, String repoId) {
         Intent intent = new Intent(context, RepositoryDetailActivity.class);
-        intent.putExtra("repository", Parcels.wrap(repository));
+        intent.putExtra("repoId", repoId);
         return intent;
-
     }
 
     @Override
@@ -60,17 +55,9 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
 
     @Override
     protected void initLayout() {
-        repository = Parcels.unwrap(getIntent().getParcelableExtra("repository"));
-        Glide.with(this)
-                .load(repository.getImage())
-                .into(imgvPreview);
-        txtvName.setText(repository.getName());
-        txtvDescription.setText(repository.getDescription());
-        txtvAuthor.setText("by. " + repository.getAuthor());
-        btnIssue.setOnClickListener(it -> showWebViewActivity(repository.getIssueUrl()));
-        imgvGithub.setOnClickListener(it -> showWebViewActivity(repository.getGit()));
-        txtvStar.setText(repository.getFormattedStarString());
-        txtvIssueCount.setText(Integer.toString(repository.getIssue()));
+        repositoryRepository = new RepositoryRepository(this);
+        String repoId = getIntent().getStringExtra("repoId");
+        loadData(repoId);
 
         recvSimmilarLibs.setLayoutManager(new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false));
         simmilarsAdapter = new SimmilarsAdapter(this, position -> moveToDetailActivity(simmilarsAdapter.getItem(position)));
@@ -78,6 +65,19 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
         imgvBookMark.setOnClickListener(this);
     }
 
+    protected void loadData(String repoId) {
+        super.loadData();
+        repository = repositoryRepository.getRepositoryById(repoId);
+        Glide.with(this).load(repository.getImage()).into(imgvPreview);
+        txtvName.setText(repository.getName());
+        txtvDescription.setText(repository.getDescription());
+        txtvAuthor.setText("by. " + repository.getAuthor());
+        btnIssue.setOnClickListener(it -> showWebViewActivity(repository.getIssueUrl()));
+        imgvGithub.setOnClickListener(it -> showWebViewActivity(repository.getGit()));
+        txtvStar.setText(repository.getFormattedStarString());
+        txtvIssueCount.setText(Integer.toString(repository.getIssue()));
+        imgvBookMark.setSelected(repository.getBookmark());
+    }
 
     private void showWebViewActivity(String url) {
         Intent intent = WebViewAcitivty.getStartIntent(this,url);
@@ -87,73 +87,45 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
 
 
     private void moveToDetailActivity(Repository repository) {
-        startActivity(RepositoryDetailActivity.getStartIntent(RepositoryDetailActivity.this, repository));
+        startActivity(RepositoryDetailActivity.getStartIntent(RepositoryDetailActivity.this, repository.getId()));
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            query = UserDataSource.getInstance().getBookmark(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            query.addChildEventListener(this);
-        } else {
-            imgvBookMark.setSelected(false);
-        }
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        query.removeEventListener(this);
-    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgvBookMark:
-                if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-                    showToastMessage(R.string.toast_message_no_auth);
-                } else {
-                    if(!imgvBookMark.isSelected())
-                        UserDataSource.getInstance().addBookmark(FirebaseAuth.getInstance().getCurrentUser().getUid(),repository.getId());
-                    else
-                        UserDataSource.getInstance().deleteBookmark(FirebaseAuth.getInstance().getCurrentUser().getUid(),repository.getId());
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    if(!repository.getBookmark()) {
+                        UserDataSource.getInstance().addBookmark(FirebaseAuth.getInstance().getCurrentUser().getUid(), repository.getId());
+                    }
+                    else {
+                        UserDataSource.getInstance().deleteBookmark(FirebaseAuth.getInstance().getCurrentUser().getUid(), repository.getId());
+                    }
                 }
+                repository.clickBookmark();
+                repositoryRepository.updateRepository(repository);
                 break;
         }
-    }
-
-
-    /*
-     *  Repository DataReference change listener
-     */
-
-    @Override
-    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-        String repositoryId = (String)dataSnapshot.getValue();
-        if(repositoryId.equals(repository.getId()))
-            imgvBookMark.setSelected(true);
-    }
-
-    @Override
-    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
     }
 
     @Override
-    public void onChildRemoved(DataSnapshot dataSnapshot) {
-        String repositoryId = (String)dataSnapshot.getValue();
-        if(repositoryId.equals(repository.getId()))
-            imgvBookMark.setSelected(false);
+    public void onChange() {
+        loadData(repository.getId());
     }
 
     @Override
-    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+    protected void onStart() {
+        super.onStart();
+        repositoryRepository.registerDaoObserver(this);
     }
 
     @Override
-    public void onCancelled(DatabaseError databaseError) {
+    protected void onStop() {
+        super.onStop();
+        repositoryRepository.unregisterDaoObserver(this);
 
     }
 }

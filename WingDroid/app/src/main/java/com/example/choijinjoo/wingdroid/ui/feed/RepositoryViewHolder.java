@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
+import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.ui.base.BaseViewHolder;
 
 import org.apmem.tools.layouts.FlowLayout;
@@ -40,9 +41,9 @@ public class RepositoryViewHolder extends BaseViewHolder<Repository> {
         txtvStar.setText(item.getFormattedStarString());
         txtvDate.setText(item.getCreatedAtDateFormattedString());
         flowLayout.removeAllViews();
-        for (String tag : item.getTags()) {
-            TextView txtvTag = LayoutInflater.from(context).inflate(R.layout.item_tag, null, false).findViewById(R.id.txtvTag);
-            txtvTag.setText(tag);
+        for (Tag tag : item.getTags()) {
+            TextView txtvTag = (TextView) LayoutInflater.from(context).inflate(R.layout.item_tag, null, false).findViewById(R.id.txtvTag);
+            txtvTag.setText(tag.toString());
             flowLayout.addView(txtvTag);
         }
 
