@@ -58,7 +58,7 @@ public class SharedPreferenceHelper {
         return sharedPreferences.getLong(key, 0);
     }
 
-    public void setLongValue(Context context, String key, Long value) {
+    public void putLongValue(Context context, String key, Long value) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, 0);
         sharedPreferences.edit().putLong(key, value).apply();
     }

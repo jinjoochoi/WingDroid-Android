@@ -26,8 +26,8 @@ import java.util.Set;
 
 import butterknife.BindView;
 
-import static com.example.choijinjoo.wingdroid.model.Repository.ID_FIELD_BOOKMARKED_AT;
-import static com.example.choijinjoo.wingdroid.model.Repository.ID_FIELD_STAR;
+import static com.example.choijinjoo.wingdroid.model.Repository.BOOKMARK_FIELD;
+import static com.example.choijinjoo.wingdroid.model.Repository.STAR_FIELD;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -109,12 +109,12 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
             if (isAll())
                 adapter.setItems(repositoryRepository.getAllReposOrderByDate());
             else
-                adapter.setItems(rtCategoryRepositoryRepository.getBookmarkForCategories(ID_FIELD_BOOKMARKED_AT, categories));
+                adapter.setItems(rtCategoryRepositoryRepository.getBookmarkForCategories(BOOKMARK_FIELD, categories));
         }else {
             if (isAll())
                 adapter.setItems(repositoryRepository.getAllReposOrderByStar());
             else
-                adapter.setItems(rtCategoryRepositoryRepository.getBookmarkForCategories(ID_FIELD_STAR, categories));
+                adapter.setItems(rtCategoryRepositoryRepository.getBookmarkForCategories(STAR_FIELD, categories));
         }
     }
 

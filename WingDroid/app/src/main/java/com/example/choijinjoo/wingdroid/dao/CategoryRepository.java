@@ -34,7 +34,7 @@ public class CategoryRepository extends BaseRepository {
 
     public Category getCategoryByName(String name) {
         try {
-            return categoryDao.queryBuilder().where().eq("name",name).queryForFirst();
+            return categoryDao.queryBuilder().where().eq(Category.NAME_FIELD,name).queryForFirst();
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -44,7 +44,7 @@ public class CategoryRepository extends BaseRepository {
     public List<Category> getCategoriesOrderByName() {
         List<Category> results = new ArrayList<>();
         try {
-            results.addAll(categoryDao.queryBuilder().orderBy("name",true).query());
+            results.addAll(categoryDao.queryBuilder().orderBy(Category.NAME_FIELD,true).query());
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

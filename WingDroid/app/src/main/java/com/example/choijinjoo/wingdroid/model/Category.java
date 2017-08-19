@@ -13,11 +13,12 @@ import org.parceler.Parcel;
 @DatabaseTable(tableName = "category")
 @Parcel(value = Parcel.Serialization.BEAN)
 public class Category {
-    public final static String ID_FIELD_NAME = "id";
+    public final static String ID_FIELD = "category_id";
+    public final static String NAME_FIELD = "category_name";
 
-    @DatabaseField(unique = true, id = true, columnName = ID_FIELD_NAME)
+    @DatabaseField(unique = true, id = true, columnName = ID_FIELD)
     String id;
-    @DatabaseField
+    @DatabaseField(columnName = NAME_FIELD)
     String name;
     @DatabaseField
     boolean selected ;

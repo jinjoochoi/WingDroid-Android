@@ -11,8 +11,6 @@ import com.example.choijinjoo.wingdroid.ui.base.BaseViewHolder;
 
 import butterknife.BindView;
 
-import static com.example.choijinjoo.wingdroid.ui.search.SearchResultActivity.SEARCH_BY_CATEGORY;
-
 public class SearchHistoryViewHolder extends BaseViewHolder<SearchHistory> {
     @BindView(R.id.txtvHistory) TextView txtvHistory;
     @BindView(R.id.imgvDelete) ImageView imgvDelete;
@@ -23,10 +21,6 @@ public class SearchHistoryViewHolder extends BaseViewHolder<SearchHistory> {
 
     @Override
     public void bindData(SearchHistory item) {
-        if (item.getType().equals(SEARCH_BY_CATEGORY))
-            txtvHistory.setText(item.getCategory().getName());
-        else
-            txtvHistory.setText(item.getSearch());
-
+        txtvHistory.setText(item.getSearch());
     }
 }

@@ -11,45 +11,50 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 
 import com.example.choijinjoo.wingdroid.R;
+import com.example.choijinjoo.wingdroid.dao.RTCategoryRepositoryRepository;
+import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
+import com.example.choijinjoo.wingdroid.dao.SearchHistoryRepository;
 import com.example.choijinjoo.wingdroid.model.Category;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.SearchHistory;
-import com.example.choijinjoo.wingdroid.source.remote.firebase.RepositoryDataSource;
-import com.example.choijinjoo.wingdroid.source.remote.firebase.UserDataSource;
 import com.example.choijinjoo.wingdroid.tools.FirebaseArray;
 import com.example.choijinjoo.wingdroid.tools.StringUtils;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
+import com.j256.ormlite.dao.Dao;
 import com.jakewharton.rxbinding2.widget.RxSearchView;
 
 import org.parceler.Parcels;
 
-import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.example.choijinjoo.wingdroid.model.SearchHistory.SEARCH_TYPE_CATEGORY;
+import static com.example.choijinjoo.wingdroid.model.SearchHistory.SEARCH_TYPE_TEXT;
+
 /**
  * Created by choijinjoo on 2017. 8. 16..
  */
 
-public class SearchResultActivity extends BaseActivity  {
-    public static final String SEARCH_BY_CATEGORY = "category";
-    public static final String SEARCH_BY_NAME = "name";
-    public static final String SEARCH_BY_TAG = "tag";
+public class SearchResultActivity extends BaseActivity implements Dao.DaoObserver{
 
-    @BindView(R.id.searchView) SearchView searchView;
-    @BindView(R.id.containerHistory) LinearLayout containerHistory;
-    @BindView(R.id.containerResult) RelativeLayout containerResult;
-    @BindView(R.id.containerEmpty) RelativeLayout containerEmpty;
-    @BindView(R.id.recvResults) RecyclerView recvResults;
-    @BindView(R.id.recvHistories) RecyclerView recvHistories;
-    @BindView(R.id.btnSearch) RelativeLayout btnSearch;
+    @BindView(R.id.searchView)
+    SearchView searchView;
+    @BindView(R.id.containerHistory)
+    LinearLayout containerHistory;
+    @BindView(R.id.containerResult)
+    RelativeLayout containerResult;
+    @BindView(R.id.containerEmpty)
+    RelativeLayout containerEmpty;
+    @BindView(R.id.recvResults)
+    RecyclerView recvResults;
+    @BindView(R.id.recvHistories)
+    RecyclerView recvHistories;
+    @BindView(R.id.btnSearch)
+    RelativeLayout btnSearch;
     FirebaseArray resultFBArray;
     FirebaseArray resultHistoryFBArray;
 
@@ -57,6 +62,10 @@ public class SearchResultActivity extends BaseActivity  {
 
     SearchResultAdapter resultAdapter;
     SearchHistoryAdapter searchHistoryAdapter;
+
+    RTCategoryRepositoryRepository rtCategoryRepositoryRepository;
+    SearchHistoryRepository searchHistoryRepository;
+    RepositoryRepository repositoryRepository;
 
 
     public static Intent getStartIntent(Context context) {
@@ -66,7 +75,7 @@ public class SearchResultActivity extends BaseActivity  {
 
     public static Intent getStartIntent(Context context, Category category) {
         Intent intent = new Intent(context, SearchResultActivity.class);
-        intent.putExtra(SEARCH_BY_CATEGORY, Parcels.wrap(category));
+        intent.putExtra(SearchHistory.SEARCH_TYPE_CATEGORY, Parcels.wrap(category));
         return intent;
     }
 
@@ -80,28 +89,27 @@ public class SearchResultActivity extends BaseActivity  {
         RxSearchView.queryTextChanges(searchView)
                 .doOnNext(this::init)
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .filter(c -> !StringUtils.isEmpty(c) && !searchType.equals(SEARCH_BY_CATEGORY))
+                .filter(c -> !StringUtils.isEmpty(c) && !searchType.equals(SearchHistory.SEARCH_TYPE_CATEGORY))
                 .map(c -> c.toString())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::searchWithName);
+                .subscribe(this::searchWithText);
+
 
         // search history container
         searchHistoryAdapter = new SearchHistoryAdapter(this,
                 new SearchHistoryAdapter.SearchHistoryListener() {
                     @Override
                     public void selected(int position) {
-                        if(searchHistoryAdapter.getItem(position).getType().equals(SEARCH_BY_CATEGORY))
-                            searchWithCategory(searchHistoryAdapter.getItem(position).getCategory());
-                        else{
-                            searchWithName(searchHistoryAdapter.getItem(position).getSearch());
+                        if (searchHistoryAdapter.getItem(position).getSearch().equals(SearchHistory.SEARCH_TYPE_CATEGORY))
+                            searchWithText(searchHistoryAdapter.getItem(position).getSearch());
+                        else {
+                            searchWithText(searchHistoryAdapter.getItem(position).getSearch());
                         }
                     }
 
                     @Override
                     public void delete(int position) {
-                        UserDataSource.getInstance().deleteSearchHistory(
-                                FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                                searchHistoryAdapter.getItem(position).getId());
+                        searchHistoryRepository.deleteSearchHistory(searchHistoryAdapter.getItem(position));
                     }
                 });
         recvHistories.setAdapter(searchHistoryAdapter);
@@ -109,20 +117,20 @@ public class SearchResultActivity extends BaseActivity  {
             searchView.onActionViewExpanded();
         });
         searchView.setOnQueryTextFocusChangeListener(((view, b) -> {
-            if(!view.isFocused()) {
+            if (!view.isFocused()) {
                 containerHistory.setVisibility(View.VISIBLE);
                 containerResult.setVisibility(View.GONE);
             }
         }));
 
         // result container
-        resultAdapter = new SearchResultAdapter(this,this::moveToDetailActivity);
-        recvResults.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        resultAdapter = new SearchResultAdapter(this, this::moveToDetailActivity);
+        recvResults.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recvResults.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recvResults.setAdapter(resultAdapter);
 
         // result history container
-        LinearLayoutManager linearLayout = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager linearLayout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         linearLayout.setStackFromEnd(true);
         linearLayout.setReverseLayout(true);
         recvHistories.setLayoutManager(linearLayout);
@@ -131,46 +139,46 @@ public class SearchResultActivity extends BaseActivity  {
 
     }
 
-    private void init(CharSequence str){
-        if(containerEmpty.getVisibility() == View.VISIBLE)
+    private void init(CharSequence str) {
+        if (containerEmpty.getVisibility() == View.VISIBLE)
             containerEmpty.setVisibility(View.GONE);
     }
 
 
-    public void searchWithName(String name) {
-        searchType = SEARCH_BY_NAME;
+    public void searchWithText(String text) {
+        searchType = SEARCH_TYPE_TEXT;
         containerHistory.setVisibility(View.GONE);
         containerResult.setVisibility(View.VISIBLE);
-        Query query = RepositoryDataSource.getInstance().repositoriesByName(name);
-        resultFBArray = new FirebaseArray(query);
-        resultFBArray.setOnChangedListener(resultArrayListener);
+        repositoryRepository.getRepositoryByText(text);
     }
 
     private void searchWithCategory(Category category) {
-        searchType = SEARCH_BY_CATEGORY;
+        searchType = SearchHistory.SEARCH_TYPE_CATEGORY;
         searchView.onActionViewExpanded();
 
         searchView.setQuery(category.getName(), false);
         containerHistory.setVisibility(View.GONE);
-        containerResult.setVisibility(View.VISIBLE);
-        Query query = RepositoryDataSource.getInstance().repositoriesByCategory(category);
-        resultFBArray = new FirebaseArray(query);
-        resultFBArray.setOnChangedListener(resultArrayListener);
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(firebaseUser != null) {
-            UserDataSource.getInstance().addSearchHistory(firebaseUser.getUid(),
-                    new SearchHistory(category, Calendar.getInstance().getTime(), SEARCH_BY_CATEGORY));
+        List<Repository> result = rtCategoryRepositoryRepository.getRepoForCategoryOrderByStar(category);
+        if (result.size() == 0) {
+            containerResult.setVisibility(View.GONE);
+            containerEmpty.setVisibility(View.VISIBLE);
+        } else {
+            containerEmpty.setVisibility(View.GONE);
+            containerResult.setVisibility(View.VISIBLE);
+            resultAdapter.setItems(rtCategoryRepositoryRepository.getRepoForCategoryOrderByStar(category));
         }
+        addSearchHistory(category.getName(), SEARCH_TYPE_CATEGORY);
+
+    }
+
+    private void addSearchHistory(String searchs, String searchType) {
+        searchHistoryRepository.addSearchHistory(new SearchHistory(searchs, searchType));
     }
 
 
-    private void moveToDetailActivity(int position){
-        if(searchType == SEARCH_BY_NAME){
-            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            if(firebaseUser != null) {
-                UserDataSource.getInstance().addSearchHistory(firebaseUser.getUid(),
-                        new SearchHistory(searchView.getQuery().toString(), Calendar.getInstance().getTime(), SEARCH_BY_NAME));
-            }
+    private void moveToDetailActivity(int position) {
+        if (searchType.equals(SEARCH_TYPE_TEXT)) {
+            addSearchHistory(resultAdapter.getItem(position).getName(), SEARCH_TYPE_TEXT);
         }
         Intent intent = RepositoryDetailActivity.getStartIntent(this, resultAdapter.getItem(position).getId());
         startActivity(intent);
@@ -180,14 +188,17 @@ public class SearchResultActivity extends BaseActivity  {
     @Override
     protected void loadData() {
         super.loadData();
+        rtCategoryRepositoryRepository = new RTCategoryRepositoryRepository(this);
+        repositoryRepository = new RepositoryRepository(this);
+        searchHistoryRepository = new SearchHistoryRepository(this);
+
         // start search with category
-        Category category = Parcels.unwrap(getIntent().getParcelableExtra(SEARCH_BY_CATEGORY));
+        Category category = Parcels.unwrap(getIntent().getParcelableExtra(SEARCH_TYPE_CATEGORY));
         if (category != null) {
             searchWithCategory(category);
         }
-        Query query = UserDataSource.getInstance().getSearchHistories(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        resultHistoryFBArray = new FirebaseArray(query);
-        resultHistoryFBArray.setOnChangedListener(resultHistoryArrayListener);
+
+        searchHistoryAdapter.setItems(searchHistoryRepository.getSearchHistories());
     }
 
 
@@ -197,104 +208,23 @@ public class SearchResultActivity extends BaseActivity  {
         overridePendingTransition(0, 0);
     }
 
-    /*
-     * Repository Result Data Source change Listener
-     */
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        searchHistoryRepository.registerDaoObserver(this);
+    }
 
-    FirebaseArray.OnChangedListener resultArrayListener = new FirebaseArray.OnChangedListener() {
-        @Override
-        public void onChildChanged(EventType type, int index, int oldIndex) {
-            switch (type) {
-                case ADDED:
-                    // Category로 검색한 경우
-                    if (searchType.equals(SEARCH_BY_CATEGORY)) {
-                        String repositoryId = (String) resultFBArray.getItem(index).getValue();
-                        RepositoryDataSource.getInstance().getRepositoryById(
-                                repositoryId, new RepositoryDataSource.RepositoryListener() {
-                                    @Override
-                                    public void added(Repository repository) {
-                                        repository.setId(repositoryId);
-                                        resultAdapter.add(repository);
-                                    }
-                                    @Override
-                                    public void empty() {
+    @Override
+    protected void onStop() {
+        super.onStop();
+        searchHistoryRepository.unregisterDaoObserver(this);
 
-                                    }
-                                });
-                    } else {
-                        // name으로 검색한 경우
-                        Repository repository = resultFBArray.getItem(index).getValue(Repository.class);
-                        repository.setId(resultFBArray.getItem(index).getKey());
-                        resultAdapter.add(repository);
-                    }
-                    break;
-                case CHANGED:
-                    if (searchType.equals(SEARCH_BY_CATEGORY)) {
-                        String repositoryId = (String) resultFBArray.getItem(index).getValue();
-                        RepositoryDataSource.getInstance().getRepositoryById(repositoryId, new RepositoryDataSource.RepositoryListener() {
-                            @Override
-                            public void added(Repository repository) {
-                                repository.setId(repositoryId);
-                                resultAdapter.change(index, repository);
-                            }
+    }
 
-                            @Override
-                            public void empty() {
-
-                            }
-                        });
-                    } else {
-                        resultAdapter.change(index, resultFBArray.getItem(index).getValue(Repository.class));
-                    }
-                case REMOVED:
-                    resultAdapter.remove(index);
-                    break;
-                case MOVED:
-                    resultAdapter.notifyItemMoved(oldIndex, index);
-                    break;
-                default:
-                    throw new IllegalStateException("Incomplete case statement");
-            }
-        }
-
-        @Override
-        public void onDataChanged() {
-            if(resultFBArray.getCount() == 0 && containerEmpty.getVisibility() == View.GONE){
-                containerEmpty.setVisibility(View.VISIBLE);
-            }
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
-    };
-
-
-    FirebaseArray.OnChangedListener resultHistoryArrayListener = new FirebaseArray.OnChangedListener() {
-        @Override
-        public void onChildChanged(EventType type, int index, int oldIndex) {
-            switch (type) {
-                case ADDED:
-                    SearchHistory searchHistory = resultHistoryFBArray.getItem(index).getValue(SearchHistory.class);
-                    searchHistory.setId(resultHistoryFBArray.getItem(index).getKey());
-                    searchHistoryAdapter.add(searchHistory);
-                    break;
-                case REMOVED:
-                    searchHistoryAdapter.remove(index);
-                    break;
-            }
-        }
-
-        @Override
-        public void onDataChanged() {
-
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
-    };
+    @Override
+    public void onChange() {
+        searchHistoryAdapter.setItems(searchHistoryRepository.getSearchHistories());
+        searchHistoryAdapter.notifyDataSetChanged();
+    }
 }

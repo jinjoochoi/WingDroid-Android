@@ -7,6 +7,7 @@ import com.example.choijinjoo.wingdroid.model.Category;
 import com.example.choijinjoo.wingdroid.model.RTCategoryRepository;
 import com.example.choijinjoo.wingdroid.model.RTTagRepository;
 import com.example.choijinjoo.wingdroid.model.Repository;
+import com.example.choijinjoo.wingdroid.model.SearchHistory;
 import com.example.choijinjoo.wingdroid.model.Tag;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
@@ -23,7 +24,7 @@ import java.util.List;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "WingDroid.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 7;
 
 
     private List<BaseRepository> repositories = new ArrayList<>();
@@ -49,6 +50,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Tag.class);
             TableUtils.createTable(connectionSource, RTCategoryRepository.class);
             TableUtils.createTable(connectionSource, RTTagRepository.class);
+            TableUtils.createTable(connectionSource, SearchHistory.class);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -68,6 +70,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Tag.class, true);
             TableUtils.dropTable(connectionSource, RTCategoryRepository.class, true);
             TableUtils.dropTable(connectionSource, RTTagRepository.class, true);
+            TableUtils.dropTable(connectionSource, SearchHistory.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(db, connectionSource);
         } catch (SQLException e) {
@@ -87,6 +90,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     TagDao tagDao;
     RTCategoryRepositoryDao rtCategoryRepositoryDao;
     RTTagRepositoryDao rtTagRepositoryDao;
+    SearchHistoryDao searchHistoryDao;
 
     public RepositoryDao getRepoDao() {
         try {
@@ -144,6 +148,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return rtCategoryRepositoryDao;
     }
 
+    public SearchHistoryDao getSearchHistoryDao() {
+        try {
+            if (searchHistoryDao == null) {
+                searchHistoryDao = new SearchHistoryDao(getConnectionSource());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return searchHistoryDao;
+    }
+
     /**
      * Close the database connections and clear any cached DAOs.
      */
@@ -155,5 +170,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         categoryDao = null;
         rtCategoryRepositoryDao = null;
         rtTagRepositoryDao = null;
+        searchHistoryDao = null;
     }
 }

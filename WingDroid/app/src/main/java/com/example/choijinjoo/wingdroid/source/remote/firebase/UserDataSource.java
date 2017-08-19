@@ -1,6 +1,5 @@
 package com.example.choijinjoo.wingdroid.source.remote.firebase;
 
-import com.example.choijinjoo.wingdroid.model.SearchHistory;
 import com.example.choijinjoo.wingdroid.model.User;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -62,11 +61,5 @@ public class UserDataSource {
                 .setValue(user);
     }
 
-    public void addSearchHistory(String userId, SearchHistory searchHistory) {
-        FirebaseDatabase.getInstance().getReference().child("users")
-                .child(userId)
-                .child("searchHistories")
-                .child(String.valueOf(searchHistory.getInsertedAt().getTime()))
-                .setValue(searchHistory);
-    }
+
 }

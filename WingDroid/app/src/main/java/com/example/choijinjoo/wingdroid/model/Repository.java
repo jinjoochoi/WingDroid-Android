@@ -21,13 +21,14 @@ import java.util.List;
 @Parcel(value = Parcel.Serialization.BEAN)
 @DatabaseTable(tableName = "repository")
 public class Repository {
-    public final static String ID_FIELD_NAME = "id";
-    public final static String ID_FIELD_BOOKMARKED_AT = "bookmarkedAt";
-    public final static String ID_FIELD_STAR = "star";
+    public final static String ID_FIELD = "repo_id";
+    public final static String NAME_FIELD = "repo_name";
+    public final static String BOOKMARK_FIELD = "bookmarkedAt";
+    public final static String STAR_FIELD = "star";
 
-    @DatabaseField(unique = true, id = true, columnName = ID_FIELD_NAME)
+    @DatabaseField(unique = true, id = true, columnName = ID_FIELD)
     String id;
-    @DatabaseField
+    @DatabaseField(columnName = NAME_FIELD)
     String name;
     @DatabaseField
     String author;
@@ -37,7 +38,7 @@ public class Repository {
     String description;
     @DatabaseField
     Integer watch;
-    @DatabaseField(columnName = ID_FIELD_STAR)
+    @DatabaseField(columnName = STAR_FIELD)
     Integer star;
     @DatabaseField
     Integer fork;
@@ -56,8 +57,10 @@ public class Repository {
     Integer simulatable;
     @DatabaseField
     boolean bookmark;
-    @DatabaseField(columnName = ID_FIELD_BOOKMARKED_AT)
+    @DatabaseField(columnName = BOOKMARK_FIELD)
     Date bookmarkedAt;
+    @DatabaseField
+    int clicks;
 
     @ParcelPropertyConverter(TagListParcelConverter.class)
     List<Tag> tags;
@@ -214,6 +217,10 @@ public class Repository {
     public Date getBookmarkedAt() { return bookmarkedAt; }
 
     public void setBookmarkedAt(Date bookmarkedAt) { this.bookmarkedAt = bookmarkedAt; }
+
+    public int getClicks() { return clicks; }
+
+    public void setClicks(int clicks) { this.clicks = clicks; }
 
     /*
      * Custom method

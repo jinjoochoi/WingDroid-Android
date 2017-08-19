@@ -212,6 +212,8 @@ public class FirebaseSyncRepository {
                     if (!need_update) {
                         needUpdatePS.onNext(need_update);
                     }
+                    //FIXME : Load가 다 된 다음에
+                    SharedPreferenceHelper.getInstance().putLongValue(context,LOAD_UPDATEDAT,updatedAt.getUpdatedAt());
                     categoryFirebaseArray = new FirebaseArray2(categoryQuery);
                     tagsFirebaseArray = new FirebaseArray2(tagQuery);
                     repoFirebaseArray = new FirebaseArray2(repoQuery);

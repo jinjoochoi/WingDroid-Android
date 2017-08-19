@@ -3,6 +3,7 @@ package com.example.choijinjoo.wingdroid.dao;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.choijinjoo.wingdroid.model.Category;
 import com.example.choijinjoo.wingdroid.model.RTTagRepository;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.Tag;
@@ -39,7 +40,7 @@ public class RepositoryRepository extends BaseRepository {
     public Repository getRepositoryById(String repoId) {
         Repository result = null;
         try {
-            result = setTagsForRepo(repositoryDao.queryBuilder().where().eq("id", repoId).queryForFirst());
+            result = setTagsForRepo(repositoryDao.queryBuilder().where().eq(Repository.ID_FIELD, repoId).queryForFirst());
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -50,6 +51,25 @@ public class RepositoryRepository extends BaseRepository {
         List<Repository> results = new ArrayList<>();
         try {
             results.addAll(setTagsForRepo(repositoryDao.queryForAll()));
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return results;
+    }
+
+    public List<Repository> getRepositoryByText(String text) {
+        List<Repository> results = new ArrayList<>();
+        try {
+            QueryBuilder<Repository,Integer> repoQB = repositoryDao.queryBuilder();
+            QueryBuilder<Category,Integer> categoryQB = dbHelper.getCategoryDao().queryBuilder();
+            QueryBuilder<Tag,Integer> tagQB = tagDao.queryBuilder();
+
+            QueryBuilder<Repository,Integer> repoCategoryQB = repoQB.join(categoryQB);
+            QueryBuilder<Repository,Integer> repoCategoryTagQB = repoCategoryQB.join(tagQB);
+
+            repoCategoryTagQB.where().eq(Category.NAME_FIELD,text).or().eq(Repository.NAME_FIELD,text).or().eq(Tag.NAME_FIELD,text).query();
+
+            return results;
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -69,7 +89,7 @@ public class RepositoryRepository extends BaseRepository {
     public List<Repository> getAllReposOrderByStar() {
         List<Repository> results = new ArrayList<>();
         try {
-            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy("star", false).query()));
+            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy(Repository.STAR_FIELD, false).query()));
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -166,7 +186,7 @@ public class RepositoryRepository extends BaseRepository {
         rtTRQb.where().eq(RTTagRepository.REPO_ID_FIELD_NAME, repoSA);
 
         QueryBuilder<Tag, Integer> tagQb = tagDao.queryBuilder();
-        tagQb.where().in(Repository.ID_FIELD_NAME, rtTRQb);
+        tagQb.where().in(Tag.ID_FIELD, rtTRQb);
         return tagQb.prepare();
     }
 }

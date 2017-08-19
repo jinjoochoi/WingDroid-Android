@@ -132,7 +132,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         rtTRQb.where().eq(RTTagRepository.REPO_ID_FIELD_NAME, repoSA);
 
         QueryBuilder<Tag, Integer> tagQb = tagDao.queryBuilder();
-        tagQb.where().in(Repository.ID_FIELD_NAME, rtTRQb);
+        tagQb.where().in(Tag.ID_FIELD, rtTRQb);
         return tagQb.prepare();
     }
 
@@ -143,7 +143,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
 
         QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
-        repositoryQb.orderBy(order_by, ascending).where().eq("bookmark",true).and().in(Repository.ID_FIELD_NAME, rtCRQb);
+        repositoryQb.orderBy(order_by, ascending).where().eq("bookmark",true).and().in(Repository.ID_FIELD, rtCRQb);
         return repositoryQb.prepare();
     }
 
@@ -154,7 +154,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
 
         QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
-        repositoryQb.orderBy("createdAt", false).where().in(Repository.ID_FIELD_NAME, rtCRQb);
+        repositoryQb.orderBy("createdAt", false).where().in(Repository.ID_FIELD, rtCRQb);
         return repositoryQb.prepare();
     }
 
@@ -165,7 +165,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
 
         QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
-        repositoryQb.orderBy("star", false).where().in(Repository.ID_FIELD_NAME, rtCRQb);
+        repositoryQb.orderBy(Repository.STAR_FIELD, false).where().in(Repository.ID_FIELD, rtCRQb);
         return repositoryQb.prepare();
     }
 
