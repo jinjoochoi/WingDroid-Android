@@ -1,11 +1,19 @@
 package com.example.choijinjoo.wingdroid.ui.begin;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.service.FirebaseDataSyncService;
+import com.example.choijinjoo.wingdroid.service.DataSyncResultReceiver;
+import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
+
+import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper.Config.LOADED_CATEGORY;
+import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper.Config.LOADED_REPOSITORY;
+import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper.Config.LOADED_TAG;
 
 /**
  * Created by choijinjoo on 2017. 8. 18..
@@ -13,7 +21,7 @@ import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 
 public class SplashActivity extends BaseActivity {
 
-    private final int SPLASH_DISPLAY_LENGTH = 1000;
+    DataSyncResultReceiver syncResultReceiver;
 
     @Override
     protected int getLayoutId() {
@@ -22,17 +30,45 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initLayout() {
-        new Handler().postDelayed(() -> {
-            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }, SPLASH_DISPLAY_LENGTH);
+
+    }
+
+    private boolean isDataLoaded() {
+        return SharedPreferenceHelper.getInstance().getBooleanValue(this, LOADED_CATEGORY, false) &&
+                SharedPreferenceHelper.getInstance().getBooleanValue(this, LOADED_REPOSITORY, false) &&
+                SharedPreferenceHelper.getInstance().getBooleanValue(this, LOADED_TAG, false);
     }
 
     @Override
     protected void loadData() {
         super.loadData();
-        Intent intent = new Intent(this, FirebaseDataSyncService.class);
-        startService(intent);
+
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(messageReceiver,
+                        new IntentFilter("initial-load"));
+    }
+
+    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(RESULT_OK == intent.getIntExtra("result",-1)){
+                Intent startIntent = new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(startIntent);
+                finish();
+            }
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(messageReceiver);
+        super.onPause();
+    }
+
 }

@@ -32,6 +32,15 @@ public class CategoryRepository extends BaseRepository {
         return results;
     }
 
+    public Category getCategoryByName(String name) {
+        try {
+            return categoryDao.queryBuilder().where().eq("name",name).queryForFirst();
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return null;
+    }
+
     public List<Category> getCategoriesOrderByName() {
         List<Category> results = new ArrayList<>();
         try {

@@ -1,7 +1,9 @@
 package com.example.choijinjoo.wingdroid;
 
 import android.app.Application;
+import android.content.Intent;
 
+import com.example.choijinjoo.wingdroid.service.FirebaseDataSyncService;
 import com.facebook.stetho.Stetho;
 import com.google.firebase.FirebaseApp;
 
@@ -20,6 +22,9 @@ public class WingDroidApp extends Application {
         instance = this;
         FirebaseApp.initializeApp(this);
         Stetho.initializeWithDefaults(this);
+
+        Intent intent = new Intent(this, FirebaseDataSyncService.class);
+        startService(intent);
     }
 
 }

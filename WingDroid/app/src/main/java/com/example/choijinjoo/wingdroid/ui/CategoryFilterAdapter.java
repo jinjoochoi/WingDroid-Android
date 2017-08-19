@@ -37,4 +37,40 @@ public class CategoryFilterAdapter extends BaseAdapter<Category, CategoryFilterV
         holder.bindData(items.get(position));
     }
 
+    public AdapterItemInfo getItemByName(String name) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getName().equals(name))
+                return new AdapterItemInfo(items.get(i),i);
+            return null;
+        }
+        return null;
+    }
+
+
+    class AdapterItemInfo {
+        Category category;
+        int position;
+
+        public AdapterItemInfo(Category category, int position) {
+            this.category = category;
+            this.position = position;
+        }
+
+        public Category getCategory() {
+            return category;
+        }
+
+        public void setCategory(Category category) {
+            this.category = category;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+    }
+
 }

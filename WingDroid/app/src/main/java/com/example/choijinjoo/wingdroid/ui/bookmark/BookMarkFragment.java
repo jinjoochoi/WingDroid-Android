@@ -13,26 +13,33 @@ import com.example.choijinjoo.wingdroid.dao.RTCategoryRepositoryRepository;
 import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.model.Category;
 import com.example.choijinjoo.wingdroid.model.SortCriteria;
+import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
 import com.example.choijinjoo.wingdroid.ui.CategoryFilterDialog;
 import com.example.choijinjoo.wingdroid.ui.SelectSortCriteriaDialog;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
 import com.j256.ormlite.dao.Dao;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 
 import static com.example.choijinjoo.wingdroid.model.Repository.ID_FIELD_BOOKMARKED_AT;
+import static com.example.choijinjoo.wingdroid.model.Repository.ID_FIELD_STAR;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
 public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
-    @BindView(R.id.recvRepositories) RecyclerView recvRepositories;
-    @BindView(R.id.containerSort) LinearLayout containerSort;
-    @BindView(R.id.imgvFilter) ImageView imgvFilter;
+    @BindView(R.id.recvRepositories)
+    RecyclerView recvRepositories;
+    @BindView(R.id.containerSort)
+    LinearLayout containerSort;
+    @BindView(R.id.imgvFilter)
+    ImageView imgvFilter;
     BookMarkAdapter adapter;
     RTCategoryRepositoryRepository rtCategoryRepositoryRepository;
     RepositoryRepository repositoryRepository;
@@ -65,15 +72,50 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
         repositoryRepository.registerDaoObserver(this);
         order_by = SortCriteria.RECENT;
         categories = categoryRepository.getCategoriesOrderByName();
-        loadData(categories);
+
+        loadSelectedCategories();
+
+        loadData();
 
     }
 
-    protected void loadData(List<Category> categories) {
-        if (order_by == SortCriteria.RECENT)
-            adapter.setItems(rtCategoryRepositoryRepository.getBookmarkForCategories(ID_FIELD_BOOKMARKED_AT,categories));
-        else
-         this.categories = categories;
+    private void loadSelectedCategories() {
+        Set<String> selectedCategory = SharedPreferenceHelper.getInstance().getStringSetValue(
+                getContext(), SharedPreferenceHelper.Config.BOOKMARK_CATEGORY_FILTER,
+                categoryRepository.getCategoryByName("All").getId());
+
+        Iterator<String> iterator = selectedCategory.iterator();
+        while (iterator.hasNext()) {
+            String selected = iterator.next();
+            for (Category category : categories) {
+                if (category.getId().equals(selected))
+                    category.setSelected(true);
+            }
+        }
+    }
+
+    private boolean isAll() {
+        for (Category category : categories) {
+            if (category.getName().equals("All") && category.getSelected())
+                return true;
+            else
+                return false;
+        }
+        return false;
+    }
+
+    protected void loadData() {
+        if (order_by == SortCriteria.RECENT) {
+            if (isAll())
+                adapter.setItems(repositoryRepository.getAllReposOrderByDate());
+            else
+                adapter.setItems(rtCategoryRepositoryRepository.getBookmarkForCategories(ID_FIELD_BOOKMARKED_AT, categories));
+        }else {
+            if (isAll())
+                adapter.setItems(repositoryRepository.getAllReposOrderByStar());
+            else
+                adapter.setItems(rtCategoryRepositoryRepository.getBookmarkForCategories(ID_FIELD_STAR, categories));
+        }
     }
 
     private void moveToDetailActivity(int position) {
@@ -82,13 +124,17 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
     }
 
     private void showCategoryFilterDialog() {
-        CategoryFilterDialog.getInstance(getActivity(),categories, this::loadData).show();
+        CategoryFilterDialog.getInstance(getActivity(), categories, categories -> {
+            SharedPreferenceHelper.getInstance().putStringSetValue(getContext(), SharedPreferenceHelper.Config.BOOKMARK_CATEGORY_FILTER, categories);
+            loadSelectedCategories();
+            loadData();
+        }).show();
     }
 
     private void showSelectSortCriteriaDialog() {
         SelectSortCriteriaDialog.getInstance(getActivity(), order_by, criteria -> {
             order_by = criteria;
-            loadData(categories);
+            loadData();
         }).show();
     }
 
@@ -101,6 +147,6 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
 
     @Override
     public void onChange() {
-        loadData(categories);
+        loadData();
     }
 }

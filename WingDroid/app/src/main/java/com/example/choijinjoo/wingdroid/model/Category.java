@@ -20,7 +20,7 @@ public class Category {
     @DatabaseField
     String name;
     @DatabaseField
-    boolean selected = true;
+    boolean selected ;
 
     public Category() {}
 
