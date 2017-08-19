@@ -8,14 +8,15 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 
 import com.example.choijinjoo.wingdroid.R;
+import com.example.choijinjoo.wingdroid.dao.CategoryRepository;
+import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.model.Category;
 import com.example.choijinjoo.wingdroid.model.Repository;
-import com.example.choijinjoo.wingdroid.source.remote.firebase.CategoryDataSource;
-import com.example.choijinjoo.wingdroid.tools.FirebaseArray;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
-import com.google.firebase.database.DatabaseError;
 import com.xiaofeng.flowlayoutmanager.FlowLayoutManager;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -23,13 +24,15 @@ import butterknife.BindView;
  * Created by choijinjoo on 2017. 8. 8..
  */
 
-public class SearchFragment extends BaseFragment implements FirebaseArray.OnChangedListener{
+public class SearchFragment extends BaseFragment{
     @BindView(R.id.recvCategories) RecyclerView recvCategories;
     @BindView(R.id.recvSuggestions) RecyclerView recvSuggestions;
     @BindView(R.id.btnSearch) RelativeLayout btnSearch;
     @BindView(R.id.searchView) SearchView searchView;
     CategorySearchAdapter categoryAdapter;
     SuggestionsAdapter suggestionsAdapter;
+    CategoryRepository categoryRepository;
+    RepositoryRepository repositoryRepository;
 
 
     public static SearchFragment newInstance() {
@@ -64,13 +67,15 @@ public class SearchFragment extends BaseFragment implements FirebaseArray.OnChan
 
     }
 
-    FirebaseArray categoryFBArray;
 
     @Override
     protected void loadData() {
         super.loadData();
-        categoryFBArray = new FirebaseArray(CategoryDataSource.getInstance().categories());
-        categoryFBArray.setOnChangedListener(this);
+        categoryRepository = new CategoryRepository(getContext());
+        repositoryRepository = new RepositoryRepository(getContext());
+        categoryAdapter.setItems(categoryRepository.getCategories());
+        List<Repository> repositories = repositoryRepository.getSuggestedRepo().subList(0,2);
+        suggestionsAdapter.setItems(repositories);
     }
 
     private void moveToSearchResultActivity(Category category) {
@@ -82,43 +87,6 @@ public class SearchFragment extends BaseFragment implements FirebaseArray.OnChan
     private void moveToDetailActivity(Repository repository) {
         Intent intent = RepositoryDetailActivity.getStartIntent(getActivity(),repository.getId());
         startActivity(intent);
-    }
-
-    /*
-     *   Category DataSource change listener
-     */
-
-    @Override
-    public void onChildChanged(EventType type, int index, int oldIndex) {
-        switch (type){
-            case ADDED:
-                String id = categoryFBArray.getItem(index).getKey();
-                Category category = categoryFBArray.getItem(index).getValue(Category.class);
-                category.setId(id);
-                categoryAdapter.add(category);
-                break;
-            case CHANGED:
-                categoryAdapter.change(index,categoryFBArray.getItem(index).getValue(Category.class));
-                break;
-            case REMOVED:
-                categoryAdapter.remove(index);
-                break;
-            case MOVED:
-                categoryAdapter.notifyItemMoved(oldIndex, index);
-                break;
-            default:
-                throw new IllegalStateException("Incomplete case statement");
-        }
-    }
-
-    @Override
-    public void onDataChanged() {
-
-    }
-
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-
     }
 
 }

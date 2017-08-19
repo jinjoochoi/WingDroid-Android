@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.example.choijinjoo.wingdroid.model.Repository.BOOKMARK_FIELD;
 import static com.example.choijinjoo.wingdroid.model.Repository.DESCRIPTION_FIELD;
 import static com.example.choijinjoo.wingdroid.model.Repository.NAME_FIELD;
+import static com.example.choijinjoo.wingdroid.model.Repository.STAR_FIELD;
 
 /**
  * Created by choijinjoo on 2017. 7. 13..
@@ -34,6 +36,7 @@ public class RepositoryRepository extends BaseRepository {
     private RTCategoryRepositoryDao rtCategoryRepositoryDao;
     private PreparedQuery<Tag> tagForRepoPreparedQuery = null;
     private PreparedQuery<Repository> repoForTagPreparedQuery = null;
+    private PreparedQuery<Repository> suggestedRepoForTagPreparedQuery = null;
     private PreparedQuery<Repository> repoForCategoryPreparedQuery = null;
     private PreparedQuery<Repository> repoForCategoryOrderByStarPreparedQuery = null;
 
@@ -106,6 +109,50 @@ public class RepositoryRepository extends BaseRepository {
     }
 
     //TODO : distinct
+    public List<Repository> getSuggestedRepo() {
+        List<Repository> results = new ArrayList<>();
+        try {
+            if (tagForRepoPreparedQuery == null)
+                tagForRepoPreparedQuery = makeTagForRepoQuery();
+
+            if (suggestedRepoForTagPreparedQuery == null)
+                suggestedRepoForTagPreparedQuery = makeSuggestedRepoForTag();
+
+            // 1. bookmark기반 추천
+            List<Repository> bookmarks = repositoryDao.queryBuilder().where().eq(Repository.BOOKMARK_FIELD, true).query();
+            if (bookmarks.size() > 0) {
+                for (Repository bookmark : bookmarks) {
+                    tagForRepoPreparedQuery.setArgumentHolderValue(0, bookmark);
+                    List<Tag> tags = tagDao.query(tagForRepoPreparedQuery);
+                    for (Tag tag : tags) {
+                        suggestedRepoForTagPreparedQuery.setArgumentHolderValue(0, tag);
+                        results.addAll(setTagsForRepo(repositoryDao.query(suggestedRepoForTagPreparedQuery)));
+                    }
+                }
+            } else {
+                // 2. click기반 추천
+                List<Tag> tags = tagDao.queryBuilder().orderBy(Tag.CLICK_FIELD, false).query();
+                if (tags.size() >= 3) {
+                    for (Tag tag : tags) {
+                        suggestedRepoForTagPreparedQuery.setArgumentHolderValue(0, tag);
+                        results.addAll(setTagsForRepo(repositoryDao.query(suggestedRepoForTagPreparedQuery)));
+                    }
+                } else {
+                // 3. star기반 추천
+                    results.addAll(repositoryDao.queryBuilder().orderBy(STAR_FIELD,false).where().eq(BOOKMARK_FIELD,false).query());
+                }
+            }
+
+            return results;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+
+    //TODO : distinct
     public List<Repository> getRepositoryByText(String text) {
         List<Repository> results = new ArrayList<>();
         try {
@@ -115,7 +162,7 @@ public class RepositoryRepository extends BaseRepository {
             if (repoForCategoryPreparedQuery == null)
                 repoForCategoryPreparedQuery = makeRepoForTag();
 
-            if(repoForCategoryOrderByStarPreparedQuery == null)
+            if (repoForCategoryOrderByStarPreparedQuery == null)
                 repoForCategoryOrderByStarPreparedQuery = makeRepoForCategoryOrderByStarQuery();
 
             // search with repo's name, repo's description
@@ -129,10 +176,10 @@ public class RepositoryRepository extends BaseRepository {
                 results.addAll(setTagsForRepo(repositoryDao.query(repoForTagPreparedQuery)));
             }
             // search with category'name
-            List<Category> categories = categoryDao.queryBuilder().where().like(Category.NAME_FIELD,text+"%").query();
+            List<Category> categories = categoryDao.queryBuilder().where().like(Category.NAME_FIELD, text + "%").query();
 
-            for(Category category : categories){
-                repoForCategoryOrderByStarPreparedQuery.setArgumentHolderValue(0,category);
+            for (Category category : categories) {
+                repoForCategoryOrderByStarPreparedQuery.setArgumentHolderValue(0, category);
                 results.addAll(setTagsForRepo(repositoryDao.query(repoForCategoryOrderByStarPreparedQuery)));
             }
             return results;
@@ -226,6 +273,22 @@ public class RepositoryRepository extends BaseRepository {
         QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
         repositoryQb.orderBy(Repository.STAR_FIELD, false).where().in(Repository.ID_FIELD, rtCRQb);
         return repositoryQb.prepare();
+    }
+
+    private PreparedQuery<Repository> makeSuggestedRepoForTag() {
+        try {
+            QueryBuilder<RTTagRepository, Integer> rtTRQB = rtTagRepositoryDao.queryBuilder();
+            rtTRQB.selectColumns(RTTagRepository.REPO_ID_FIELD_NAME);
+            SelectArg tabSA = new SelectArg();
+            rtTRQB.where().eq(RTTagRepository.TAG_ID_FIELD_NAME, tabSA);
+
+            QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
+            repositoryQb.where().eq("bookmark", false).and().in(Repository.ID_FIELD, rtTRQB);
+            return repositoryQb.prepare();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private PreparedQuery<Repository> makeRepoForTag() {

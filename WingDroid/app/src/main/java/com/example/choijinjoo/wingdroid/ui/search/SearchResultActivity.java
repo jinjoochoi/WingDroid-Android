@@ -155,7 +155,6 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
             containerEmpty.setVisibility(View.VISIBLE);
         }
         resultAdapter.setItems(results);
-        resultAdapter.notifyDataSetChanged();
         this.textSearch = text;
     }
 
@@ -214,7 +213,6 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
             txtvNoSearchResult.setVisibility(View.GONE);
         }
         searchHistoryAdapter.setItems(results);
-        searchHistoryAdapter.notifyDataSetChanged();
     }
 
 

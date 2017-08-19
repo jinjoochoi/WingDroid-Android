@@ -13,7 +13,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
+import com.example.choijinjoo.wingdroid.dao.TagRepository;
 import com.example.choijinjoo.wingdroid.model.Repository;
+import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.source.remote.firebase.UserDataSource;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +40,7 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.imgvGithub) ImageView imgvGithub;
     @BindView(R.id.recvSimmilarLibs) RecyclerView recvSimmilarLibs;
     RepositoryRepository repositoryRepository;
+    TagRepository tagRepository;
     SimmilarsAdapter simmilarsAdapter;
     Repository repository;
 
@@ -56,6 +59,7 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     @Override
     protected void initLayout() {
         repositoryRepository = new RepositoryRepository(this);
+        tagRepository = new TagRepository(this);
         String repoId = getIntent().getStringExtra("repoId");
         loadData(repoId);
 
@@ -77,12 +81,20 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
         txtvStar.setText(repository.getFormattedStarString());
         txtvIssueCount.setText(Integer.toString(repository.getIssue()));
         imgvBookMark.setSelected(repository.getBookmark());
+        addClick();
     }
 
     private void showWebViewActivity(String url) {
         Intent intent = WebViewAcitivty.getStartIntent(this,url);
         startActivity(intent);
         overridePendingTransition(0,0);
+    }
+
+    private void addClick(){
+        for(Tag tag : repository.getTags()) {
+            tag.click();
+            tagRepository.updateTag(tag);
+        }
     }
 
 

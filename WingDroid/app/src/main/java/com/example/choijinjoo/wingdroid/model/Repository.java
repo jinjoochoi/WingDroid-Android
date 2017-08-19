@@ -23,7 +23,8 @@ import java.util.List;
 public class Repository {
     public final static String ID_FIELD = "repo_id";
     public final static String NAME_FIELD = "repo_name";
-    public final static String BOOKMARK_FIELD = "bookmarkedAt";
+    public final static String BOOKMARK_FIELD = "bookmark";
+    public final static String BOOKMARKEDAT_FIELD = "bookmarkedAt";
     public final static String STAR_FIELD = "star";
     public final static String DESCRIPTION_FIELD = "description";
 
@@ -56,9 +57,9 @@ public class Repository {
     Long updatedAt;
     @DatabaseField
     Integer simulatable;
-    @DatabaseField
-    boolean bookmark;
     @DatabaseField(columnName = BOOKMARK_FIELD)
+    boolean bookmark;
+    @DatabaseField(columnName = BOOKMARKEDAT_FIELD)
     Date bookmarkedAt;
     @DatabaseField
     int clicks;

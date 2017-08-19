@@ -22,6 +22,7 @@ public class TagRepository extends BaseRepository {
         tagDao = dbHelper.getTagDao();
     }
 
+
     public List<Tag> getTags() {
         List<Tag> results = new ArrayList<>();
         try {

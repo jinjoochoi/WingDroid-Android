@@ -45,7 +45,7 @@
 
     <!-- Search dimen -->
     <dimen name="repository_suggestion_width">110dp</dimen>
-    <dimen name="repository_suggestion_height">150dp</dimen>
+    <dimen name="repository_suggestion_height">160dp</dimen>
     <dimen name="repository_suggestion_img_width">100dp</dimen>
     <dimen name="repository_suggestion_img_height">90dp</dimen>
     <dimen name="repository_suggestion_padding">10dp</dimen>

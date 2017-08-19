@@ -13,11 +13,14 @@ import org.parceler.Parcel;
 public class Tag {
     public final static String ID_FIELD = "tag_id";
     public final static String NAME_FIELD = "tag_name";
+    public final static String CLICK_FIELD = "click";
 
     @DatabaseField(unique = true, id = true, columnName = ID_FIELD)
     String id;
     @DatabaseField(columnName = NAME_FIELD)
     String name;
+    @DatabaseField(columnName = CLICK_FIELD)
+    int click;
 
     public Tag() {}
 
@@ -41,12 +44,21 @@ public class Tag {
         this.name = name;
     }
 
+    public int getClick() { return click; }
+
+    public void setClick(int click) { this.click = click; }
+
+
+    /*
+     * Custom method
+     */
+
     @Override
     public String toString() {
         return "#" + name;
     }
 
-    /*
-     * Custom method
-     */
+    public void click(){
+        this.click++;
+    }
 }
