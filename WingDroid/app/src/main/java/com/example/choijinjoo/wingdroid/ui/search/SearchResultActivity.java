@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.dao.RTCategoryRepositoryRepository;
@@ -17,7 +18,6 @@ import com.example.choijinjoo.wingdroid.dao.SearchHistoryRepository;
 import com.example.choijinjoo.wingdroid.model.Category;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.SearchHistory;
-import com.example.choijinjoo.wingdroid.tools.FirebaseArray;
 import com.example.choijinjoo.wingdroid.tools.StringUtils;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
@@ -41,22 +41,14 @@ import static com.example.choijinjoo.wingdroid.model.SearchHistory.SEARCH_TYPE_T
 
 public class SearchResultActivity extends BaseActivity implements Dao.DaoObserver{
 
-    @BindView(R.id.searchView)
-    SearchView searchView;
-    @BindView(R.id.containerHistory)
-    LinearLayout containerHistory;
-    @BindView(R.id.containerResult)
-    RelativeLayout containerResult;
-    @BindView(R.id.containerEmpty)
-    RelativeLayout containerEmpty;
-    @BindView(R.id.recvResults)
-    RecyclerView recvResults;
-    @BindView(R.id.recvHistories)
-    RecyclerView recvHistories;
-    @BindView(R.id.btnSearch)
-    RelativeLayout btnSearch;
-    FirebaseArray resultFBArray;
-    FirebaseArray resultHistoryFBArray;
+    @BindView(R.id.searchView) SearchView searchView;
+    @BindView(R.id.containerHistory) LinearLayout containerHistory;
+    @BindView(R.id.containerResult) RelativeLayout containerResult;
+    @BindView(R.id.containerEmpty) RelativeLayout containerEmpty;
+    @BindView(R.id.recvResults) RecyclerView recvResults;
+    @BindView(R.id.recvHistories) RecyclerView recvHistories;
+    @BindView(R.id.btnSearch) RelativeLayout btnSearch;
+    @BindView(R.id.txtvNoSearchResult) TextView txtvNoSearchResult;
 
     String searchType = "";
 
@@ -142,7 +134,6 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
     private boolean isEmpty(CharSequence c){
         if(StringUtils.isEmpty(c)) {
             containerHistory.setVisibility(View.VISIBLE);
-            containerResult.setVisibility(View.GONE);
         }
         return !StringUtils.isEmpty(c) && !searchType.equals(SearchHistory.SEARCH_TYPE_CATEGORY);
     }
@@ -153,12 +144,19 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
     }
 
 
+    private String textSearch;
+
     public void searchWithText(String text) {
         searchType = SEARCH_TYPE_TEXT;
         containerHistory.setVisibility(View.GONE);
         containerResult.setVisibility(View.VISIBLE);
-        resultAdapter.setItems(repositoryRepository.getRepositoryByText(text));
+        List<Repository> results = repositoryRepository.getRepositoryByText(text);
+        if(results.size() == 0){
+            containerEmpty.setVisibility(View.VISIBLE);
+        }
+        resultAdapter.setItems(results);
         resultAdapter.notifyDataSetChanged();
+        this.textSearch = text;
     }
 
     private void searchWithCategory(Category category) {
@@ -167,14 +165,13 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
 
         searchView.setQuery(category.getName(), false);
         containerHistory.setVisibility(View.GONE);
+        containerResult.setVisibility(View.VISIBLE);
         List<Repository> result = rtCategoryRepositoryRepository.getRepoForCategoryOrderByStar(category);
         if (result.size() == 0) {
-            containerResult.setVisibility(View.GONE);
             containerEmpty.setVisibility(View.VISIBLE);
         } else {
             containerEmpty.setVisibility(View.GONE);
-            containerResult.setVisibility(View.VISIBLE);
-            resultAdapter.setItems(rtCategoryRepositoryRepository.getRepoForCategoryOrderByStar(category));
+            resultAdapter.setItems(result);
         }
         addSearchHistory(category.getName(), SEARCH_TYPE_CATEGORY);
 
@@ -187,7 +184,7 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
 
     private void moveToDetailActivity(int position) {
         if (searchType.equals(SEARCH_TYPE_TEXT)) {
-            addSearchHistory(resultAdapter.getItem(position).getName(), SEARCH_TYPE_TEXT);
+            addSearchHistory(resultAdapter.getItem(position).getName(), textSearch);
         }
         Intent intent = RepositoryDetailActivity.getStartIntent(this, resultAdapter.getItem(position).getId());
         startActivity(intent);
@@ -206,8 +203,18 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
         if (category != null) {
             searchWithCategory(category);
         }
+        loadSearchHistories();
+    }
 
-        searchHistoryAdapter.setItems(searchHistoryRepository.getSearchHistories());
+    private void loadSearchHistories(){
+        List<SearchHistory> results = searchHistoryRepository.getSearchHistories();
+        if(results.size() == 0){
+            txtvNoSearchResult.setVisibility(View.VISIBLE);
+        }else{
+            txtvNoSearchResult.setVisibility(View.GONE);
+        }
+        searchHistoryAdapter.setItems(results);
+        searchHistoryAdapter.notifyDataSetChanged();
     }
 
 
@@ -233,7 +240,6 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
 
     @Override
     public void onChange() {
-        searchHistoryAdapter.setItems(searchHistoryRepository.getSearchHistories());
-        searchHistoryAdapter.notifyDataSetChanged();
+        loadSearchHistories();
     }
 }
