@@ -22,35 +22,62 @@ public class API<T> {
 
     public API(Class<T> clazz) {
         mCallClazz = clazz;
-        mRetrofit = createRetrofit();
     }
 
     private Retrofit createRetrofit() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        Gson gson = gsonBuilder
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .setLenient()
-                .create();
-
         Retrofit retrofit = new Retrofit.Builder()
                 .client(new OkHttpClient().newBuilder()
                         .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                         .addNetworkInterceptor(new StethoInterceptor()).build())
-                        .baseUrl(getBaseURL())
-                        .addConverterFactory(GsonConverterFactory.create(gson))
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .build();
+                .baseUrl(getAuthURL())
+                .addConverterFactory(GsonConverterFactory.create(createGson()))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
 
         return retrofit;
     }
 
 
+    private Retrofit createAPIRetrofit() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(new OkHttpClient().newBuilder()
+                        .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                        .addNetworkInterceptor(new StethoInterceptor()).build())
+                .baseUrl(getAPIURL())
+                .addConverterFactory(GsonConverterFactory.create(createGson()))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
+
+        return retrofit;
+    }
+
+    private Gson createGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        return gsonBuilder
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .setLenient()
+                .create();
+
+    }
+
+
     protected T createCallService() {
+        mRetrofit = createRetrofit();
         return mRetrofit.create(mCallClazz);
     }
 
-    protected String getBaseURL() {
+
+    protected T createAPIService() {
+        mRetrofit = createAPIRetrofit();
+        return mRetrofit.create(mCallClazz);
+    }
+
+    protected String getAuthURL() {
         return Config.URL_GITHUB_OAUTH;
+    }
+
+    protected String getAPIURL() {
+        return Config.URL_GITHUB_API;
     }
 
 }

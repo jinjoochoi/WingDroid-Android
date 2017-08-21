@@ -6,7 +6,6 @@ import com.example.choijinjoo.wingdroid.tools.Utils;
 
 import org.parceler.Parcel;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_ISSUE;
@@ -33,17 +32,6 @@ public class Issue implements IEvent {
     Date updatedAt;
 
     public Issue() {}
-
-    public Issue(String action, String title, String body) {
-        this.action = action;
-        this.title = title;
-        this.body = body;
-        this.repoName = "TextSurface";
-        this.createdAt = Calendar.getInstance().getTime();
-        this.number = 99;
-        this.sender = new User("jinjoo");
-        this.repository = new Repository("TextSurface");
-    }
 
     public Integer getId() {
         return id;
@@ -151,7 +139,7 @@ public class Issue implements IEvent {
 
     @Override
     public String getRepoAndAuthorName() {
-        return repository.getName() + " / " + sender.getName();
+        return repository.getName() + " / " + sender.getLogin();
     }
 
     @Override
@@ -161,7 +149,7 @@ public class Issue implements IEvent {
 
     @Override
     public String getEventInfoString() {
-        return state + " by " + sender.getName() + Utils.getElapsedDateString(createdAt);
+        return state + " by " + sender.getLogin() + Utils.getElapsedDateString(createdAt);
     }
 
     @Override

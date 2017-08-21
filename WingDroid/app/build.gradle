@@ -7,8 +7,8 @@ android {
     buildToolsVersion "25.0.0"
     defaultConfig {
         applicationId "com.example.choijinjoo.wingdroid"
-        minSdkVersion 19
-        targetSdkVersion 26
+        minSdkVersion 21
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -68,7 +68,7 @@ dependencies {
     compile "com.squareup.okhttp3:okhttp:$rootProject.okhttp3_version"
     compile "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttp3_logging_interceptor"
 
-    compile 'com.j256.ormlite:ormlite-android:5.0'
+    compile "com.j256.ormlite:ormlite-android:$rootProject.ormlite_version"
 
 
     testCompile 'junit:junit:4.12'

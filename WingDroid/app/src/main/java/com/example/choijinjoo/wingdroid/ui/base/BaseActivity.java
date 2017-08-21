@@ -5,7 +5,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
 
 
 /**
@@ -18,6 +22,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected abstract void initLayout();
 
+    protected List<Disposable> disposables = new ArrayList<>();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,11 +33,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         loadData();
     }
 
-    protected void showToastMessage(int messageId){
-        Toast.makeText(this,getString(messageId),Toast.LENGTH_SHORT).show();
+    protected void showToastMessage(int messageId) {
+        Toast.makeText(this, getString(messageId), Toast.LENGTH_SHORT).show();
     }
 
-    protected void loadData(){}
+    protected void loadData() {
+    }
 
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (Disposable disposable : disposables) {
+            disposable.dispose();
+        }
+    }
 }

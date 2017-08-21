@@ -18,8 +18,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import io.reactivex.Observable;
+
 import static com.example.choijinjoo.wingdroid.model.Repository.BOOKMARK_FIELD;
 import static com.example.choijinjoo.wingdroid.model.Repository.DESCRIPTION_FIELD;
+import static com.example.choijinjoo.wingdroid.model.Repository.ID_FIELD;
 import static com.example.choijinjoo.wingdroid.model.Repository.NAME_FIELD;
 import static com.example.choijinjoo.wingdroid.model.Repository.STAR_FIELD;
 
@@ -32,6 +35,7 @@ public class RepositoryRepository extends BaseRepository {
     private TagDao tagDao;
     private CategoryDao categoryDao;
     private RepositoryDao repositoryDao;
+    private BookmarkDao bookmarkDao;
     private RTTagRepositoryDao rtTagRepositoryDao;
     private RTCategoryRepositoryDao rtCategoryRepositoryDao;
     private PreparedQuery<Tag> tagForRepoPreparedQuery = null;
@@ -47,21 +51,22 @@ public class RepositoryRepository extends BaseRepository {
         rtCategoryRepositoryDao = dbHelper.getRTCategoryRepositoryDao();
         tagDao = dbHelper.getTagDao();
         categoryDao = dbHelper.getCategoryDao();
+        bookmarkDao = dbHelper.getBookmarkDao();
 
     }
 
-    public Repository getRepositoryById(String repoId) {
+    public Observable<Repository> getRepositoryById(String repoId) {
         Repository result = null;
         try {
             result = setCategoryForRepo(setTagsForRepo(repositoryDao.queryBuilder().where().eq(Repository.ID_FIELD, repoId).queryForFirst()));
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
-        return result;
+        return Observable.just(result);
     }
 
 
-    public List<Repository> getRelatedRepo(Repository repository) {
+    public Observable<List<Repository>> getRelatedRepo(Repository repository) {
         List<Repository> results = new ArrayList<>();
         try {
             if (repoForCategoryOrderByStarPreparedQuery == null)
@@ -71,17 +76,17 @@ public class RepositoryRepository extends BaseRepository {
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
-        return results;
+        return Observable.just(results);
     }
 
-    public List<Repository> getRecentRepo(){
+    public Observable<List<Repository>> getRecentRepo() {
         List<Repository> results = new ArrayList<>();
         try {
             results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.queryBuilder().orderBy("createdAt", false).query())));
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
-        return results;
+        return Observable.just(results);
     }
 
 
@@ -158,7 +163,7 @@ public class RepositoryRepository extends BaseRepository {
     }
 
     //TODO : distinct
-    public List<Repository> getSuggestedRepo() {
+    public Observable<List<Repository>> getSuggestedRepo() {
         List<Repository> results = new ArrayList<>();
         try {
             if (tagForRepoPreparedQuery == null)
@@ -192,12 +197,12 @@ public class RepositoryRepository extends BaseRepository {
                 }
             }
 
-            return results;
+            return Observable.just(results);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new ArrayList<>();
+        return Observable.just(null);
     }
 
 
@@ -235,29 +240,59 @@ public class RepositoryRepository extends BaseRepository {
         return results;
     }
 
-    public List<Repository> getAllReposOrderByDate() {
+    public Observable<List<Repository>> getAllReposOrderByDate() {
         List<Repository> results = new ArrayList<>();
         try {
             results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy("createdAt", false).query()));
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
-        return results;
+        return Observable.just(results);
     }
 
-    public List<Repository> getAllReposOrderByStar() {
+    public Observable<List<Repository>> getBookmark() {
+        List<Repository> results = new ArrayList<>();
+        try {
+            //FIXME
+//            results.addAll(repositoryDao.queryBuilder().where().eq(BOOKMARK_FIELD,true).query());
+            results.addAll(repositoryDao.queryForAll());
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return Observable.just(results);
+    }
+
+    public Observable<List<Repository>> getBookmark(String order_by, boolean desc) {
+        List<Repository> results = new ArrayList<>();
+        try {
+            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy(order_by, desc).where().eq(BOOKMARK_FIELD, true).query()));
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return Observable.just(results);
+    }
+
+    public Observable<List<Repository>> getAllReposOrderByStar() {
         List<Repository> results = new ArrayList<>();
         try {
             results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy(Repository.STAR_FIELD, false).query()));
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
-        return results;
+        return Observable.just(results);
     }
 
 
     public void createOrUpdateRepository(Repository repository) {
         try {
+            Repository prev = repositoryDao.queryBuilder().where().eq(ID_FIELD,repository.getId()).queryForFirst();
+            if(prev != null){
+
+                Log.d(TAG,"prev's bookmark : "+prev.getBookmark());
+                repository.setBookmarkedAt(repository.getBookmarkedAt());
+                repository.setBookmark(repository.getBookmark());
+                repository.setClicks(repository.getClicks());
+            }
             repositoryDao.createOrUpdate(repository);
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
@@ -272,10 +307,12 @@ public class RepositoryRepository extends BaseRepository {
                 repository.setBookmarkedAt(null);
             repositoryDao.update(repository);
 
+
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
     }
+
 
     public void deleteRepository(Repository repository) {
         try {

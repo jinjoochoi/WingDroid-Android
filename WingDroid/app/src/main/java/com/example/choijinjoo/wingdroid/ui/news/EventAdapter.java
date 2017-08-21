@@ -10,7 +10,6 @@ import com.example.choijinjoo.wingdroid.model.event.Event;
 import com.example.choijinjoo.wingdroid.ui.base.BaseAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -20,8 +19,9 @@ public class EventAdapter extends BaseAdapter<Event, EventViewHolder> {
     EventClickListener listener;
 
     public static final int EVENT_ISSUE = 101;
-    public static final int EVENT_PUSH = 102;
+//    public static final int EVENT_PUSH = 102;
     public static final int EVENT_RELEASE = 103;
+    public static final int EVENT_COMMIT = 104;
 
 
     public interface EventClickListener {
@@ -38,11 +38,11 @@ public class EventAdapter extends BaseAdapter<Event, EventViewHolder> {
         View view = null;
         EventViewHolder viewHolder =  null;
         switch (viewType){
-            case EVENT_ISSUE:
-                view = LayoutInflater.from(context).inflate(R.layout.item_issue, parent, false);
-                viewHolder = new IssueViewHolder(context, view,listener);
-                break;
-            case EVENT_PUSH:
+//            case EVENT_ISSUE:
+//                view = LayoutInflater.from(context).inflate(R.layout.item_issue, parent, false);
+//                viewHolder = new IssueViewHolder(context, view,listener);
+//                break;
+            case EVENT_COMMIT:
                 view = LayoutInflater.from(context).inflate(R.layout.item_push, parent, false);
                 viewHolder = new PushViewHolder(context, view,listener);
                 break;

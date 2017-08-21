@@ -12,6 +12,7 @@ import com.example.choijinjoo.wingdroid.dao.CategoryRepository;
 import com.example.choijinjoo.wingdroid.dao.RTCategoryRepositoryRepository;
 import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.model.Category;
+import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.SortCriteria;
 import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
 import com.example.choijinjoo.wingdroid.ui.CategoryFilterDialog;
@@ -25,8 +26,12 @@ import java.util.List;
 import java.util.Set;
 
 import butterknife.BindView;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.example.choijinjoo.wingdroid.model.Repository.BOOKMARKEDAT_FIELD;
+import static com.example.choijinjoo.wingdroid.model.Repository.CREATEDAT_FIELD;
 import static com.example.choijinjoo.wingdroid.model.Repository.STAR_FIELD;
 
 /**
@@ -45,6 +50,7 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
     RepositoryRepository repositoryRepository;
     CategoryRepository categoryRepository;
     List<Category> categories;
+    Set<String> criteria;
 
     private SortCriteria order_by;
 
@@ -71,20 +77,24 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
         rtCategoryRepositoryRepository.registerDaoObserver(this);
         repositoryRepository.registerDaoObserver(this);
         order_by = SortCriteria.RECENT;
-        categories = categoryRepository.getCategoriesOrderByName();
 
-        loadSelectedCategories();
-
-        loadData();
+        loadCategoriesOrderByName();
 
     }
 
-    private void loadSelectedCategories() {
-        Set<String> selectedCategory = SharedPreferenceHelper.getInstance().getStringSetValue(
-                getContext(), SharedPreferenceHelper.Config.BOOKMARK_CATEGORY_FILTER,
-                categoryRepository.getCategoryByName("All").getId());
+    private void loadCategoriesOrderByName() {
+        disposables.add(categoryRepository.getCategoriesOrderByName()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::loadRepo));
+    }
 
-        Iterator<String> iterator = selectedCategory.iterator();
+
+    private void initSelectedCategory() {
+        Category defCategory = categoryRepository.getAllCategory();
+        criteria = SharedPreferenceHelper.getInstance().getStringSetValue(
+                getContext(), SharedPreferenceHelper.Config.BOOKMARK_CATEGORY_FILTER, defCategory.getId());
+        Iterator<String> iterator = criteria.iterator();
         while (iterator.hasNext()) {
             String selected = iterator.next();
             for (Category category : categories) {
@@ -92,6 +102,7 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
                     category.setSelected(true);
             }
         }
+
     }
 
     private boolean isAll() {
@@ -104,18 +115,29 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
         return false;
     }
 
-    protected void loadData() {
+    protected void loadRepo(List<Category> categories) {
+        this.categories = categories;
+        if (categories != null && categories.size() > 0)
+            initSelectedCategory();
+
         if (order_by == SortCriteria.RECENT) {
             if (isAll())
-                adapter.setItems(repositoryRepository.getAllReposOrderByDate());
+                loadBookmarkItems(repositoryRepository.getBookmark(CREATEDAT_FIELD, false));
             else
-                adapter.setItems(rtCategoryRepositoryRepository.getBookmarkForCategories(BOOKMARKEDAT_FIELD, categories));
-        }else {
+                loadBookmarkItems(rtCategoryRepositoryRepository.getBookmarkForCategories(BOOKMARKEDAT_FIELD, categories));
+        } else {
             if (isAll())
-                adapter.setItems(repositoryRepository.getAllReposOrderByStar());
+                loadBookmarkItems(repositoryRepository.getBookmark(STAR_FIELD, false));
             else
-                adapter.setItems(rtCategoryRepositoryRepository.getBookmarkForCategories(STAR_FIELD, categories));
+                loadBookmarkItems(rtCategoryRepositoryRepository.getBookmarkForCategories(STAR_FIELD, categories));
         }
+    }
+
+    private void loadBookmarkItems(Observable<List<Repository>> bookmarkObservable) {
+        disposables.add(bookmarkObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setItems));
     }
 
     private void moveToDetailActivity(int position) {
@@ -123,19 +145,23 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
         startActivity(intent);
     }
 
+
     private void showCategoryFilterDialog() {
-        CategoryFilterDialog.getInstance(getActivity(), categories, categories -> {
-            SharedPreferenceHelper.getInstance().putStringSetValue(getContext(), SharedPreferenceHelper.Config.BOOKMARK_CATEGORY_FILTER, categories);
-            loadSelectedCategories();
-            loadData();
+        CategoryFilterDialog.getInstance(getActivity(), criteria, categories, results -> {
+            SharedPreferenceHelper.getInstance().putStringSetValue(getContext(), SharedPreferenceHelper.Config.BOOKMARK_CATEGORY_FILTER, results);
+            loadRepo(categories);
         }).show();
     }
 
     private void showSelectSortCriteriaDialog() {
         SelectSortCriteriaDialog.getInstance(getActivity(), order_by, criteria -> {
             order_by = criteria;
-            loadData();
+            loadRepo(categories);
         }).show();
+    }
+
+    private void setItems(List<Repository> items) {
+        adapter.setItems(items);
     }
 
     @Override
@@ -147,6 +173,6 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
 
     @Override
     public void onChange() {
-        loadData();
+        loadRepo(categories);
     }
 }

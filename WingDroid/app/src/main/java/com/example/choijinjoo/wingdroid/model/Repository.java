@@ -27,6 +27,7 @@ public class Repository {
     public final static String BOOKMARKEDAT_FIELD = "bookmarkedAt";
     public final static String STAR_FIELD = "star";
     public final static String DESCRIPTION_FIELD = "description";
+    public final static String CREATEDAT_FIELD = "createdAt";
 
     @DatabaseField(unique = true, id = true, columnName = ID_FIELD)
     String id;
@@ -51,7 +52,7 @@ public class Repository {
     String issueUrl;
     @DatabaseField
     String image;
-    @DatabaseField
+    @DatabaseField(columnName = CREATEDAT_FIELD)
     Long createdAt;
     @DatabaseField
     Long updatedAt;

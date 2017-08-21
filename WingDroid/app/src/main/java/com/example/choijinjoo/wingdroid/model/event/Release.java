@@ -3,10 +3,12 @@ package com.example.choijinjoo.wingdroid.model.event;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.User;
 import com.example.choijinjoo.wingdroid.tools.Utils;
+import com.google.gson.annotations.SerializedName;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import org.parceler.Parcel;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_RELEASE;
@@ -14,41 +16,50 @@ import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_RELEAS
 /**
  * Created by choijinjoo on 2017. 8. 9..
  */
+@DatabaseTable(tableName = "release")
 @Parcel(value = Parcel.Serialization.BEAN)
 public class Release implements IEvent {
+    public final static String ID_FIELD = "release_id";
+    public final static String UPDATEDAT_FIELD = "updated_at_id";
+
+    @DatabaseField(id = true, unique = true, columnName = ID_FIELD)
     Integer id;
-    String action;
+    @DatabaseField
     String url;
-    String tag_name;
+    @SerializedName("tag_name")
+    @DatabaseField
+    String tagName;
+    @DatabaseField
     boolean draft;
+    @DatabaseField(foreign = true)
     User author;
+    @SerializedName("created_at")
+    @DatabaseField
     Date createdAt;
+    @SerializedName("updated_at")
+    @DatabaseField(columnName = UPDATEDAT_FIELD)
+    Date updatedAt;
+    @SerializedName("published_at")
+    @DatabaseField
     Date publishedAt;
-    Repository repository;
+    @DatabaseField
     String body;
 
-    public Release() {
-        this.author = new User("jinjoo");
-        this.body = "this is release message";
-        this.repository = new Repository("awesome text");
-        this.createdAt = Calendar.getInstance().getTime();
-    }
+
+    @DatabaseField(foreign = true)
+    Repository repository;
 
     public Integer getId() { return id; }
 
     public void setId(Integer id) { this.id = id; }
 
-    public String getAction() { return action; }
-
-    public void setAction(String action) { this.action = action; }
-
     public String getUrl() { return url; }
 
     public void setUrl(String url) { this.url = url; }
 
-    public String getTag_name() { return tag_name; }
+    public String getTagName() { return tagName; }
 
-    public void setTag_name(String tag_name) { this.tag_name = tag_name; }
+    public void setTagName(String tagName) { this.tagName = tagName; }
 
     public boolean isDraft() { return draft; }
 
@@ -74,13 +85,17 @@ public class Release implements IEvent {
 
     public void setBody(String body) { this.body = body; }
 
+    public Date getUpdatedAt() { return updatedAt; }
+
+    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+
     /*
      * IEvent method
      */
 
     @Override
     public String getRepoAndAuthorName() {
-        return repository.getName() + " / " + author.getName();
+        return repository.getName() + " / " + author.getLogin() == null? "" : author.getLogin();
     }
 
     @Override
@@ -90,7 +105,7 @@ public class Release implements IEvent {
 
     @Override
     public String getEventInfoString() {
-        return "Released by " + author.getName() + Utils.getElapsedDateString(createdAt);
+        return "Released by " + author.getLogin() + Utils.getElapsedDateString(createdAt);
     }
 
     //FIXME MOCK DATA

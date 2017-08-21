@@ -9,7 +9,6 @@ import com.example.choijinjoo.wingdroid.model.Category;
 import com.example.choijinjoo.wingdroid.ui.base.BaseBottomSheetDialog;
 import com.xiaofeng.flowlayoutmanager.FlowLayoutManager;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,8 +30,8 @@ public class CategoryFilterDialog extends BaseBottomSheetDialog {
         void seleted(Set<String> criteria);
     }
 
-    public static CategoryFilterDialog getInstance(Context context, List<Category> categories, CategorySelectedListener listener) {
-        return new CategoryFilterDialog(context, listener, categories);
+    public static CategoryFilterDialog getInstance(Context context, Set<String> criteria, List<Category> categories, CategorySelectedListener listener) {
+        return new CategoryFilterDialog(context, listener, categories, criteria);
     }
 
     @Override
@@ -40,10 +39,11 @@ public class CategoryFilterDialog extends BaseBottomSheetDialog {
         return R.layout.dialog_repository_filter;
     }
 
-    public CategoryFilterDialog(@NonNull Context context, CategorySelectedListener listener, List<Category> categories) {
+    public CategoryFilterDialog(@NonNull Context context, CategorySelectedListener listener, List<Category> categories, Set<String> criteria) {
         super(context);
         this.listener = listener;
         this.categories = categories;
+        this.criteria = criteria;
         initLayout();
 
     }
@@ -54,12 +54,11 @@ public class CategoryFilterDialog extends BaseBottomSheetDialog {
         recvCategories.setAdapter(adapter);
         recvCategories.setLayoutManager(new FlowLayoutManager());
         adapter.setItems(categories);
-        criteria = new HashSet<>();
     }
 
     private void changeItemLayout(int position) {
         if (adapter.getItem(position).getName().equals("All")) {
-            if(!adapter.getItem(position).getSelected()) {
+            if (!adapter.getItem(position).getSelected()) {
                 for (Category category : categories) {
                     category.setSelected(false);
                 }
@@ -70,30 +69,34 @@ public class CategoryFilterDialog extends BaseBottomSheetDialog {
             }
         } else {
             adapter.getItem(position).selected();
-            if (criteria.contains("All")) {
-                if(adapter.getItem(position).getSelected()) {
-                    CategoryFilterAdapter.AdapterItemInfo item = adapter.getItemByName("All");
-                    item.getCategory().setSelected(false);
-                    adapter.notifyItemChanged(item.position);
-                    criteria.remove(item.getCategory().getId());
-                }else{
-                    CategoryFilterAdapter.AdapterItemInfo item = adapter.getItemByName("All");
-                    item.getCategory().setSelected(true);
+            adapter.notifyItemChanged(position);
+            if (criteria.contains(adapter.getItemByName("All").getCategory().getId())) {
+                if (adapter.getItem(position).getSelected()) {
+                    CategoryFilterAdapter.AdapterItemInfo all = adapter.getItemByName("All");
+                    adapter.getItem(all.getPosition()).setSelected(false);
+                    adapter.notifyItemChanged(all.position);
+                    criteria.remove(all.getCategory().getId());
+                    criteria.add(adapter.getItem(position).getId());
+                }
+            } else {
+                if(criteria.size() == 1 && criteria.contains(adapter.getItem(position).getId())){
+                    CategoryFilterAdapter.AdapterItemInfo all = adapter.getItemByName("All");
+                    adapter.getItem(all.getPosition()).setSelected(true);
                     for (Category category : categories) {
                         category.setSelected(false);
                     }
                     adapter.notifyDataSetChanged();
                     criteria.clear();
-                    criteria.add(item.getCategory().getId());
+                    criteria.add(all.getCategory().getId());
+                }else {
+                    if (adapter.getItem(position).getSelected())
+                        criteria.add(adapter.getItem(position).getId());
+                    else
+                        criteria.remove(adapter.getItem(position).getId());
                 }
-            }else {
-                if (adapter.getItem(position).getSelected())
-                    criteria.add(adapter.getItem(position).getId());
-                else
-                    criteria.remove(adapter.getItem(position).getId());
             }
-            listener.seleted(criteria);
         }
+        listener.seleted(criteria);
 
     }
 

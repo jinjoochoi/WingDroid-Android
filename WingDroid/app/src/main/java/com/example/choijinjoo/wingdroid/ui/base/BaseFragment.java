@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -28,6 +29,8 @@ public abstract class BaseFragment extends Fragment {
     protected void loadData(){}
 
     protected List<BaseRepository> repositories = new ArrayList<>();
+
+    protected List<Disposable> disposables = new ArrayList<>();
 
 
     @Nullable
@@ -51,5 +54,14 @@ public abstract class BaseFragment extends Fragment {
         for(BaseRepository repository : repositories){
             repository.release();
         }
+
+        for(Disposable disposable: disposables){
+            disposable.dispose();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

@@ -12,6 +12,7 @@ import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.dao.RTCategoryRepositoryRepository;
 import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.model.Category;
+import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.SortCriteria;
 import com.example.choijinjoo.wingdroid.ui.SelectSortCriteriaDialog;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
@@ -19,7 +20,12 @@ import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
 
 import org.parceler.Parcels;
 
+import java.util.List;
+
 import butterknife.BindView;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -75,18 +81,30 @@ public class FeedFragment extends BaseFragment {
         if (category != null) {
             if (category.getName().equals("All")) {
                 if (criteria == SortCriteria.RECENT)
-                    adapter.setItems(repoRepository.getAllReposOrderByDate());
+                    loadRepoData(repoRepository.getAllReposOrderByDate());
                 else
-                    adapter.setItems(repoRepository.getAllReposOrderByStar());
+                    loadRepoData(repoRepository.getAllReposOrderByStar());
+
             } else {
                 if (criteria == SortCriteria.RECENT)
-                    adapter.setItems(rtCategoryRepository.getRepoForCategoryOrderByDate(category));
+                    loadRepoData(rtCategoryRepository.getRepoForCategoryOrderByDate(category));
                 else
-                    adapter.setItems(rtCategoryRepository.getRepoForCategoryOrderByStar(category));
+                    loadRepoData(rtCategoryRepository.getRepoForCategoryOrderByStar(category));
             }
         }
         order_by = criteria;
         txtvSort.setText(criteria == SortCriteria.RECENT ? getString(R.string.sort_recent) : getString(R.string.sort_star));
+    }
+
+    private void loadRepoData(Observable<List<Repository>> repoObservable) {
+        disposables.add(repoObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setItems));
+    }
+
+    private void setItems(List<Repository> items) {
+        adapter.setItems(items);
     }
 
     private void moveToDetailActivity(int position) {
@@ -97,5 +115,6 @@ public class FeedFragment extends BaseFragment {
     private void showSelectSortCriteriaDialog(View view) {
         SelectSortCriteriaDialog.getInstance(getActivity(), order_by, this::loadData).show();
     }
+
 
 }

@@ -14,14 +14,18 @@ import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import java.util.List;
 
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
 
 public class FeedContainerFragment extends BaseFragment {
-    @BindView(R.id.tabLayout) TabLayout tabLayout;
-    @BindView(R.id.viewPager) ViewPager viewPager;
+    @BindView(R.id.tabLayout)
+    TabLayout tabLayout;
+    @BindView(R.id.viewPager)
+    ViewPager viewPager;
     CategoryRepository categoryRepository;
     ViewPagerAdapter viewPagerAdapter;
 
@@ -37,9 +41,17 @@ public class FeedContainerFragment extends BaseFragment {
     @Override
     protected void initLayout() {
         repositories.add(categoryRepository = new CategoryRepository(getContext()));
-        viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), categoryRepository.getCategoriesOrderByName());
+        disposables.add(categoryRepository.getCategoriesOrderByName()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setAdapter));
+    }
+
+    private void setAdapter(List<Category> items) {
+        viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), items);
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager, true);
+
     }
 
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {

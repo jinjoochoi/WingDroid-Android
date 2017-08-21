@@ -44,6 +44,10 @@
     <string name="empty_search_result">No result found.</string>
     <string name="empty_issue">No issue about your bookmarks.</string>
 
+    <string name="filter_release">Release</string>
+    <string name="filter_push">Push</string>
+
+
 
     <!-- Toast message string -->
     <string name="toast_message_no_auth"></string>

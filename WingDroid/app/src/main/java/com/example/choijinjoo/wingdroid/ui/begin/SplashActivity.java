@@ -7,8 +7,8 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.service.DataSyncResultReceiver;
 import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
+import com.example.choijinjoo.wingdroid.ui.MainActivity;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 
 import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper.Config.LOAD;
@@ -19,7 +19,6 @@ import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelp
 
 public class SplashActivity extends BaseActivity {
 
-    DataSyncResultReceiver syncResultReceiver;
 
     @Override
     protected int getLayoutId() {
@@ -27,9 +26,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     @Override
-    protected void initLayout() {
-
-    }
+    protected void initLayout() {}
 
     @Override
     protected void loadData() {
@@ -59,7 +56,7 @@ public class SplashActivity extends BaseActivity {
     };
 
     private void moveToNextActivity(){
-        Intent startIntent = new Intent(SplashActivity.this, LoginActivity.class);
+        Intent startIntent = new Intent(SplashActivity.this, MainActivity.class);
         startActivity(startIntent);
         finish();
     }

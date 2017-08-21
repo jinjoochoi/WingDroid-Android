@@ -19,6 +19,8 @@ import com.xiaofeng.flowlayoutmanager.FlowLayoutManager;
 import java.util.List;
 
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by choijinjoo on 2017. 8. 8..
@@ -73,8 +75,23 @@ public class SearchFragment extends BaseFragment{
         super.loadData();
         categoryRepository = new CategoryRepository(getContext());
         repositoryRepository = new RepositoryRepository(getContext());
-        categoryAdapter.setItems(categoryRepository.getCategories());
-        List<Repository> repositories = repositoryRepository.getSuggestedRepo();
+
+        disposables.add(categoryRepository.getCategories()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setCategoryItems));
+
+        disposables.add(repositoryRepository.getSuggestedRepo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setSuggestedRepoItems));
+    }
+
+    private void setCategoryItems(List<Category> items){
+        categoryAdapter.setItems(items);
+    }
+
+    private void setSuggestedRepoItems(List<Repository> repositories){
         if(repositories.size() > 2){
             suggestionsAdapter.setItems(repositories.subList(0,2));
         }else {

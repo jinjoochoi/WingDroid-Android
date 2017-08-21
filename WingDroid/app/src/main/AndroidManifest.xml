@@ -42,6 +42,11 @@
         </service>
 
         <service android:name=".service.FirebaseDataSyncService" />
+
+        <service
+            android:name=".service.BookmarkEventSyncService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

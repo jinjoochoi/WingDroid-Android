@@ -37,7 +37,7 @@ ext {
     butterknife_version = '8.7.0'
     butterknife_compiler_version = '8.6.0'
 
-    glide_version = '4.0.0'
+    glide_version = '3.8.0'
 
     rxbinding_version = '2.0.0'
     rxandroid_version = '2.0.1'
@@ -45,8 +45,6 @@ ext {
 
     flowlayout_version = '1.10@aar'
     flowlayoutmanager_version = '1.2.3.2'
-
-    realm_adapter_version = '2.1.0'
 
     firebase_auth_version = '10.0.1'
     firebase_crash_version = '10.0.1'
@@ -61,5 +59,6 @@ ext {
     okhttp3_version = '3.4.2'
     okhttp3_logging_interceptor = '3.4.2'
 
+    ormlite_version = '5.0'
 
 }

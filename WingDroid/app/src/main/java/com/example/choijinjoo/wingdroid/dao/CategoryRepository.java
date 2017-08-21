@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+
 /**
  * Created by choijinjoo on 2017. 7. 13..
  */
@@ -22,35 +24,44 @@ public class CategoryRepository extends BaseRepository {
         categoryDao = dbHelper.getCategoryDao();
     }
 
-    public List<Category> getCategories() {
+    public Observable<List<Category>> getCategories() {
         List<Category> results = new ArrayList<>();
         try {
             results.addAll(categoryDao.queryForAll());
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
-        return results;
+        return Observable.just(results);
     }
 
-    public Category getCategoryByName(String name) {
+    public Observable<Category> getCategoryByName(String name) {
         try {
-            return categoryDao.queryBuilder().where().eq(Category.NAME_FIELD,name).queryForFirst();
+            return Observable.just(categoryDao.queryBuilder().where().eq(Category.NAME_FIELD,name).queryForFirst());
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
-        return null;
+        throw new RuntimeException("UncaughtException");
     }
 
-    public List<Category> getCategoriesOrderByName() {
+    public Category getAllCategory() {
+        try {
+            return categoryDao.queryBuilder().where().eq(Category.NAME_FIELD,"All").queryForFirst();
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        throw new RuntimeException("UncaughtException");
+    }
+
+
+    public Observable<List<Category>> getCategoriesOrderByName() {
         List<Category> results = new ArrayList<>();
         try {
             results.addAll(categoryDao.queryBuilder().orderBy(Category.NAME_FIELD,true).query());
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
-        return results;
+        return Observable.just(results);
     }
-
 
 
     public void createOrUpdateCategory(Category category) {

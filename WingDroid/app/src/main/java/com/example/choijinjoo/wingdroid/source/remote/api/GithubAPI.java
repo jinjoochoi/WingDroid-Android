@@ -1,6 +1,9 @@
 package com.example.choijinjoo.wingdroid.source.remote.api;
 
-import com.example.choijinjoo.wingdroid.model.response.AuthResponse;
+import com.example.choijinjoo.wingdroid.model.event.Release;
+import com.example.choijinjoo.wingdroid.model.response.CommitResponse;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.adapter.rxjava2.Result;
@@ -13,7 +16,7 @@ import retrofit2.adapter.rxjava2.Result;
 public class GithubAPI extends API<GithubService> {
     private static GithubAPI instance = null;
 
-    private GithubService githubService;
+    private GithubService service;
 
     public static GithubAPI getInstance() {
         if (instance == null) {
@@ -24,10 +27,14 @@ public class GithubAPI extends API<GithubService> {
 
     public GithubAPI() {
         super(GithubService.class);
-        this.githubService = createCallService();
+        this.service = createAPIService();
+    }
+    public Observable<Result<List<Release>>> release (String owner, String repo) {
+        return service.release(owner,repo);
     }
 
-    public Observable<Result<AuthResponse>> authorize(String client_id, String client_secret, String code) {
-        return githubService.authorize(client_id, client_secret, code);
+    public Observable<Result<List<CommitResponse>>> commits (String owner, String repo) {
+        return service.commits(owner,repo);
     }
+
 }

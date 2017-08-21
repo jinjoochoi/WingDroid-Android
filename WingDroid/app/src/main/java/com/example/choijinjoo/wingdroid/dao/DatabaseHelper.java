@@ -3,12 +3,17 @@ package com.example.choijinjoo.wingdroid.dao;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.choijinjoo.wingdroid.model.Bookmark;
 import com.example.choijinjoo.wingdroid.model.Category;
+import com.example.choijinjoo.wingdroid.model.Committer;
 import com.example.choijinjoo.wingdroid.model.RTCategoryRepository;
 import com.example.choijinjoo.wingdroid.model.RTTagRepository;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.SearchHistory;
 import com.example.choijinjoo.wingdroid.model.Tag;
+import com.example.choijinjoo.wingdroid.model.User;
+import com.example.choijinjoo.wingdroid.model.event.Commit;
+import com.example.choijinjoo.wingdroid.model.event.Release;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
@@ -24,7 +29,7 @@ import java.util.List;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "WingDroid.db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 17;
 
     private List<BaseRepository> repositories = new ArrayList<>();
 
@@ -50,6 +55,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, RTCategoryRepository.class);
             TableUtils.createTable(connectionSource, RTTagRepository.class);
             TableUtils.createTable(connectionSource, SearchHistory.class);
+            TableUtils.createTable(connectionSource, Release.class);
+            TableUtils.createTable(connectionSource, Commit.class);
+            TableUtils.createTable(connectionSource, User.class);
+            TableUtils.createTable(connectionSource, Bookmark.class);
+            TableUtils.createTable(connectionSource, Committer.class);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -70,6 +80,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, RTCategoryRepository.class, true);
             TableUtils.dropTable(connectionSource, RTTagRepository.class, true);
             TableUtils.dropTable(connectionSource, SearchHistory.class, true);
+            TableUtils.dropTable(connectionSource, User.class, true);
+            TableUtils.dropTable(connectionSource, Release.class, true);
+            TableUtils.dropTable(connectionSource, Commit.class, true);
+            TableUtils.dropTable(connectionSource, Bookmark.class, true);
+            TableUtils.dropTable(connectionSource, Committer.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(db, connectionSource);
         } catch (SQLException e) {
@@ -90,6 +105,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     RTCategoryRepositoryDao rtCategoryRepositoryDao;
     RTTagRepositoryDao rtTagRepositoryDao;
     SearchHistoryDao searchHistoryDao;
+    ReleaseDao releaseDao;
+    CommitDao commitDao;
+    BookmarkDao bookmarkDao;
+    UserDao userDao;
+    CommitterDao commiterDao;
 
     public RepositoryDao getRepoDao() {
         try {
@@ -158,6 +178,66 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return searchHistoryDao;
     }
 
+
+    public CommitDao getCommitDao() {
+        try {
+            if (commitDao == null) {
+                commitDao = new CommitDao(getConnectionSource());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return commitDao;
+    }
+
+
+    public ReleaseDao getReleaseDao() {
+        try {
+            if (releaseDao == null) {
+                releaseDao = new ReleaseDao(getConnectionSource());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return releaseDao;
+    }
+
+
+    public BookmarkDao getBookmarkDao() {
+        try {
+            if (bookmarkDao == null) {
+                bookmarkDao = new BookmarkDao(getConnectionSource());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookmarkDao;
+    }
+
+    public UserDao getUserDao() {
+        try {
+            if (userDao == null) {
+                userDao = new UserDao(getConnectionSource());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userDao;
+    }
+
+    public CommitterDao getCommiterDao() {
+        try {
+            if (commiterDao == null) {
+                commiterDao = new CommitterDao(getConnectionSource());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return commiterDao;
+    }
+
+
+
     /**
      * Close the database connections and clear any cached DAOs.
      */
@@ -170,5 +250,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         rtCategoryRepositoryDao = null;
         rtTagRepositoryDao = null;
         searchHistoryDao = null;
+        releaseDao = null;
+        commitDao = null;
+        bookmarkDao = null;
+        userDao = null;
+
     }
 }

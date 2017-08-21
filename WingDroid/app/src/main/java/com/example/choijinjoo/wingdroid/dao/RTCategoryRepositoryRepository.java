@@ -17,6 +17,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+
 /**
  * Created by choijinjoo on 2017. 7. 13..
  */
@@ -50,7 +52,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     }
 
 
-    public List<Repository> getRepoForCategoryOrderByDate(Category category) {
+    public Observable<List<Repository>> getRepoForCategoryOrderByDate(Category category) {
         List<Repository> results = new ArrayList<>();
         try {
             if (repoForCategoryPreparedQuery == null)
@@ -61,10 +63,10 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return results;
+        return Observable.just(results);
     }
 
-    public List<Repository> getRepoForCategoryOrderByStar(Category category) {
+    public Observable<List<Repository>> getRepoForCategoryOrderByStar(Category category) {
         List<Repository> results = new ArrayList<>();
         try {
             if (repoForCategoryPreparedQuery == null)
@@ -75,7 +77,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return results;
+        return Observable.just(results);
     }
 
 
@@ -100,7 +102,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         return new ArrayList<>();
     }
 
-    public List<Repository> getBookmarkForCategories(String order_by, List<Category> categories) {
+    public Observable<List<Repository>> getBookmarkForCategories(String order_by, List<Category> categories) {
         List<Repository> results = new ArrayList<>();
         try {
             if (refoForCategoriesPreparedQuery == null)
@@ -117,7 +119,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
-        return results;
+        return Observable.just(results);
     }
 
 

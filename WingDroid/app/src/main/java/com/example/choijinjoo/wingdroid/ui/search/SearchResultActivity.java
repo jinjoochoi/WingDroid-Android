@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.example.choijinjoo.wingdroid.model.SearchHistory.SEARCH_TYPE_CATEGORY;
 import static com.example.choijinjoo.wingdroid.model.SearchHistory.SEARCH_TYPE_TEXT;
@@ -165,15 +166,22 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
         searchView.setQuery(category.getName(), false);
         containerHistory.setVisibility(View.GONE);
         containerResult.setVisibility(View.VISIBLE);
-        List<Repository> result = rtCategoryRepositoryRepository.getRepoForCategoryOrderByStar(category);
-        if (result.size() == 0) {
+
+        rtCategoryRepositoryRepository.getRepoForCategoryOrderByStar(category)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setSearchResultItems);
+
+        addSearchHistory(category.getName(), SEARCH_TYPE_CATEGORY);
+    }
+
+    private void setSearchResultItems(List<Repository> items){
+        if (items.size() == 0) {
             containerEmpty.setVisibility(View.VISIBLE);
         } else {
             containerEmpty.setVisibility(View.GONE);
-            resultAdapter.setItems(result);
+            resultAdapter.setItems(items);
         }
-        addSearchHistory(category.getName(), SEARCH_TYPE_CATEGORY);
-
     }
 
     private void addSearchHistory(String searchs, String searchType) {
@@ -206,13 +214,19 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
     }
 
     private void loadSearchHistories(){
-        List<SearchHistory> results = searchHistoryRepository.getSearchHistories();
-        if(results.size() == 0){
+        searchHistoryRepository.getSearchHistories()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setSearchHistoryItems);
+    }
+
+    private void setSearchHistoryItems(List<SearchHistory> items){
+        if(items.size() == 0){
             txtvNoSearchResult.setVisibility(View.VISIBLE);
         }else{
             txtvNoSearchResult.setVisibility(View.GONE);
         }
-        searchHistoryAdapter.setItems(results);
+        searchHistoryAdapter.setItems(items);
     }
 
 

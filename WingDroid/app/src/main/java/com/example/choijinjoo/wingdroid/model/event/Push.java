@@ -6,10 +6,7 @@ import com.example.choijinjoo.wingdroid.tools.Utils;
 
 import org.parceler.Parcel;
 
-import java.util.Calendar;
 import java.util.Date;
-
-import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_PUSH;
 
 /**
  * Created by choijinjoo on 2017. 8. 9..
@@ -23,12 +20,7 @@ public class Push implements IEvent {
     String compare;
     Date createdAt;
 
-    public Push() {
-        this.pusher = new User("jinjoo");
-        this.repository = new Repository("TextSurface");
-        this.headCommit = new Commit();
-        this.createdAt = Calendar.getInstance().getTime();
-    }
+    public Push() {}
 
     public User getPusher() { return pusher; }
 
@@ -56,7 +48,7 @@ public class Push implements IEvent {
 
     @Override
     public String getRepoAndAuthorName() {
-        return repository.getName() + " / " + pusher.getName();
+        return repository.getName() + " / " + pusher.getLogin();
     }
 
     @Override
@@ -66,7 +58,7 @@ public class Push implements IEvent {
 
     @Override
     public String getEventInfoString() {
-        return  "Pushed by " + pusher.getName() + Utils.getElapsedDateString(createdAt);
+        return  "Pushed by " + pusher.getLogin() + Utils.getElapsedDateString(createdAt);
     }
 
     //FIXME MOCK DATA
@@ -76,5 +68,5 @@ public class Push implements IEvent {
     }
 
     @Override
-    public int getViewType() { return EVENT_PUSH; }
+    public int getViewType() { return 0; }
 }

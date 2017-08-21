@@ -8,7 +8,7 @@ import android.webkit.WebViewClient;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.config.Config;
 import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
-import com.example.choijinjoo.wingdroid.source.remote.api.GithubAPI;
+import com.example.choijinjoo.wingdroid.source.remote.api.GithubOAuthAPI;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragmentActivity;
 
 import butterknife.BindView;
@@ -70,7 +70,7 @@ public class GithubActivity extends BaseFragmentActivity {
 
 
     private void fetchOauthTokenWithCode(String code){
-        GithubAPI.getInstance().authorize(CLIENT_ID,CLIENT_SECRET,code)
+        GithubOAuthAPI.getInstance().authorize(CLIENT_ID,CLIENT_SECRET,code)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(it -> !it.isError())

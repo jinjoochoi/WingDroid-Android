@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+
 /**
  * Created by choijinjoo on 2017. 7. 13..
  */
@@ -40,14 +42,14 @@ public class SearchHistoryRepository extends BaseRepository {
         }
     }
 
-    public List<SearchHistory> getSearchHistories() {
+    public Observable<List<SearchHistory>> getSearchHistories() {
         List<SearchHistory> results = new ArrayList<>();
         try {
             results.addAll(searchHistoryDao.queryForAll());
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
-        return results;
+        return Observable.just(results);
     }
 
     public void registerDaoObserver(Dao.DaoObserver observer) {

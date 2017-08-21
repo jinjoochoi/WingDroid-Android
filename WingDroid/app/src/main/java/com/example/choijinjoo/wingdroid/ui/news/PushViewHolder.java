@@ -11,7 +11,7 @@ import com.example.choijinjoo.wingdroid.model.event.Event;
  */
 
 public class PushViewHolder extends EventViewHolder {
-    private Event news;
+    private Event event;
 
     public PushViewHolder(Context context, View itemView, EventAdapter.EventClickListener listener) {
         super(context, itemView, listener);
@@ -19,12 +19,12 @@ public class PushViewHolder extends EventViewHolder {
 
     @Override
     public void bindData(Event item) {
-        this.news = item;
+        this.event = item;
         super.bindData(item);
     }
 
     @Override
     protected IEvent getEvent() {
-        return news.getPush();
+        return event.getCommit();
     }
 }
