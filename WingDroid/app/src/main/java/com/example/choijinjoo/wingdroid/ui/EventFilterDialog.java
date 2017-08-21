@@ -18,6 +18,7 @@ import butterknife.BindView;
 public class EventFilterDialog extends BaseBottomSheetDialog implements View.OnClickListener{
     @BindView(R.id.txtvPush) TextView txtvPush;
     @BindView(R.id.txtvRelease) TextView txtvRelease;
+    @BindView(R.id.txtvAll) TextView txtvAll;
     FilterSelectedListener listener;
     public int order_by;
 
@@ -54,14 +55,22 @@ public class EventFilterDialog extends BaseBottomSheetDialog implements View.OnC
     @Override
     public void onClick(View view) {
         switch (view.getId()){
+            case R.id.txtvAll:
+                txtvAll.setSelected(true);
+                txtvRelease.setSelected(false);
+                txtvPush.setSelected(false);
+                listener.seleted(EventAdapter.EVENT_ALL);
+
             case R.id.txtvPush:
                 txtvRelease.setSelected(false);
                 txtvPush.setSelected(true);
+                txtvAll.setSelected(false);
                 listener.seleted(EventAdapter.EVENT_COMMIT);
                 break;
             case R.id.txtvRelease:
                 txtvPush.setSelected(false);
                 txtvRelease.setSelected(true);
+                txtvAll.setSelected(false);
                 listener.seleted(EventAdapter.EVENT_RELEASE);
                 break;
         }

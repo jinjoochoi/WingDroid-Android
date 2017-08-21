@@ -22,6 +22,7 @@ public class Release implements IEvent {
     public final static String ID_FIELD = "release_id";
     public final static String UPDATEDAT_FIELD = "updated_at_id";
 
+    @SerializedName("html_url")
     @DatabaseField(id = true, unique = true, columnName = ID_FIELD)
     Integer id;
     @DatabaseField
@@ -44,6 +45,8 @@ public class Release implements IEvent {
     Date publishedAt;
     @DatabaseField
     String body;
+    @DatabaseField
+    boolean isRead;
 
 
     @DatabaseField(foreign = true)
@@ -89,6 +92,7 @@ public class Release implements IEvent {
 
     public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
 
+
     /*
      * IEvent method
      */
@@ -108,12 +112,22 @@ public class Release implements IEvent {
         return "Released by " + author.getLogin() + Utils.getElapsedDateString(createdAt);
     }
 
-    //FIXME MOCK DATA
     @Override
     public String getMainUrl() {
-        return "https://stackoverflow.com/questions/26245139/how-to-create-recyclerview-with-multiple-view-type";
+        return url;
     }
 
     @Override
     public int getViewType() { return EVENT_RELEASE; }
+
+    @Override
+    public Long getLongTypeDate() {
+        return updatedAt.getTime();
+    }
+
+    @Override
+    public boolean isRead() { return isRead; }
+
+    @Override
+    public void setRead(boolean read) { isRead = read; }
 }

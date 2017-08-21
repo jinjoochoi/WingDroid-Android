@@ -26,7 +26,8 @@ import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelp
  * Created by choijinjoo on 2017. 8. 17..
  */
 
-public class FirebaseSyncRepository {
+public class
+FirebaseSyncRepository {
     Context context;
 
     PublishSubject<Boolean> loadedCategoryPS;

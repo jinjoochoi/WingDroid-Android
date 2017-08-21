@@ -12,6 +12,7 @@ import com.example.choijinjoo.wingdroid.service.BookmarkEventSyncService;
 import com.example.choijinjoo.wingdroid.service.FirebaseDataSyncService;
 import com.facebook.stetho.Stetho;
 import com.google.firebase.FirebaseApp;
+import com.squareup.leakcanary.LeakCanary;
 
 /**
  * Created by choijinjoo on 2017. 8. 10..
@@ -32,13 +33,17 @@ public class WingDroidApp extends Application {
 
         startDataSyncService();
         startBookmarkEventSyncService();
+
+        LeakCanary.isInAnalyzerProcess(this);
+        LeakCanary.install(this);
+
     }
 
     private void startBookmarkEventSyncService(){
         JobInfo job = new JobInfo.Builder(
                 JOB_ID, new ComponentName(this, BookmarkEventSyncService.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(12 * DateUtils.MINUTE_IN_MILLIS)
+                .setPeriodic(12 * DateUtils.HOUR_IN_MILLIS)
                 .build();
 
         JobScheduler jobScheduler =

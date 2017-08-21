@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.example.choijinjoo.wingdroid.dao.BaseRepository;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void initLayout();
 
     protected List<Disposable> disposables = new ArrayList<>();
+    protected List<BaseRepository> repositories = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +50,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onDestroy();
         for (Disposable disposable : disposables) {
             disposable.dispose();
+        }
+
+        for(BaseRepository repository : repositories){
+            repository.release();
         }
     }
 }

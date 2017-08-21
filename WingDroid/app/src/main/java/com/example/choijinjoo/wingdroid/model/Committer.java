@@ -5,6 +5,8 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.parceler.Parcel;
 
+import java.util.Date;
+
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
@@ -16,7 +18,7 @@ public class Committer {
     @DatabaseField
     String name;
     @DatabaseField
-    String date;
+    Date date;
 
     public Committer() {}
 
@@ -36,11 +38,12 @@ public class Committer {
         this.name = name;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
+
 }

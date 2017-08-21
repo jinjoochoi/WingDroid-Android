@@ -33,4 +33,5 @@ public class Utils {
         else
             return star > 1000 ? String.format("%d.%dK", star / 1000, (star - (star / 1000) * 1000) / 100) : String.valueOf(star);
     }
+
 }

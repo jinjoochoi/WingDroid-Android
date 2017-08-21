@@ -24,8 +24,7 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/imgvIssue">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/txtvName"
@@ -33,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 tools:text="Ikzhao / Hero" />
+
             <TextView
                 android:id="@+id/txtvTag"
                 style="@style/TextStyle.Title"
@@ -43,10 +43,11 @@
                 tools:text="v1.7-13" />
 
             <View
+                android:id="@+id/imgvRead"
                 android:layout_width="@dimen/new_mark_width"
                 android:layout_height="@dimen/new_mark_width"
-                android:layout_marginLeft="@dimen/new_mark_margin_left"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/new_mark_margin_left"
                 android:layout_toRightOf="@id/txtvTag"
                 android:background="@drawable/mark_new" />
         </RelativeLayout>

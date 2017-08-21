@@ -8,10 +8,13 @@ import com.example.choijinjoo.wingdroid.model.RTCategoryRepository;
 import com.example.choijinjoo.wingdroid.model.RTTagRepository;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.Tag;
-import com.j256.ormlite.dao.Dao;
+import com.example.choijinjoo.wingdroid.model.eventbus.RepoBookMarkEvent;
+import com.example.choijinjoo.wingdroid.model.eventbus.RepoClickEvent;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,6 +46,17 @@ public class RepositoryRepository extends BaseRepository {
     private PreparedQuery<Repository> suggestedRepoForTagPreparedQuery = null;
     private PreparedQuery<Category> categoryForRepoPreparedQuery = null;
     private PreparedQuery<Repository> repoForCategoryOrderByStarPreparedQuery = null;
+
+
+    public static RepositoryRepository instance = null;
+
+    public static RepositoryRepository getInstance(Context context){
+        if(instance == null){
+            instance = new RepositoryRepository(context.getApplicationContext());
+        }
+        return instance;
+    }
+
 
     public RepositoryRepository(Context context) {
         super(context);
@@ -87,6 +101,14 @@ public class RepositoryRepository extends BaseRepository {
             Log.e(TAG, e.getMessage());
         }
         return Observable.just(results);
+    }
+
+    public void deleteRepository(Repository repository) {
+        try {
+            repositoryDao.delete(repository);
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
 
@@ -285,10 +307,10 @@ public class RepositoryRepository extends BaseRepository {
 
     public void createOrUpdateRepository(Repository repository) {
         try {
-            Repository prev = repositoryDao.queryBuilder().where().eq(ID_FIELD,repository.getId()).queryForFirst();
-            if(prev != null){
+            Repository prev = repositoryDao.queryBuilder().where().eq(ID_FIELD, repository.getId()).queryForFirst();
+            if (prev != null) {
 
-                Log.d(TAG,"prev's bookmark : "+prev.getBookmark());
+                Log.d(TAG, "prev's bookmark : " + prev.getBookmark());
                 repository.setBookmarkedAt(repository.getBookmarkedAt());
                 repository.setBookmark(repository.getBookmark());
                 repository.setClicks(repository.getClicks());
@@ -301,35 +323,37 @@ public class RepositoryRepository extends BaseRepository {
 
     public void updateRepository(Repository repository) {
         try {
+            repositoryDao.update(repository);
+
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+    public void addClick(Repository repository) {
+        try {
+            repositoryDao.update(repository);
+            EventBus.getDefault().post(new RepoClickEvent());
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+    public void addBookmark(Repository repository) {
+        try {
             if (repository.getBookmark())
                 repository.setBookmarkedAt(Calendar.getInstance().getTime());
             else
                 repository.setBookmarkedAt(null);
             repositoryDao.update(repository);
 
-
+            EventBus.getDefault().post(new RepoBookMarkEvent());
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
     }
 
 
-    public void deleteRepository(Repository repository) {
-        try {
-            repositoryDao.delete(repository);
-        } catch (SQLException e) {
-            Log.e(TAG, e.getMessage());
-        }
-    }
-
-
-    public void registerDaoObserver(Dao.DaoObserver observer) {
-        repositoryDao.registerObserver(observer);
-    }
-
-    public void unregisterDaoObserver(Dao.DaoObserver observer) {
-        repositoryDao.unregisterObserver(observer);
-    }
 
     /**
      * Build our repositories for repository objects that match a category

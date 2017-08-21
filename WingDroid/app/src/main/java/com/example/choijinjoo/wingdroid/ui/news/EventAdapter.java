@@ -18,14 +18,16 @@ import java.util.ArrayList;
 public class EventAdapter extends BaseAdapter<Event, EventViewHolder> {
     EventClickListener listener;
 
-    public static final int EVENT_ISSUE = 101;
+//    public static final int EVENT_ISSUE = 101;
 //    public static final int EVENT_PUSH = 102;
+    public static final int EVENT_ALL = 100;
     public static final int EVENT_RELEASE = 103;
     public static final int EVENT_COMMIT = 104;
 
 
     public interface EventClickListener {
         void clicked(int position);
+        boolean longClicked(int position);
     }
 
     public EventAdapter(Context context, EventClickListener listener) {
@@ -43,7 +45,7 @@ public class EventAdapter extends BaseAdapter<Event, EventViewHolder> {
 //                viewHolder = new IssueViewHolder(context, view,listener);
 //                break;
             case EVENT_COMMIT:
-                view = LayoutInflater.from(context).inflate(R.layout.item_push, parent, false);
+                view = LayoutInflater.from(context).inflate(R.layout.item_commit, parent, false);
                 viewHolder = new PushViewHolder(context, view,listener);
                 break;
             case EVENT_RELEASE:

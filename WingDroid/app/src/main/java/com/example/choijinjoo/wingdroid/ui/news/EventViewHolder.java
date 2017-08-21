@@ -7,8 +7,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.choijinjoo.wingdroid.R;
-import com.example.choijinjoo.wingdroid.model.event.IEvent;
 import com.example.choijinjoo.wingdroid.model.event.Event;
+import com.example.choijinjoo.wingdroid.model.event.IEvent;
 import com.example.choijinjoo.wingdroid.ui.base.BaseViewHolder;
 
 import butterknife.BindView;
@@ -22,6 +22,7 @@ public abstract class EventViewHolder extends BaseViewHolder<Event>{
     @BindView(R.id.txtvName) TextView txtvName;
     @BindView(R.id.txtvTitle) TextView txtvTitle;
     @BindView(R.id.txtvIssueInfo) TextView txtvIssueInfo;
+    @BindView(R.id.imgvRead) View imgvRead;
     EventAdapter.EventClickListener listener;
 
     public EventViewHolder(Context context, View itemView, EventAdapter.EventClickListener listener) {
@@ -37,6 +38,8 @@ public abstract class EventViewHolder extends BaseViewHolder<Event>{
         txtvTitle.setText(event.getMessage());
         txtvIssueInfo.setText(event.getEventInfoString());
         container.setOnClickListener(it -> listener.clicked(getSafeAdapterPosition()));
+        container.setOnLongClickListener(it -> listener.longClicked(getSafeAdapterPosition()));
+        imgvRead.setVisibility(item.getEvent().isRead()? View.GONE : View.VISIBLE);
     }
 
     protected abstract IEvent getEvent();

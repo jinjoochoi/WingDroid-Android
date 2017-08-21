@@ -13,17 +13,11 @@ import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_RELEAS
 public class Event {
     Integer id;
     Integer type;
-    Issue issue;
-    Push push;
     Release release;
     Commit commit;
 
-    public Event() {
-    }
+    public Event() {}
 
-    public Event(Push push) {
-        this.push = push;
-    }
 
     public Event(Commit commit) {
         this.commit = commit;
@@ -32,12 +26,6 @@ public class Event {
     public Event(Release release) {
         this.release = release;
     }
-
-    public Event(Issue issue) {
-
-        this.issue = issue;
-    }
-
 
     public Integer getId() {
         return id;
@@ -58,22 +46,6 @@ public class Event {
         this.type = type;
     }
 
-    public Issue getIssue() {
-        return issue;
-    }
-
-    public void setIssue(Issue issue) {
-        this.issue = issue;
-    }
-
-    public Push getPush() {
-        return push;
-    }
-
-    public void setPush(Push push) {
-        this.push = push;
-    }
-
     public Release getRelease() {
         return release;
     }
@@ -89,7 +61,6 @@ public class Event {
     public void setCommit(Commit commit) {
         this.commit = commit;
     }
-
 
     /*
      * Custom Method

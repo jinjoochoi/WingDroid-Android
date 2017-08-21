@@ -84,6 +84,7 @@ public class BookmarkEventSyncService extends JobService {
             Committer committer = committerRepository.createOrUpdateCommitter(commit.getCommitter());
             commit.setRepository(repo);
             commit.setCommitter(committer);
+            commit.setUrl(commits.get(0).getHtmlUrl());
             commitRepository.createOrUpdateCommit(commit);
         }
     }

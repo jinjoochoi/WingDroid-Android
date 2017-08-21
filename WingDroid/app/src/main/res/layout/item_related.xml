@@ -20,7 +20,6 @@
         style="@style/TextStyle.Title.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imgvPreview"
         tools:text="TextSurface" />
 
     <include layout="@layout/item_star"/>

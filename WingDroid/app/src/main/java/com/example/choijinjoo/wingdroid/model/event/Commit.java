@@ -20,26 +20,23 @@ public class Commit implements IEvent{
     public final static String TIME_STAMP = "timestamp";
 
     @DatabaseField(id = true, unique = true, columnName = ID_FIELD)
-    String id;
+    String url;
     @DatabaseField
     String message;
     @DatabaseField(columnName = TIME_STAMP)
     String timestamp;
-    @DatabaseField
-    String url;
     @DatabaseField(foreign = true)
     Committer committer;
     @DatabaseField(foreign = true)
     User author;
 
-
     @DatabaseField(foreign = true)
     Repository repository;
 
+    @DatabaseField
+    boolean isRead;
 
-    public String getId() { return id; }
 
-    public void setId(String id) { this.id = id; }
 
     public String getMessage() { return message; }
 
@@ -69,6 +66,7 @@ public class Commit implements IEvent{
         this.author = author;
     }
 
+
     @Override
     public String getRepoAndAuthorName() {
         return repository.getName() + " / " + repository.getAuthor();
@@ -88,4 +86,15 @@ public class Commit implements IEvent{
     public int getViewType() {
         return EVENT_COMMIT;
     }
+
+    @Override
+    public Long getLongTypeDate() {
+        return committer.getDate().getTime();
+    }
+
+    @Override
+    public boolean isRead() { return isRead; }
+
+    @Override
+    public void setRead(boolean read) { isRead = read; }
 }

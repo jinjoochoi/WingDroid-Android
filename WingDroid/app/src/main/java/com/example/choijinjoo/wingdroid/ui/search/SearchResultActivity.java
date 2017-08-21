@@ -252,6 +252,6 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
 
     @Override
     public void onChange() {
-        loadSearchHistories();
+//        loadSearchHistories();
     }
 }

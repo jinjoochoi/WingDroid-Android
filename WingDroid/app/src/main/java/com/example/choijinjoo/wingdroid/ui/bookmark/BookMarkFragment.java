@@ -14,12 +14,16 @@ import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.model.Category;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.SortCriteria;
+import com.example.choijinjoo.wingdroid.model.eventbus.RepoBookMarkEvent;
 import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
 import com.example.choijinjoo.wingdroid.ui.CategoryFilterDialog;
 import com.example.choijinjoo.wingdroid.ui.SelectSortCriteriaDialog;
 import com.example.choijinjoo.wingdroid.ui.base.BaseFragment;
 import com.example.choijinjoo.wingdroid.ui.detail.RepositoryDetailActivity;
-import com.j256.ormlite.dao.Dao;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +42,7 @@ import static com.example.choijinjoo.wingdroid.model.Repository.STAR_FIELD;
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
+public class BookMarkFragment extends BaseFragment  {
     @BindView(R.id.recvRepositories)
     RecyclerView recvRepositories;
     @BindView(R.id.containerSort)
@@ -47,7 +51,6 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
     ImageView imgvFilter;
     BookMarkAdapter adapter;
     RTCategoryRepositoryRepository rtCategoryRepositoryRepository;
-    RepositoryRepository repositoryRepository;
     CategoryRepository categoryRepository;
     List<Category> categories;
     Set<String> criteria;
@@ -73,9 +76,7 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
         imgvFilter.setOnClickListener(it -> showCategoryFilterDialog());
         rtCategoryRepositoryRepository = new RTCategoryRepositoryRepository(getContext());
         categoryRepository = new CategoryRepository(getContext());
-        repositoryRepository = new RepositoryRepository(getContext());
-        rtCategoryRepositoryRepository.registerDaoObserver(this);
-        repositoryRepository.registerDaoObserver(this);
+        EventBus.getDefault().register(this);
         order_by = SortCriteria.RECENT;
 
         loadCategoriesOrderByName();
@@ -122,12 +123,12 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
 
         if (order_by == SortCriteria.RECENT) {
             if (isAll())
-                loadBookmarkItems(repositoryRepository.getBookmark(CREATEDAT_FIELD, false));
+                loadBookmarkItems(RepositoryRepository.getInstance(getContext()).getBookmark(CREATEDAT_FIELD, false));
             else
                 loadBookmarkItems(rtCategoryRepositoryRepository.getBookmarkForCategories(BOOKMARKEDAT_FIELD, categories));
         } else {
             if (isAll())
-                loadBookmarkItems(repositoryRepository.getBookmark(STAR_FIELD, false));
+                loadBookmarkItems(RepositoryRepository.getInstance(getContext()).getBookmark(STAR_FIELD, false));
             else
                 loadBookmarkItems(rtCategoryRepositoryRepository.getBookmarkForCategories(STAR_FIELD, categories));
         }
@@ -165,14 +166,19 @@ public class BookMarkFragment extends BaseFragment implements Dao.DaoObserver {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        repositoryRepository.unregisterDaoObserver(this);
-        rtCategoryRepositoryRepository.unregisterDaoObserver(this);
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
-    public void onChange() {
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(RepoBookMarkEvent event) {
         loadRepo(categories);
     }
+
 }

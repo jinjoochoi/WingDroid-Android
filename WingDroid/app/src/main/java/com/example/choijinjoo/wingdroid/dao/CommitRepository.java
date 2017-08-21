@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.choijinjoo.wingdroid.model.Committer;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.event.Commit;
+import com.example.choijinjoo.wingdroid.model.event.Event;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 
+import static com.example.choijinjoo.wingdroid.model.event.Commit.ID_FIELD;
 import static com.example.choijinjoo.wingdroid.model.event.Commit.TIME_STAMP;
 
 /**
@@ -25,6 +27,22 @@ public class CommitRepository extends BaseRepository {
     private UserDao userDao;
     private RepositoryDao repositoryDao;
     private CommitterDao committerDao;
+
+    List<CommitChangeListener> listeners = new ArrayList<>();
+
+    public static CommitRepository instance = null;
+
+    public static CommitRepository getInstance(Context context){
+        if(instance == null){
+            instance = new CommitRepository(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    public interface CommitChangeListener {
+        void changed();
+    }
+
 
     public CommitRepository(Context context) {
         super(context);
@@ -39,8 +57,6 @@ public class CommitRepository extends BaseRepository {
         try {
             List<Commit> commits = commitDao.queryBuilder().orderBy(TIME_STAMP, false).query();
             for (Commit commit : commits) {
-//                User author = userDao.queryBuilder().where().eq("id", commit.getAuthor().getId()).queryForFirst();
-//                commit.setAuthor(author);
                 Committer committer = committerDao.queryBuilder().where().eq("id",commit.getCommitter().getId()).queryForFirst();
                 commit.setCommitter(committer);
                 Repository repository = repositoryDao.queryBuilder().where().eq(Repository.ID_FIELD,commit.getRepository().getId()).queryForFirst();
@@ -53,6 +69,49 @@ public class CommitRepository extends BaseRepository {
         return Observable.just(results);
     }
 
+
+    public Observable<List<Event>> getEvents() {
+        List<Event> results = new ArrayList<>();
+        try {
+            List<Commit> commits = commitDao.queryBuilder().orderBy(TIME_STAMP, false).query();
+            for (Commit commit : commits) {
+                Committer committer = committerDao.queryBuilder().where().eq("id",commit.getCommitter().getId()).queryForFirst();
+                commit.setCommitter(committer);
+                Repository repository = repositoryDao.queryBuilder().where().eq(Repository.ID_FIELD,commit.getRepository().getId()).queryForFirst();
+                commit.setRepository(repository);
+                results.add(new Event(commit));
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return Observable.just(results);
+    }
+
+    public Commit getCommitById(Commit commit) {
+        try {
+            Commit result = commitDao.queryBuilder().where().eq(ID_FIELD,commit.getUrl()).queryForFirst();
+            Committer committer = committerDao.queryBuilder().where().eq("id", result.getCommitter().getId()).queryForFirst();
+            result.setCommitter(committer);
+            Repository repository = repositoryDao.queryBuilder().where().eq(Repository.ID_FIELD, result.getRepository().getId()).queryForFirst();
+            result.setRepository(repository);
+            return result;
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return null;
+    }
+
+
+
+    public void updateCommit(Commit commit) {
+        try {
+            commitDao.update(commit);
+            notifyRegisterChanged();
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
     public void createOrUpdateCommit(Commit commit) {
         try {
             commitDao.createOrUpdate(commit);
@@ -62,5 +121,18 @@ public class CommitRepository extends BaseRepository {
         }
     }
 
+    public void notifyRegisterChanged() {
+        for (CommitChangeListener listener : listeners) {
+            listener.changed();
+        }
+    }
+
+    public void registerListener(CommitChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void unregisterListener(CommitChangeListener listener) {
+        listeners.remove(listener);
+    }
 
 }

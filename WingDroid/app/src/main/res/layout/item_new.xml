@@ -24,17 +24,14 @@
             style="@style/TextStyle.Title.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/imgvPreview"
             tools:text="TextSurface" />
 
         <View
             android:id="@+id/imgvRead"
             android:layout_width="@dimen/new_mark_width"
             android:layout_height="@dimen/new_mark_width"
-            android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/new_mark_margin_left"
-            android:layout_toRightOf="@id/txtvName"
             android:background="@drawable/mark_new" />
     </LinearLayout>
 

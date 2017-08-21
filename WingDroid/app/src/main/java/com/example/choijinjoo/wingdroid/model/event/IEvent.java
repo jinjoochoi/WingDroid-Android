@@ -9,5 +9,8 @@ public interface IEvent {
     String getMessage();
     String getEventInfoString();
     String getMainUrl();
+    Long getLongTypeDate();
     int getViewType();
+    boolean isRead();
+    void setRead(boolean read);
 }

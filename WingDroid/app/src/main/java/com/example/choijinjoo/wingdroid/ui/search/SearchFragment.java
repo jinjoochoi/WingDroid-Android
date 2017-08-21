@@ -73,8 +73,8 @@ public class SearchFragment extends BaseFragment{
     @Override
     protected void loadData() {
         super.loadData();
-        categoryRepository = new CategoryRepository(getContext());
-        repositoryRepository = new RepositoryRepository(getContext());
+        repositories.add(categoryRepository = new CategoryRepository(getContext()));
+        repositories.add(repositoryRepository = new RepositoryRepository(getContext()));
 
         disposables.add(categoryRepository.getCategories()
                 .subscribeOn(Schedulers.io())
