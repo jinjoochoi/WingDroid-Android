@@ -5,7 +5,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.RelativeLayout;
-import android.widget.SearchView;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.dao.CategoryRepository;
@@ -30,7 +29,6 @@ public class SearchFragment extends BaseFragment{
     @BindView(R.id.recvCategories) RecyclerView recvCategories;
     @BindView(R.id.recvSuggestions) RecyclerView recvSuggestions;
     @BindView(R.id.btnSearch) RelativeLayout btnSearch;
-    @BindView(R.id.searchView) SearchView searchView;
     CategorySearchAdapter categoryAdapter;
     SuggestionsAdapter suggestionsAdapter;
     CategoryRepository categoryRepository;
@@ -65,7 +63,6 @@ public class SearchFragment extends BaseFragment{
             startActivity(intent);
             getActivity().overridePendingTransition(0,0);
         });
-        searchView.setIconified(false);
 
     }
 

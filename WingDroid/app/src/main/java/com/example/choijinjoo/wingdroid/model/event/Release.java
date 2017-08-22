@@ -11,7 +11,7 @@ import org.parceler.Parcel;
 
 import java.util.Date;
 
-import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_RELEASE;
+import static com.example.choijinjoo.wingdroid.model.event.Event.EVENT_RELEASE;
 
 /**
  * Created by choijinjoo on 2017. 8. 9..
@@ -109,7 +109,7 @@ public class Release implements IEvent {
 
     @Override
     public String getEventInfoString() {
-        return "Released by " + author.getLogin() + Utils.getElapsedDateString(createdAt);
+        return "Released by " + author.getLogin() + "  "+Utils.getElapsedDateString(createdAt);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class Release implements IEvent {
     }
 
     @Override
-    public int getViewType() { return EVENT_RELEASE; }
+    public Integer getViewType() { return EVENT_RELEASE; }
 
     @Override
     public Long getLongTypeDate() {
@@ -126,8 +126,9 @@ public class Release implements IEvent {
     }
 
     @Override
-    public boolean isRead() { return isRead; }
+    public Boolean isRead() { return isRead; }
 
     @Override
-    public void setRead(boolean read) { isRead = read; }
+    public void setRead(Boolean read) { isRead = read; }
+
 }

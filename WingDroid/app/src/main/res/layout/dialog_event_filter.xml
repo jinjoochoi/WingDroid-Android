@@ -48,7 +48,7 @@
                 android:textColor="@drawable/grey_st_greydark" />
 
             <TextView
-                android:id="@+id/txtvRelease"
+                android:id="@+id/txtvPush"
                 style="@style/TextStyle.Medium"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
@@ -59,7 +59,7 @@
                 android:textColor="@drawable/grey_st_greydark" />
 
             <TextView
-                android:id="@+id/txtvPush"
+                android:id="@+id/txtvRelease"
                 style="@style/TextStyle.Medium"
                 android:layout_width="0dp"
                 android:layout_height="30dp"

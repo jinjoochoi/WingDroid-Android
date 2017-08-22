@@ -2,9 +2,6 @@ package com.example.choijinjoo.wingdroid.model.event;
 
 import org.parceler.Parcel;
 
-import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_COMMIT;
-import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_RELEASE;
-
 /**
  * Created by choijinjoo on 2017. 8. 4..
  */
@@ -73,4 +70,8 @@ public class Event {
             return release;
         return null;
     }
+
+    public static final int EVENT_ALL = 100;
+    public static final int EVENT_RELEASE = 103;
+    public static final int EVENT_COMMIT = 104;
 }

@@ -8,7 +8,6 @@ import com.example.choijinjoo.wingdroid.model.RTCategoryRepository;
 import com.example.choijinjoo.wingdroid.model.RTTagRepository;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.Tag;
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
@@ -29,10 +28,12 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     private RTTagRepositoryDao rtTagRepositoryDao;
     private RepositoryDao repositoryDao;
     private TagDao tagDao;
+    private CategoryDao categoryDao;
 
     private PreparedQuery<Repository> repoForCategoryPreparedQuery = null;
     private PreparedQuery<Tag> tagForRepoPreparedQuery = null;
     private PreparedQuery<Repository> refoForCategoriesPreparedQuery = null;
+    private PreparedQuery<Category> categoryForRepoPreparedQuery = null;
 
 
     public RTCategoryRepositoryRepository(Context context) {
@@ -41,6 +42,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         rtTagRepositoryDao = dbHelper.getRTTagRepositoryDao();
         repositoryDao = dbHelper.getRepoDao();
         tagDao = dbHelper.getTagDao();
+        categoryDao = dbHelper.getCategoryDao();
     }
 
     public void createOrUpdateRepository(Repository repository) {
@@ -73,7 +75,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
                 repoForCategoryPreparedQuery = makeRepoForCategoryOrderByStarQuery();
 
             repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
-            results.addAll(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery)));
+            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery))));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,9 +83,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     }
 
 
-
-
-    private List<Repository> setTagsForRepo(List<Repository> repositories){
+    private List<Repository> setTagsForRepo(List<Repository> repositories) {
         try {
             if (tagForRepoPreparedQuery == null)
                 tagForRepoPreparedQuery = makeTagForRepoQuery();
@@ -96,7 +96,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
 
             return repositories;
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return new ArrayList<>();
@@ -106,9 +106,9 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         List<Repository> results = new ArrayList<>();
         try {
             if (refoForCategoriesPreparedQuery == null)
-                refoForCategoriesPreparedQuery = makeBookMarkRepoForCategories(order_by,false);
+                refoForCategoriesPreparedQuery = makeBookMarkRepoForCategories(order_by, false);
             for (Category category : categories) {
-                if( category.getSelected()) {
+                if (category.getSelected()) {
                     refoForCategoriesPreparedQuery.setArgumentHolderValue(0, category);
                     results.addAll(setTagsForRepo(repositoryDao.query(refoForCategoriesPreparedQuery)));
                 }
@@ -122,6 +122,24 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         return Observable.just(results);
     }
 
+    private List<Repository> setCategoryForRepos(List<Repository> repositories) {
+        try {
+            if (categoryForRepoPreparedQuery == null)
+                categoryForRepoPreparedQuery = makeCategoryForRepoQuery();
+
+            for (Repository repository : repositories) {
+                categoryForRepoPreparedQuery.setArgumentHolderValue(0, repository);
+                Category category = categoryDao.query(categoryForRepoPreparedQuery).get(0);
+                repository.setCategory(category);
+            }
+
+            return repositories;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 
     /**
      * Build our repositories for repository objects that match a category
@@ -138,14 +156,14 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         return tagQb.prepare();
     }
 
-    private PreparedQuery<Repository> makeBookMarkRepoForCategories(String order_by,boolean ascending) throws SQLException {
+    private PreparedQuery<Repository> makeBookMarkRepoForCategories(String order_by, boolean ascending) throws SQLException {
         QueryBuilder<RTCategoryRepository, Integer> rtCRQb = rtCategoryRepositoryDao.queryBuilder();
         rtCRQb.selectColumns(RTCategoryRepository.REPO_ID_FIELD_NAME);
         SelectArg categorySA = new SelectArg();
         rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
 
         QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
-        repositoryQb.orderBy(order_by, ascending).where().eq("bookmark",true).and().in(Repository.ID_FIELD, rtCRQb);
+        repositoryQb.orderBy(order_by, ascending).where().eq("bookmark", true).and().in(Repository.ID_FIELD, rtCRQb);
         return repositoryQb.prepare();
     }
 
@@ -171,11 +189,15 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         return repositoryQb.prepare();
     }
 
-    public void registerDaoObserver(Dao.DaoObserver observer){
-        rtCategoryRepositoryDao.registerObserver(observer);
+    private PreparedQuery<Category> makeCategoryForRepoQuery() throws SQLException {
+        QueryBuilder<RTCategoryRepository, Integer> rtCRQb = rtCategoryRepositoryDao.queryBuilder();
+        rtCRQb.selectColumns(RTCategoryRepository.CATEGORY_ID_FIELD_NAME);
+        SelectArg repoSA = new SelectArg();
+        rtCRQb.where().eq(RTCategoryRepository.REPO_ID_FIELD_NAME, repoSA);
+
+        QueryBuilder<Category, Integer> categoryQb = categoryDao.queryBuilder();
+        categoryQb.where().in(Category.ID_FIELD, rtCRQb);
+        return categoryQb.prepare();
     }
 
-    public void unregisterDaoObserver(Dao.DaoObserver observer){
-        rtCategoryRepositoryDao.unregisterObserver(observer);
-    }
 }

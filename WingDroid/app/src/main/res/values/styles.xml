@@ -57,5 +57,10 @@
         <item name="android:textSize">@dimen/textsize_tag</item>
     </style>
 
+    <style name="SearchView" parent="Widget.AppCompat.Light.SearchView">
+        <item name="submitBackground">@color/white</item>
+        <item name="queryBackground">@color/white</item>
+    </style>
+
 </resources>
 

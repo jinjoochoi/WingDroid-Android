@@ -35,7 +35,9 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_RELEASE;
+import static com.example.choijinjoo.wingdroid.model.event.Event.EVENT_ALL;
+import static com.example.choijinjoo.wingdroid.model.event.Event.EVENT_COMMIT;
+import static com.example.choijinjoo.wingdroid.model.event.Event.EVENT_RELEASE;
 
 /**
  * Created by choijinjoo on 2017. 8. 4..
@@ -62,7 +64,7 @@ public class NewsFragment extends BaseFragment {
         }
     };
 
-    private int order_by;
+    private int filter_by;
 
     public static NewsFragment newInstance() {
         return new NewsFragment();
@@ -114,6 +116,7 @@ public class NewsFragment extends BaseFragment {
         recvEvents.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recvEvents.setAdapter(eventAdapter);
         imgvFilter.setOnClickListener(it -> showEventFilterDialog());
+        filter_by = Event.EVENT_ALL;
 
         repositoryRepository = new RepositoryRepository(getContext());
         releaseRepository = new ReleaseRepository(getContext());
@@ -125,6 +128,12 @@ public class NewsFragment extends BaseFragment {
     @Override
     protected void loadData() {
         super.loadData();
+        loadAllEvents();
+        loadNewRepoItem();
+    }
+
+    private void loadAllEvents(){
+        events.clear();
         Observable.merge(releaseRepository.getEvents(), CommitRepository.getInstance(getContext()).getEvents())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -133,7 +142,20 @@ public class NewsFragment extends BaseFragment {
                     Collections.sort(events,eventComparator);
                     eventAdapter.setItems(events);
                 });
-        loadNewRepoItem();
+    }
+
+    private void loadReleaseEvents(){
+        releaseRepository.getEvents()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> eventAdapter.setItems(event));
+    }
+
+    private void loadCommitEvents(){
+        CommitRepository.getInstance(getContext()).getEvents()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> eventAdapter.setItems(event));
     }
 
     private void loadNewRepoItem() {
@@ -155,10 +177,22 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void showEventFilterDialog() {
-        EventFilterDialog.getInstance(getActivity(), order_by,
-                order_by -> {
-                    this.order_by = order_by;
-                }).show();
+        EventFilterDialog.getInstance(getActivity(), filter_by, this::applyFilter).show();
+    }
+
+    private void applyFilter(int filter_by){
+        this.filter_by = filter_by;
+        switch (filter_by){
+            case EVENT_ALL:
+                loadAllEvents();
+                break;
+            case EVENT_RELEASE:
+                loadReleaseEvents();
+                break;
+            case EVENT_COMMIT:
+                loadCommitEvents();
+                break;
+        }
     }
 
     private void moveToDetailActivity(int position) {

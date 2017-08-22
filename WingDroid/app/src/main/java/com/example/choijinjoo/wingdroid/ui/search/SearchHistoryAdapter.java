@@ -20,7 +20,7 @@ public class SearchHistoryAdapter extends BaseAdapter<SearchHistory, SearchHisto
         void delete(int position);
     }
 
-    public SearchHistoryAdapter(Context context,  SearchHistoryListener listener) {
+    public SearchHistoryAdapter(Context context,SearchHistoryListener listener) {
         super(context, new ArrayList<>());
         this.listener = listener;
     }

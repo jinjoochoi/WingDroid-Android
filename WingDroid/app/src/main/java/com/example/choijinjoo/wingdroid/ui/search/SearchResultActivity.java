@@ -135,6 +135,7 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
     private boolean isEmpty(CharSequence c){
         if(StringUtils.isEmpty(c)) {
             containerHistory.setVisibility(View.VISIBLE);
+            containerResult.setVisibility(View.GONE);
         }
         return !StringUtils.isEmpty(c) && !searchType.equals(SearchHistory.SEARCH_TYPE_CATEGORY);
     }
@@ -152,10 +153,17 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
         containerHistory.setVisibility(View.GONE);
         containerResult.setVisibility(View.VISIBLE);
         List<Repository> results = repositoryRepository.getRepositoryByText(text);
+
         if(results.size() == 0){
             containerEmpty.setVisibility(View.VISIBLE);
         }
+        if(StringUtils.isEmpty(text)){
+            containerHistory.setVisibility(View.VISIBLE);
+        }
+
+        resultAdapter.setSearch(text);
         resultAdapter.setItems(results);
+
         this.textSearch = text;
     }
 
@@ -166,6 +174,8 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
         searchView.setQuery(category.getName(), false);
         containerHistory.setVisibility(View.GONE);
         containerResult.setVisibility(View.VISIBLE);
+
+        textSearch = category.getName();
 
         rtCategoryRepositoryRepository.getRepoForCategoryOrderByStar(category)
                 .subscribeOn(Schedulers.io())
@@ -180,6 +190,8 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
             containerEmpty.setVisibility(View.VISIBLE);
         } else {
             containerEmpty.setVisibility(View.GONE);
+
+            resultAdapter.setSearch(textSearch);
             resultAdapter.setItems(items);
         }
     }

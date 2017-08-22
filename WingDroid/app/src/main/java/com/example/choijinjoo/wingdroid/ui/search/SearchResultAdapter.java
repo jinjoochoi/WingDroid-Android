@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class SearchResultAdapter extends BaseAdapter<Repository, SearchResultViewHolder> {
     SearchResultListener listener;
+    String search;
 
     public interface SearchResultListener {
         void selected(int position);
@@ -31,8 +32,12 @@ public class SearchResultAdapter extends BaseAdapter<Repository, SearchResultVie
         return viewHolder;
     }
 
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
     @Override
     public void onBindViewHolder(SearchResultViewHolder holder, int position) {
-        holder.bindData(getItem(position));
+        holder.bindData(getItem(position), search);
     }
 }

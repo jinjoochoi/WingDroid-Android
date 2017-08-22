@@ -3,12 +3,14 @@ package com.example.choijinjoo.wingdroid.model.event;
 import com.example.choijinjoo.wingdroid.model.Committer;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.User;
+import com.example.choijinjoo.wingdroid.tools.Utils;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.parceler.Parcel;
 
-import static com.example.choijinjoo.wingdroid.ui.news.EventAdapter.EVENT_COMMIT;
+import static com.example.choijinjoo.wingdroid.model.event.Event.EVENT_COMMIT;
+
 
 /**
  * Created by choijinjoo on 2017. 8. 9..
@@ -74,7 +76,7 @@ public class Commit implements IEvent{
 
     @Override
     public String getEventInfoString() {
-        return "Committed by " + committer.getName()+" " + committer.getDate();
+        return "Committed by " + committer.getName()+"  " + Utils.getElapsedDateString(committer.getDate());
     }
 
     @Override
@@ -83,7 +85,7 @@ public class Commit implements IEvent{
     }
 
     @Override
-    public int getViewType() {
+    public Integer getViewType() {
         return EVENT_COMMIT;
     }
 
@@ -93,8 +95,9 @@ public class Commit implements IEvent{
     }
 
     @Override
-    public boolean isRead() { return isRead; }
+    public Boolean isRead() { return isRead; }
 
     @Override
-    public void setRead(boolean read) { isRead = read; }
+    public void setRead(Boolean read) { isRead = read; }
+
 }

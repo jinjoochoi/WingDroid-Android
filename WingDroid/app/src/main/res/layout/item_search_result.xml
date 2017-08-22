@@ -15,26 +15,37 @@
         android:layout_height="@dimen/bookmark_img_width"
         android:background="@drawable/none_st_bd_greydark_rad30" />
 
+    <com.athkalia.emphasis.EmphasisTextView
+        android:id="@+id/txtvCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextStyle.Small"
+        android:layout_alignParentRight="true"
+        tools:text="LIST/GRID" />
+
     <RelativeLayout
+        android:layout_below="@id/txtvCategory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="15dp"
         android:layout_toRightOf="@id/imgvPreview"
-        android:gravity="center|left">
+        android:gravity="center_vertical">
 
-        <TextView
+        <com.athkalia.emphasis.EmphasisTextView
             android:id="@+id/txtvName"
             style="@style/TextStyle.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="TextSurface" />
 
-        <TextView
+        <com.athkalia.emphasis.EmphasisTextView
             android:id="@+id/txtvDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="30"
+            style="@style/TextStyle.Small"
+
             android:layout_below="@id/txtvName"
+            android:maxLength="30"
             tools:text="this is description!!" />
 
         <org.apmem.tools.layouts.FlowLayout xmlns:f="http://schemas.android.com/apk/res-auto"
@@ -48,4 +59,5 @@
         <include layout="@layout/item_star" />
 
     </RelativeLayout>
+
 </RelativeLayout>

@@ -10,7 +10,7 @@ public interface IEvent {
     String getEventInfoString();
     String getMainUrl();
     Long getLongTypeDate();
-    int getViewType();
-    boolean isRead();
-    void setRead(boolean read);
+    Integer getViewType();
+    Boolean isRead();
+    void setRead(Boolean read);
 }

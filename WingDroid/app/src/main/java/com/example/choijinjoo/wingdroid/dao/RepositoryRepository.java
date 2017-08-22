@@ -38,7 +38,6 @@ public class RepositoryRepository extends BaseRepository {
     private TagDao tagDao;
     private CategoryDao categoryDao;
     private RepositoryDao repositoryDao;
-    private BookmarkDao bookmarkDao;
     private RTTagRepositoryDao rtTagRepositoryDao;
     private RTCategoryRepositoryDao rtCategoryRepositoryDao;
     private PreparedQuery<Tag> tagForRepoPreparedQuery = null;
@@ -65,7 +64,6 @@ public class RepositoryRepository extends BaseRepository {
         rtCategoryRepositoryDao = dbHelper.getRTCategoryRepositoryDao();
         tagDao = dbHelper.getTagDao();
         categoryDao = dbHelper.getCategoryDao();
-        bookmarkDao = dbHelper.getBookmarkDao();
 
     }
 
@@ -239,21 +237,21 @@ public class RepositoryRepository extends BaseRepository {
                 repoForCategoryOrderByStarPreparedQuery = makeRepoForCategoryOrderByStarQuery();
 
             // search with repo's name, repo's description
-            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().where().like(DESCRIPTION_FIELD, text + "%").or().like(NAME_FIELD, text + "%").query()));
+            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.queryBuilder().where().like(DESCRIPTION_FIELD, text + "%").or().like(NAME_FIELD, text + "%").query())));
 
             // search with tag'name
             List<Tag> tags = tagDao.queryBuilder().where().like(Tag.NAME_FIELD, text + "%").query();
 
             for (Tag tag : tags) {
                 repoForTagPreparedQuery.setArgumentHolderValue(0, tag);
-                results.addAll(setTagsForRepo(repositoryDao.query(repoForTagPreparedQuery)));
+                results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForTagPreparedQuery))));
             }
             // search with category'name
             List<Category> categories = categoryDao.queryBuilder().where().like(Category.NAME_FIELD, text + "%").query();
 
             for (Category category : categories) {
                 repoForCategoryOrderByStarPreparedQuery.setArgumentHolderValue(0, category);
-                results.addAll(setTagsForRepo(repositoryDao.query(repoForCategoryOrderByStarPreparedQuery)));
+                results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryOrderByStarPreparedQuery))));
             }
             return results;
         } catch (SQLException e) {
