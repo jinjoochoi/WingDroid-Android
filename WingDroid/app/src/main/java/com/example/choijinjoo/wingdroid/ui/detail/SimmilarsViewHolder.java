@@ -30,6 +30,7 @@ public class SimmilarsViewHolder extends BaseViewHolder<Repository> {
     public void bindData(Repository item) {
         Glide.with(context)
                 .load(item.getImage())
+                .skipMemoryCache(true)
                 .into(imgvPreview);
         txtvName.setText(item.getName());
         txtvStar.setText(item.getFormattedStarString());

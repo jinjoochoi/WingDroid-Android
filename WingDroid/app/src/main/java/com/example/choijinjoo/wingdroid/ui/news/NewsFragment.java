@@ -201,8 +201,8 @@ public class NewsFragment extends BaseFragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         EventBus.getDefault().unregister(this);
     }
 

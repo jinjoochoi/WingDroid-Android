@@ -57,7 +57,7 @@ public class CategoryFilterDialog extends BaseBottomSheetDialog {
     }
 
     private void changeItemLayout(int position) {
-        if (adapter.getItem(position).getName().equals("All")) {
+        if (adapter.getItem(position).getName().equals("ALL")) {
             if (!adapter.getItem(position).getSelected()) {
                 for (Category category : categories) {
                     category.setSelected(false);
@@ -70,9 +70,9 @@ public class CategoryFilterDialog extends BaseBottomSheetDialog {
         } else {
             adapter.getItem(position).selected();
             adapter.notifyItemChanged(position);
-            if (criteria.contains(adapter.getItemByName("All").getCategory().getId())) {
+            if (criteria.contains(adapter.getItemByName("ALL").getCategory().getId())) {
                 if (adapter.getItem(position).getSelected()) {
-                    CategoryFilterAdapter.AdapterItemInfo all = adapter.getItemByName("All");
+                    CategoryFilterAdapter.AdapterItemInfo all = adapter.getItemByName("ALL");
                     adapter.getItem(all.getPosition()).setSelected(false);
                     adapter.notifyItemChanged(all.position);
                     criteria.remove(all.getCategory().getId());
@@ -80,7 +80,7 @@ public class CategoryFilterDialog extends BaseBottomSheetDialog {
                 }
             } else {
                 if(criteria.size() == 1 && criteria.contains(adapter.getItem(position).getId())){
-                    CategoryFilterAdapter.AdapterItemInfo all = adapter.getItemByName("All");
+                    CategoryFilterAdapter.AdapterItemInfo all = adapter.getItemByName("ALL");
                     adapter.getItem(all.getPosition()).setSelected(true);
                     for (Category category : categories) {
                         category.setSelected(false);

@@ -7,6 +7,8 @@ import com.example.choijinjoo.wingdroid.model.Committer;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.event.Commit;
 import com.example.choijinjoo.wingdroid.model.event.Event;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.SelectArg;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,8 +34,8 @@ public class CommitRepository extends BaseRepository {
 
     public static CommitRepository instance = null;
 
-    public static CommitRepository getInstance(Context context){
-        if(instance == null){
+    public static CommitRepository getInstance(Context context) {
+        if (instance == null) {
             instance = new CommitRepository(context.getApplicationContext());
         }
         return instance;
@@ -57,9 +59,9 @@ public class CommitRepository extends BaseRepository {
         try {
             List<Commit> commits = commitDao.queryBuilder().orderBy(TIME_STAMP, false).query();
             for (Commit commit : commits) {
-                Committer committer = committerDao.queryBuilder().where().eq("id",commit.getCommitter().getId()).queryForFirst();
+                Committer committer = committerDao.queryBuilder().where().eq("id", commit.getCommitter().getId()).queryForFirst();
                 commit.setCommitter(committer);
-                Repository repository = repositoryDao.queryBuilder().where().eq(Repository.ID_FIELD,commit.getRepository().getId()).queryForFirst();
+                Repository repository = repositoryDao.queryBuilder().where().eq(Repository.ID_FIELD, commit.getRepository().getId()).queryForFirst();
                 commit.setRepository(repository);
                 results.add(commit);
             }
@@ -69,15 +71,31 @@ public class CommitRepository extends BaseRepository {
         return Observable.just(results);
     }
 
+    public Commit getLastCommit(Repository repository) {
+        try {
+            QueryBuilder<Repository, Integer> repositoryQB = repositoryDao.queryBuilder();
+            SelectArg repoSelectArg = new SelectArg();
+            repositoryQB.where().eq(Repository.ID_FIELD,repoSelectArg);
+            QueryBuilder<Commit,Integer> commitQB = commitDao.queryBuilder();
+            commitQB.join(repositoryQB);
+
+            repoSelectArg.setValue(repository);
+            return commitQB.join(repositoryQB).orderBy(Commit.ID_FIELD,false).queryForFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public Observable<List<Event>> getEvents() {
         List<Event> results = new ArrayList<>();
         try {
             List<Commit> commits = commitDao.queryBuilder().orderBy(TIME_STAMP, false).query();
             for (Commit commit : commits) {
-                Committer committer = committerDao.queryBuilder().where().eq("id",commit.getCommitter().getId()).queryForFirst();
+                Committer committer = committerDao.queryBuilder().where().eq("id", commit.getCommitter().getId()).queryForFirst();
                 commit.setCommitter(committer);
-                Repository repository = repositoryDao.queryBuilder().where().eq(Repository.ID_FIELD,commit.getRepository().getId()).queryForFirst();
+                Repository repository = repositoryDao.queryBuilder().where().eq(Repository.ID_FIELD, commit.getRepository().getId()).queryForFirst();
                 commit.setRepository(repository);
                 results.add(new Event(commit));
             }
@@ -89,7 +107,7 @@ public class CommitRepository extends BaseRepository {
 
     public Commit getCommitById(Commit commit) {
         try {
-            Commit result = commitDao.queryBuilder().where().eq(ID_FIELD,commit.getUrl()).queryForFirst();
+            Commit result = commitDao.queryBuilder().where().eq(ID_FIELD, commit.getUrl()).queryForFirst();
             Committer committer = committerDao.queryBuilder().where().eq("id", result.getCommitter().getId()).queryForFirst();
             result.setCommitter(committer);
             Repository repository = repositoryDao.queryBuilder().where().eq(Repository.ID_FIELD, result.getRepository().getId()).queryForFirst();
@@ -100,7 +118,6 @@ public class CommitRepository extends BaseRepository {
         }
         return null;
     }
-
 
 
     public void updateCommit(Commit commit) {
@@ -127,12 +144,5 @@ public class CommitRepository extends BaseRepository {
         }
     }
 
-    public void registerListener(CommitChangeListener listener) {
-        listeners.add(listener);
-    }
-
-    public void unregisterListener(CommitChangeListener listener) {
-        listeners.remove(listener);
-    }
 
 }

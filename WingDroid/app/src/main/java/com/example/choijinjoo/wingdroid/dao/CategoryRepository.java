@@ -45,7 +45,7 @@ public class CategoryRepository extends BaseRepository {
 
     public Category getAllCategory() {
         try {
-            return categoryDao.queryBuilder().where().eq(Category.NAME_FIELD,"All").queryForFirst();
+            return categoryDao.queryBuilder().where().eq(Category.NAME_FIELD,"ALL").queryForFirst();
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

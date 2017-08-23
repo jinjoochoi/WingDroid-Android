@@ -69,23 +69,51 @@ public class BookmarkEventSyncService extends JobService {
 
 
     private void saveReleases(Repository repo, List<Release> releases) {
-        if (releases.size() > 0) {
+        if (releaseRepository.getLastRelease(repo) == null && !releases.isEmpty()) {
             Release release = releases.get(0);
             release.setRepository(repo);
             User author = userRepository.createOrUpdateUser(release.getAuthor());
             release.setAuthor(author);
             releaseRepository.createOrUpdateRelease(release);
+
+        } else {
+            Release lastRelease = releaseRepository.getLastRelease(repo);
+            for (Release release : releases) {
+                if (release.getPublishedAt().after(lastRelease.getPublishedAt())) {
+                    release.setRepository(repo);
+                    User author = userRepository.createOrUpdateUser(release.getAuthor());
+                    release.setAuthor(author);
+                    releaseRepository.createOrUpdateRelease(release);
+                } else {
+                    break;
+                }
+            }
         }
     }
 
     private void saveCommits(Repository repo, List<CommitResponse> commits) {
-        if (commits.size() > 0) {
+        if (commitRepository.getLastCommit(repo) == null && !commits.isEmpty()) {
             Commit commit = commits.get(0).getCommit();
             Committer committer = committerRepository.createOrUpdateCommitter(commit.getCommitter());
             commit.setRepository(repo);
             commit.setCommitter(committer);
+            commit.setDate(committer.getDate());
             commit.setUrl(commits.get(0).getHtmlUrl());
             commitRepository.createOrUpdateCommit(commit);
+        } else {
+            Commit lastCommit = commitRepository.getLastCommit(repo);
+            for (CommitResponse commitResponse : commits) {
+                if (commitResponse.getCommit().getCommitter().getDate().after(lastCommit.getCommitter().getDate())) {
+                    Committer committer = committerRepository.createOrUpdateCommitter(commitResponse.getCommit().getCommitter());
+                    commitResponse.getCommit().setRepository(repo);
+                    commitResponse.getCommit().setCommitter(committer);
+                    commitResponse.getCommit().setDate(committer.getDate());
+                    commitRepository.createOrUpdateCommit(commitResponse.getCommit());
+                } else {
+                    break;
+                }
+            }
+
         }
     }
 }

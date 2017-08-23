@@ -9,6 +9,8 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.parceler.Parcel;
 
+import java.util.Date;
+
 import static com.example.choijinjoo.wingdroid.model.event.Event.EVENT_COMMIT;
 
 
@@ -20,6 +22,7 @@ import static com.example.choijinjoo.wingdroid.model.event.Event.EVENT_COMMIT;
 public class Commit implements IEvent{
     public final static String ID_FIELD = "commit_id";
     public final static String TIME_STAMP = "timestamp";
+    public final static String DATE_FIELD = "date";
 
     @DatabaseField(id = true, unique = true, columnName = ID_FIELD)
     String url;
@@ -31,6 +34,8 @@ public class Commit implements IEvent{
     Committer committer;
     @DatabaseField(foreign = true)
     User author;
+    @DatabaseField
+    Date date;
 
     @DatabaseField(foreign = true)
     Repository repository;
@@ -68,6 +73,9 @@ public class Commit implements IEvent{
         this.author = author;
     }
 
+    public Date getDate() { return date; }
+
+    public void setDate(Date date) { this.date = date; }
 
     @Override
     public String getRepoAndAuthorName() {

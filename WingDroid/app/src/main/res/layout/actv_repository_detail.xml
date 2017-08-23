@@ -13,8 +13,8 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:scrollbars="none"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -24,7 +24,8 @@
                 <ImageView
                     android:id="@+id/imgvPreview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:minHeight="300dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -39,10 +40,10 @@
 
                         <TextView
                             android:id="@+id/txtvName"
-                            android:layout_centerVertical="true"
                             style="@style/TextStyle.Title.Large"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
                             android:layout_marginLeft="5dp"
                             tools:text="TextSurface" />
 
@@ -50,10 +51,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="28dp"
                             android:layout_alignParentRight="true"
-                            android:layout_marginRight="20dp"
-                            android:background="@drawable/bd_green_rad18"
-                            android:gravity="center"
                             android:layout_centerVertical="true"
+                            android:layout_marginRight="20dp"
+                            android:background="@drawable/bd_blue_rad18"
+                            android:gravity="center"
                             android:orientation="horizontal"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp">
@@ -62,14 +63,14 @@
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
                                 android:src="@drawable/ic_simulate"
-                                android:tint="@color/issue_open" />
+                                android:tint="@color/blue" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="10dp"
                                 android:text="@string/detail_simulate"
-                                android:textColor="@color/issue_open" />
+                                android:textColor="@color/blue" />
                         </LinearLayout>
 
                     </RelativeLayout>
@@ -123,6 +124,14 @@
                         android:lineSpacingExtra="2dp"
                         android:maxWidth="340dp"
                         tools:text="To customize the theme's base colors to fit your brand, define your custom colors using theme attributes when you inherit from the material theme:" />
+
+                    <org.apmem.tools.layouts.FlowLayout
+                        android:id="@+id/flowLayout"
+                        android:layout_margin="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"/>
 
                     <View
                         android:layout_width="match_parent"

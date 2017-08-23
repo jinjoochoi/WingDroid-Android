@@ -3,6 +3,7 @@ package com.example.choijinjoo.wingdroid.ui.base;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,12 +32,13 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
         notifyItemInserted(index);
     }
 
-    public void add(List<T> items) {
+    public void add(List<T> added) {
         int position = getItemCount();
-        for (T item : items) {
+        for (T item : added) {
             items.add(item);
         }
         notifyItemRangeInserted(position, items.size());
+
     }
 
     public void remove(int position) {
@@ -62,21 +64,21 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
     public void change(int index, T item) {
         int count = items.size();
         if (index < count) {
-            items.set(index,item);
+            items.set(index, item);
             notifyItemChanged(index);
         }
     }
 
     public void setItems(List<T> items) {
-        this.items = items;
+        this.items = new ArrayList<T>(items);
         notifyDataSetChanged();
     }
 
-    public List<T> getItems(){
+    public List<T> getItems() {
         return items;
     }
 
-    public T getItem(int position){
+    public T getItem(int position) {
         return items.get(position);
     }
 

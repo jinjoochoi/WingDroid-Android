@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +20,7 @@ import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.model.eventbus.RepoBookMarkEvent;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
 
+import org.apmem.tools.layouts.FlowLayout;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -61,8 +63,10 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.imgvGithub)
     ImageView imgvGithub;
     @BindView(R.id.recvSimmilarLibs)
-
     RecyclerView recvSimmilarLibs;
+    @BindView(R.id.flowLayout)
+    FlowLayout flowLayout;
+
     TagRepository tagRepository;
     SimmilarsAdapter simmilarsAdapter;
     Repository repository;
@@ -113,6 +117,13 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
 
         txtvWatch.setText(String.valueOf(repository.getWatch()));
         txtvFork.setText(String.valueOf(repository.getFork()));
+
+        flowLayout.removeAllViews();
+        for (Tag tag : repository.getTags()) {
+            TextView txtvTag = (TextView) LayoutInflater.from(this).inflate(R.layout.item_tag, null, false).findViewById(R.id.txtvTag);
+            txtvTag.setText(tag.toString());
+            flowLayout.addView(txtvTag);
+        }
 
         disposables.add(RepositoryRepository.getInstance(getBaseContext()).getRelatedRepo(repository)
                 .subscribeOn(Schedulers.io())

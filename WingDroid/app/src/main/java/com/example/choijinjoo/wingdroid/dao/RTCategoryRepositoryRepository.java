@@ -18,6 +18,8 @@ import java.util.List;
 
 import io.reactivex.Observable;
 
+import static com.example.choijinjoo.wingdroid.ui.feed.FeedFragment.ITEM_IN_PAGE;
+
 /**
  * Created by choijinjoo on 2017. 7. 13..
  */
@@ -54,11 +56,25 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     }
 
 
-    public Observable<List<Repository>> getRepoForCategoryOrderByDate(Category category) {
+    public Observable<List<Repository>> getInitialRepoForCategoryOrderByDate(Category category) {
         List<Repository> results = new ArrayList<>();
         try {
             if (repoForCategoryPreparedQuery == null)
-                repoForCategoryPreparedQuery = makeRepoForCategoryOrderByDateQuery();
+                repoForCategoryPreparedQuery = makeInitialRepoForCategoryOrderByDateQuery();
+
+            repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
+            results.addAll(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery)));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Observable.just(results);
+    }
+
+    public Observable<List<Repository>> getNextRepoForCategoryOrderByDate(Category category,Repository repository) {
+        List<Repository> results = new ArrayList<>();
+        try {
+            if (repoForCategoryPreparedQuery == null)
+                repoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByDateQuery(repository);
 
             repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
             results.addAll(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery)));
@@ -73,6 +89,34 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         try {
             if (repoForCategoryPreparedQuery == null)
                 repoForCategoryPreparedQuery = makeRepoForCategoryOrderByStarQuery();
+
+            repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
+            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery))));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Observable.just(results);
+    }
+
+    public Observable<List<Repository>> getInitialRepoForCategoryOrderByStar(Category category) {
+        List<Repository> results = new ArrayList<>();
+        try {
+            if (repoForCategoryPreparedQuery == null)
+                repoForCategoryPreparedQuery = makeInitialRepoForCategoryOrderByStarQuery();
+
+            repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
+            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery))));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Observable.just(results);
+    }
+
+    public Observable<List<Repository>> getNextRepoForCategoryOrderByStar(Category category, Repository repository) {
+        List<Repository> results = new ArrayList<>();
+        try {
+            if (repoForCategoryPreparedQuery == null)
+                repoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByStarQuery(repository);
 
             repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
             results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery))));
@@ -167,14 +211,25 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         return repositoryQb.prepare();
     }
 
-    private PreparedQuery<Repository> makeRepoForCategoryOrderByDateQuery() throws SQLException {
+    private PreparedQuery<Repository> makeInitialRepoForCategoryOrderByDateQuery() throws SQLException {
         QueryBuilder<RTCategoryRepository, Integer> rtCRQb = rtCategoryRepositoryDao.queryBuilder();
         rtCRQb.selectColumns(RTCategoryRepository.REPO_ID_FIELD_NAME);
         SelectArg categorySA = new SelectArg();
         rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
 
         QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
-        repositoryQb.orderBy("createdAt", false).where().in(Repository.ID_FIELD, rtCRQb);
+        repositoryQb.orderBy("createdAt", false).limit((long) ITEM_IN_PAGE).where().in(Repository.ID_FIELD, rtCRQb);
+        return repositoryQb.prepare();
+    }
+
+    private PreparedQuery<Repository> makeNextRepoForCategoryOrderByDateQuery(Repository last) throws SQLException {
+        QueryBuilder<RTCategoryRepository, Integer> rtCRQb = rtCategoryRepositoryDao.queryBuilder();
+        rtCRQb.selectColumns(RTCategoryRepository.REPO_ID_FIELD_NAME);
+        SelectArg categorySA = new SelectArg();
+        rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
+
+        QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
+        repositoryQb.orderBy("createdAt", false).limit((long) ITEM_IN_PAGE).where().lt("createdAt", last.getCreatedAt()).in(Repository.ID_FIELD, rtCRQb);
         return repositoryQb.prepare();
     }
 
@@ -186,6 +241,28 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
 
         QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
         repositoryQb.orderBy(Repository.STAR_FIELD, false).where().in(Repository.ID_FIELD, rtCRQb);
+        return repositoryQb.prepare();
+    }
+
+    private PreparedQuery<Repository> makeInitialRepoForCategoryOrderByStarQuery() throws SQLException {
+        QueryBuilder<RTCategoryRepository, Integer> rtCRQb = rtCategoryRepositoryDao.queryBuilder();
+        rtCRQb.selectColumns(RTCategoryRepository.REPO_ID_FIELD_NAME);
+        SelectArg categorySA = new SelectArg();
+        rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
+
+        QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
+        repositoryQb.orderBy(Repository.STAR_FIELD, false).limit((long) ITEM_IN_PAGE).where().in(Repository.ID_FIELD, rtCRQb);
+        return repositoryQb.prepare();
+    }
+
+    private PreparedQuery<Repository> makeNextRepoForCategoryOrderByStarQuery(Repository last) throws SQLException {
+        QueryBuilder<RTCategoryRepository, Integer> rtCRQb = rtCategoryRepositoryDao.queryBuilder();
+        rtCRQb.selectColumns(RTCategoryRepository.REPO_ID_FIELD_NAME);
+        SelectArg categorySA = new SelectArg();
+        rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
+
+        QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
+        repositoryQb.orderBy(Repository.STAR_FIELD, false).limit((long) ITEM_IN_PAGE).where().lt(Repository.STAR_FIELD,last.getStar()).in(Repository.ID_FIELD, rtCRQb);
         return repositoryQb.prepare();
     }
 

@@ -55,7 +55,7 @@ public class Tag {
 
     @Override
     public String toString() {
-        return "#" + name;
+        return "#" + name + " ";
     }
 
     public void click(){

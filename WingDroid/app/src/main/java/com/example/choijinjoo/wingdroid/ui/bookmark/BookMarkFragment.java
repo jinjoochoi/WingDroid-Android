@@ -42,7 +42,7 @@ import static com.example.choijinjoo.wingdroid.model.Repository.STAR_FIELD;
  * Created by choijinjoo on 2017. 8. 4..
  */
 
-public class BookMarkFragment extends BaseFragment  {
+public class BookMarkFragment extends BaseFragment {
     @BindView(R.id.recvRepositories)
     RecyclerView recvRepositories;
     @BindView(R.id.containerSort)
@@ -108,7 +108,7 @@ public class BookMarkFragment extends BaseFragment  {
 
     private boolean isAll() {
         for (Category category : categories) {
-            if (category.getName().equals("All") && category.getSelected())
+            if (category.getName().equals("ALL") && category.getSelected())
                 return true;
             else
                 return false;
@@ -171,9 +171,10 @@ public class BookMarkFragment extends BaseFragment  {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         EventBus.getDefault().unregister(this);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

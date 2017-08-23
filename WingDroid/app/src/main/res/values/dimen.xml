@@ -41,7 +41,7 @@
 
     <!-- Dialog dimen -->
     <dimen name="dialog_select_sort_criteria_height">120dp</dimen>
-    <dimen name="dialog_repository_filter_height">180dp</dimen>
+    <dimen name="dialog_repository_filter_height">200dp</dimen>
 
     <!-- Search dimen -->
     <dimen name="repository_suggestion_width">110dp</dimen>

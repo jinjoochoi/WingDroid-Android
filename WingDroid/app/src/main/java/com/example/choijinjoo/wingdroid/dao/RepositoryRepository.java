@@ -28,6 +28,7 @@ import static com.example.choijinjoo.wingdroid.model.Repository.DESCRIPTION_FIEL
 import static com.example.choijinjoo.wingdroid.model.Repository.ID_FIELD;
 import static com.example.choijinjoo.wingdroid.model.Repository.NAME_FIELD;
 import static com.example.choijinjoo.wingdroid.model.Repository.STAR_FIELD;
+import static com.example.choijinjoo.wingdroid.ui.feed.FeedFragment.ITEM_IN_PAGE;
 
 /**
  * Created by choijinjoo on 2017. 7. 13..
@@ -49,8 +50,8 @@ public class RepositoryRepository extends BaseRepository {
 
     public static RepositoryRepository instance = null;
 
-    public static RepositoryRepository getInstance(Context context){
-        if(instance == null){
+    public static RepositoryRepository getInstance(Context context) {
+        if (instance == null) {
             instance = new RepositoryRepository(context.getApplicationContext());
         }
         return instance;
@@ -84,7 +85,11 @@ public class RepositoryRepository extends BaseRepository {
             if (repoForCategoryOrderByStarPreparedQuery == null)
                 repoForCategoryOrderByStarPreparedQuery = makeRepoForCategoryOrderByStarQuery();
             repoForCategoryOrderByStarPreparedQuery.setArgumentHolderValue(0, repository.getCategory());
-            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryOrderByStarPreparedQuery))));
+            List<Repository> repos = setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryOrderByStarPreparedQuery)));
+            if (repos.size() > 2)
+                results.addAll(repos.subList(0, 2));
+            else
+                results.addAll(repos);
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -94,7 +99,11 @@ public class RepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getRecentRepo() {
         List<Repository> results = new ArrayList<>();
         try {
-            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.queryBuilder().orderBy("createdAt", false).query())));
+            List<Repository> repos = setCategoryForRepos(setTagsForRepo(repositoryDao.queryBuilder().orderBy("createdAt", false).query()));
+            if (repos.size() > 2)
+                results.addAll(repos.subList(0, 2));
+            else
+                results.addAll(repos);
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -182,7 +191,6 @@ public class RepositoryRepository extends BaseRepository {
         return new ArrayList<>();
     }
 
-    //TODO : distinct
     public Observable<List<Repository>> getSuggestedRepo() {
         List<Repository> results = new ArrayList<>();
         try {
@@ -260,22 +268,11 @@ public class RepositoryRepository extends BaseRepository {
         return results;
     }
 
-    public Observable<List<Repository>> getAllReposOrderByDate() {
-        List<Repository> results = new ArrayList<>();
-        try {
-            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy("createdAt", false).query()));
-        } catch (SQLException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return Observable.just(results);
-    }
 
     public Observable<List<Repository>> getBookmark() {
         List<Repository> results = new ArrayList<>();
         try {
-            //FIXME
-//            results.addAll(repositoryDao.queryBuilder().where().eq(BOOKMARK_FIELD,true).query());
-            results.addAll(repositoryDao.queryForAll());
+            results.addAll(repositoryDao.queryBuilder().where().eq(BOOKMARK_FIELD, true).query());
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -292,10 +289,40 @@ public class RepositoryRepository extends BaseRepository {
         return Observable.just(results);
     }
 
-    public Observable<List<Repository>> getAllReposOrderByStar() {
+    public Observable<List<Repository>> getInitialReposOrderByDate() {
         List<Repository> results = new ArrayList<>();
         try {
-            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy(Repository.STAR_FIELD, false).query()));
+            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy("createdAt", false).limit((long) ITEM_IN_PAGE).query()));
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return Observable.just(results);
+    }
+
+    public Observable<List<Repository>> getNextReposOrderByDate(Repository last) {
+        List<Repository> results = new ArrayList<>();
+        try {
+            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy("createdAt", false).limit((long) ITEM_IN_PAGE).where().lt("createdAt", last.getCreatedAt()).query()));
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return Observable.just(results);
+    }
+
+    public Observable<List<Repository>> getInitialReposOrderByStar() {
+        List<Repository> results = new ArrayList<>();
+        try {
+            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy(Repository.STAR_FIELD, false).limit((long) ITEM_IN_PAGE).query()));
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return Observable.just(results);
+    }
+
+    public Observable<List<Repository>> getNextReposOrderByStar(Repository last) {
+        List<Repository> results = new ArrayList<>();
+        try {
+            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy(Repository.STAR_FIELD, false).limit((long) ITEM_IN_PAGE).where().lt(Repository.STAR_FIELD, last.getStar()).query()));
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -307,7 +334,6 @@ public class RepositoryRepository extends BaseRepository {
         try {
             Repository prev = repositoryDao.queryBuilder().where().eq(ID_FIELD, repository.getId()).queryForFirst();
             if (prev != null) {
-
                 Log.d(TAG, "prev's bookmark : " + prev.getBookmark());
                 repository.setBookmarkedAt(repository.getBookmarkedAt());
                 repository.setBookmark(repository.getBookmark());
@@ -350,7 +376,6 @@ public class RepositoryRepository extends BaseRepository {
             Log.e(TAG, e.getMessage());
         }
     }
-
 
 
     /**

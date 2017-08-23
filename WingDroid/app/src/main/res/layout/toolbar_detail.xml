@@ -2,6 +2,7 @@
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:paddingRight="12dp"
+    android:background="@color/trans_white"
     android:layout_height="wrap_content">
 
     <RelativeLayout
@@ -10,8 +11,8 @@
 
         <ImageView
             android:id="@+id/imgvBookMark"
-            android:layout_width="@dimen/ic_toolbar_width"
-            android:layout_height="@dimen/ic_toolbar_width"
+            android:layout_width="24dp"
+            android:layout_height="25dp"
             android:layout_alignParentRight="true"
             android:src="@drawable/selector_bookmark" />
 

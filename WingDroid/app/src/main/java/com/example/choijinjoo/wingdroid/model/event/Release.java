@@ -21,6 +21,7 @@ import static com.example.choijinjoo.wingdroid.model.event.Event.EVENT_RELEASE;
 public class Release implements IEvent {
     public final static String ID_FIELD = "release_id";
     public final static String UPDATEDAT_FIELD = "updated_at_id";
+    public final static String PUBLISHEAT_FIELD = "published_at_id";
 
     @SerializedName("html_url")
     @DatabaseField(id = true, unique = true, columnName = ID_FIELD)

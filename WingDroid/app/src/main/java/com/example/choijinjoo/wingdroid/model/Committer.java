@@ -13,11 +13,12 @@ import java.util.Date;
 @DatabaseTable(tableName = "committer")
 @Parcel(value = Parcel.Serialization.BEAN)
 public class Committer {
+    public static final String DATE_FIELD = "date";
     @DatabaseField(generatedId = true)
     Integer id;
     @DatabaseField
     String name;
-    @DatabaseField
+    @DatabaseField(columnName = DATE_FIELD)
     Date date;
 
     public Committer() {}

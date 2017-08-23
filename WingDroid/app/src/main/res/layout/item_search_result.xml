@@ -34,6 +34,7 @@
         <com.athkalia.emphasis.EmphasisTextView
             android:id="@+id/txtvName"
             style="@style/TextStyle.Title"
+            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="TextSurface" />
@@ -43,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/TextStyle.Small"
-
+            android:layout_marginTop="5dp"
             android:layout_below="@id/txtvName"
             android:maxLength="30"
             tools:text="this is description!!" />
