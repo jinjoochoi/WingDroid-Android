@@ -9,7 +9,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/toolbar_detail" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -20,6 +19,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
+                <include layout="@layout/toolbar_detail" />
 
                 <ImageView
                     android:id="@+id/imgvPreview"
@@ -73,7 +74,7 @@
                                 style="@style/TextStyle.Small"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
+                                android:layout_marginLeft="5dp"
                                 android:enabled="false"
                                 android:text="@string/detail_simulate"
                                 android:textColor="@drawable/selector_simulate_text" />

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_selected="true">
+    <item android:state_focused="false">
         <shape android:shape="rectangle">
-            <stroke android:width="@dimen/btn_stroke" android:color="@color/greyDark"/>
-            <corners android:radius="@dimen/btn_radius"/>
+            <stroke android:width="@dimen/btn_stroke" android:color="@color/greyDark" />
+            <corners android:radius="@dimen/btn_radius" />
+        </shape>
+    </item>
+    <item android:state_pressed="true" android:state_focused="true">
+        <shape android:shape="rectangle">
+            <stroke android:width="@dimen/btn_stroke" android:color="@color/colorPrimaryDark" />
+            <corners android:radius="@dimen/btn_radius" />
         </shape>
     </item>
 </selector>

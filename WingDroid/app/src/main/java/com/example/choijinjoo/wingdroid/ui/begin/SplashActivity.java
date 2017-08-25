@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.example.choijinjoo.wingdroid.R;
@@ -19,6 +20,7 @@ import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelp
 
 public class SplashActivity extends BaseActivity {
 
+    private final int SPLASH_DISPLAY_LENGTH = 1000;
 
     @Override
     protected int getLayoutId() {
@@ -26,7 +28,8 @@ public class SplashActivity extends BaseActivity {
     }
 
     @Override
-    protected void initLayout() {}
+    protected void initLayout() {
+    }
 
     @Override
     protected void loadData() {
@@ -37,25 +40,31 @@ public class SplashActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if(SharedPreferenceHelper.getInstance().getBooleanValue(this,LOAD,false)){
-            moveToNextActivity();
-        }
+        if (SharedPreferenceHelper.getInstance().getBooleanValue(this, LOAD, false)) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(messageReceiver,
-                        new IntentFilter("initial-load"));
+                    moveToNextActivity();
+                }
+            }, SPLASH_DISPLAY_LENGTH);
+        } else {
+            LocalBroadcastManager.getInstance(this)
+                    .registerReceiver(messageReceiver,
+                            new IntentFilter("initial-load"));
+        }
     }
 
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(RESULT_OK == intent.getIntExtra("result",-1)){
+            if (RESULT_OK == intent.getIntExtra("result", -1)) {
                 moveToNextActivity();
             }
         }
     };
 
-    private void moveToNextActivity(){
+    private void moveToNextActivity() {
         Intent startIntent = new Intent(SplashActivity.this, MainActivity.class);
         startActivity(startIntent);
         finish();

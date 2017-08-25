@@ -28,7 +28,7 @@ public class CategorySearchAdapter extends BaseAdapter<Category, CategorySearchV
     public CategorySearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_search_category, parent, false);
         CategorySearchViewHolder viewHolder = new CategorySearchViewHolder(context, view);
-        view.setOnClickListener(it -> listener.selected(viewHolder.getSafeAdapterPosition()));
+        viewHolder.btnCategory.setOnClickListener(it -> listener.selected(viewHolder.getSafeAdapterPosition()));
         return viewHolder;
     }
 

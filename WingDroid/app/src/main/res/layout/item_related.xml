@@ -12,8 +12,7 @@
     <ImageView
         android:id="@+id/imgvPreview"
         android:layout_width="@dimen/repository_suggestion_img_width"
-        android:layout_height="@dimen/repository_suggestion_img_height"
-        android:background="@drawable/none_st_bd_greydark_rad30" />
+        android:layout_height="@dimen/repository_suggestion_img_height" />
 
     <TextView
         android:id="@+id/txtvName"

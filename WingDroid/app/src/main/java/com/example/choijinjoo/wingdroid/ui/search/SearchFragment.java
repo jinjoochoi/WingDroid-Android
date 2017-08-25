@@ -47,7 +47,7 @@ public class SearchFragment extends BaseFragment{
     @Override
     protected void initLayout() {
         categoryAdapter = new CategorySearchAdapter(getActivity(), position -> {
-            categoryAdapter.notifyItemChanged(position);
+//            categoryAdapter.notifyItemChanged(position);
             moveToSearchResultActivity(categoryAdapter.getItem(position));
         });
         suggestionsAdapter = new SuggestionsAdapter(getActivity(),
