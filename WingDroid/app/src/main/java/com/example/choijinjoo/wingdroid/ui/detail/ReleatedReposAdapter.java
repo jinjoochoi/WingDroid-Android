@@ -11,7 +11,7 @@ import com.example.choijinjoo.wingdroid.ui.base.BaseAdapter;
 
 import java.util.ArrayList;
 
-public class SimmilarsAdapter extends BaseAdapter<Repository, SimmilarsViewHolder> {
+public class ReleatedReposAdapter extends BaseAdapter<Repository, RelatedReposViewHolder> {
 
     SimmilarsClickedListener listener;
 
@@ -19,21 +19,21 @@ public class SimmilarsAdapter extends BaseAdapter<Repository, SimmilarsViewHolde
         void clicked(int position);
     }
 
-    public SimmilarsAdapter(Context context, SimmilarsClickedListener listener) {
+    public ReleatedReposAdapter(Context context, SimmilarsClickedListener listener) {
         super(context, new ArrayList<>());
         this.listener = listener;
     }
 
     @Override
-    public SimmilarsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RelatedReposViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_related, parent, false);
-        SimmilarsViewHolder viewHolder = new SimmilarsViewHolder(context, view);
+        RelatedReposViewHolder viewHolder = new RelatedReposViewHolder(context, view);
         view.setOnClickListener(it -> listener.clicked(viewHolder.getSafeAdapterPosition()));
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(SimmilarsViewHolder holder, int position) {
+    public void onBindViewHolder(RelatedReposViewHolder holder, int position) {
         holder.bindData(items.get(position));
     }
 

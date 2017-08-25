@@ -42,7 +42,7 @@ public class Release implements IEvent {
     @DatabaseField(columnName = UPDATEDAT_FIELD)
     Date updatedAt;
     @SerializedName("published_at")
-    @DatabaseField
+    @DatabaseField(columnName = PUBLISHEAT_FIELD)
     Date publishedAt;
     @DatabaseField
     String body;

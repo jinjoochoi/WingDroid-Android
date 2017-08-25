@@ -55,27 +55,11 @@ public class RepositoryAdapter extends BaseAdapter<Repository, RecyclerView.View
         void clicked(int position);
     }
 
-//    public void removeLoadingFooter() {
-//        isLoadingAdded = false;
-//
-//        int position = items.size() - 1;
-//        Repository item = getItem(position);
-//
-//        if (item != null) {
-//            items.remove(position);
-//            notifyItemRemoved(position);
-//        }
-//    }
 
     @Override
     public int getItemViewType(int position) {
         return (position == items.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
     }
-
-//    public void addLoadingFooter() {
-//        isLoadingAdded = true;
-//        add(new Repository());
-//    }
 
 
     public Repository getLastItem() {

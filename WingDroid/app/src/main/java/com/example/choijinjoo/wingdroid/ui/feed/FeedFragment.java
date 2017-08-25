@@ -87,7 +87,7 @@ public class FeedFragment extends BaseFragment {
         recvRepositories.setAdapter(adapter);
         nestedScrollView.setOnScrollChangeListener(listener);
         containerSort.setOnClickListener(this::showSelectSortCriteriaDialog);
-        recvRepositories.setNestedScrollingEnabled(true);
+        recvRepositories.setNestedScrollingEnabled(false);
 
         repositories.add(repoRepository = new RepositoryRepository(getContext()));
         repositories.add(rtCategoryRepository = new RTCategoryRepositoryRepository(getContext()));
@@ -130,17 +130,15 @@ public class FeedFragment extends BaseFragment {
     }
 
     private void setItems(List<Repository> items) {
-        TOTAL_PAGES = items.size() % ITEM_IN_PAGE == 0 ? items.size() / ITEM_IN_PAGE : items.size() / ITEM_IN_PAGE + 1;
-
-        if (currentPage > TOTAL_PAGES) isLastPage = true;
-
         isLoading = true;
-
         adapter.setItems(items);
+        isLastPage = false;
         isLoading = false;
     }
 
     private void addItems(List<Repository> items) {
+        if(items.size() < ITEM_IN_PAGE)
+            isLastPage = true;
         adapter.add(new ArrayList<>(items));
 
         isLoading = false;
@@ -193,22 +191,9 @@ public class FeedFragment extends BaseFragment {
 
     }
 
-    private void loadFirstPage() {
-        if (currentPage > TOTAL_PAGES) isLastPage = true;
-
-        isLoading = true;
-
-        List<Repository> repos = items.subList(0, items.size() >= ITEM_IN_PAGE ? ITEM_IN_PAGE : items.size());
-
-        adapter.setItems(repos);
-        isLoading = false;
-    }
-
 
     private void loadNextPage() {
         Repository lastItem = adapter.getLastItem();
-        isLastPage = true;
-
         isLoading = true;
 
         if (category != null) {

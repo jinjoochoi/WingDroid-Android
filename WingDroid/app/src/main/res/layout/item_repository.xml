@@ -4,6 +4,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
     android:padding="10dp">
 
     <ImageView
@@ -11,7 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/bd_grey_rad18" />
+        android:adjustViewBounds="true"
+        android:background="@drawable/bd_grey_rad18"
+        android:scaleType="fitXY" />
 
     <TextView
         android:id="@+id/txtvName"
@@ -21,17 +25,17 @@
         android:layout_below="@id/imgvPreview"
         tools:text="TextSurface" />
 
-    <org.apmem.tools.layouts.FlowLayout xmlns:f="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/flowLayout"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recvTag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtvName"
-        android:gravity="fill"
-        f:layoutDirection="ltr"
-        f:weightDefault="1.0" />
+        android:minHeight="30dp" />
 
 
-    <include layout="@layout/item_date" android:id="@+id/containerDate"/>
+    <include
+        android:id="@+id/containerDate"
+        layout="@layout/item_date" />
 
     <include layout="@layout/item_star" />
 

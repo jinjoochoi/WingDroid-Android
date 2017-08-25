@@ -29,7 +29,7 @@ import java.util.List;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "WingDroid.db";
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 20;
 
     private List<BaseRepository> repositories = new ArrayList<>();
 

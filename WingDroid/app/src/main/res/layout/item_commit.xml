@@ -4,6 +4,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
     android:orientation="vertical"
     android:padding="@dimen/news_padding">
 
@@ -17,8 +19,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/imgvIssue"
         android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@id/imgvIssue"
         android:orientation="vertical">
 
 
@@ -38,8 +40,8 @@
                 android:id="@+id/imgvRead"
                 android:layout_width="@dimen/new_mark_width"
                 android:layout_height="@dimen/new_mark_width"
-                android:layout_marginLeft="@dimen/new_mark_margin_left"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/new_mark_margin_left"
                 android:layout_toRightOf="@id/txtvName"
                 android:background="@drawable/mark_new" />
         </RelativeLayout>

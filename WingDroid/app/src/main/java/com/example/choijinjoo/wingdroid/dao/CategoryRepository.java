@@ -27,7 +27,7 @@ public class CategoryRepository extends BaseRepository {
     public Observable<List<Category>> getCategories() {
         List<Category> results = new ArrayList<>();
         try {
-            results.addAll(categoryDao.queryForAll());
+            results.addAll(categoryDao.queryBuilder().where().notIn(Category.NAME_FIELD,"ALL").query());
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

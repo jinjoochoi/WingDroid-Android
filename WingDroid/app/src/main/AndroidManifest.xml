@@ -41,6 +41,7 @@
             </intent-filter>
         </service>
 
+        <activity android:name=".ui.simulate.LottieActivity"/>
         <service android:name=".service.FirebaseDataSyncService" />
 
         <service

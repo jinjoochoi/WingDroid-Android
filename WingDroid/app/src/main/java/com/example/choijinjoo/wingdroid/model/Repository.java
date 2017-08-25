@@ -266,4 +266,8 @@ public class Repository {
         this.clicks++;
     }
 
+    public boolean isSimulate(){
+        return simulatable == 1;
+    }
+
 }

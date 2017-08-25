@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgvBack"
+        android:layout_width="@dimen/ic_toolbar_width"
+        android:layout_height="@dimen/ic_toolbar_height"
+        android:src="@drawable/ic_arrow_back" />
+
+    <TextView
+        android:id="@+id/txtvTitle"
+        style="@style/TextStyle.Title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="50dp"
+        tools:text="ChipsLayoutManager" />
+</android.support.v7.widget.Toolbar>

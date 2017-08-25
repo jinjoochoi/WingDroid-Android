@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.dao.CategoryRepository;
@@ -49,6 +50,8 @@ public class BookMarkFragment extends BaseFragment {
     LinearLayout containerSort;
     @BindView(R.id.imgvFilter)
     ImageView imgvFilter;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
     BookMarkAdapter adapter;
     RTCategoryRepositoryRepository rtCategoryRepositoryRepository;
     CategoryRepository categoryRepository;
@@ -78,6 +81,8 @@ public class BookMarkFragment extends BaseFragment {
         categoryRepository = new CategoryRepository(getContext());
         EventBus.getDefault().register(this);
         order_by = SortCriteria.RECENT;
+
+        scrollView.setNestedScrollingEnabled(false);
 
         loadCategoriesOrderByName();
 

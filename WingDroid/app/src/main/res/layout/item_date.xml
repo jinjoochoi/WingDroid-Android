@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="20dp"
     android:layout_toLeftOf="@+id/containerStar"
-    android:layout_below="@+id/flowLayout"
+    android:layout_below="@+id/recvTag"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 

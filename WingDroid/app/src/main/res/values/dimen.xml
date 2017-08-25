@@ -4,7 +4,7 @@
     <!-- TextSize dimen -->
     <dimen name="textsize_title">15sp</dimen>
     <dimen name="textsize_large">18sp</dimen>
-    <dimen name="textsize_min">12sp</dimen>
+    <dimen name="textsize_min">11sp</dimen>
     <dimen name="textsize_tag">@dimen/textsize_min</dimen>
     <dimen name="textsize_medium">13sp</dimen>
 
@@ -26,13 +26,13 @@
     <dimen name="btn_stroke">0.5dp</dimen>
 
     <!-- Book mark dimen -->
-    <dimen name="bookmark_height">120dp</dimen>
+    <dimen name="bookmark_height">130dp</dimen>
     <dimen name="bookmark_img_width">110dp</dimen>
     <dimen name="bookmark_img_height">110dp</dimen>
     <dimen name="bookmark_padding">10dp</dimen>
 
     <!-- Book mark dimen -->
-    <dimen name="search_result_height">140dp</dimen>
+    <dimen name="search_result_height">150dp</dimen>
 
     <!-- Event dimen -->
     <dimen name="news_new_height">120dp</dimen>

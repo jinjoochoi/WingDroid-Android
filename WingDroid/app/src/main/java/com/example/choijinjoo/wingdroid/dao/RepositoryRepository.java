@@ -99,11 +99,8 @@ public class RepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getRecentRepo() {
         List<Repository> results = new ArrayList<>();
         try {
-            List<Repository> repos = setCategoryForRepos(setTagsForRepo(repositoryDao.queryBuilder().orderBy("createdAt", false).query()));
-            if (repos.size() > 2)
-                results.addAll(repos.subList(0, 2));
-            else
-                results.addAll(repos);
+            List<Repository> repos = setCategoryForRepos(setTagsForRepo(repositoryDao.queryBuilder().orderBy("createdAt", false).limit((long) 3).query()));
+            results.addAll(repos);
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

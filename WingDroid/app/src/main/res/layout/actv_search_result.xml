@@ -12,6 +12,7 @@
         <SearchView
             style="@style/SearchView"
             android:id="@+id/searchView"
+            android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="43dp" />
     </RelativeLayout>
@@ -19,6 +20,7 @@
     <include layout="@layout/border" />
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

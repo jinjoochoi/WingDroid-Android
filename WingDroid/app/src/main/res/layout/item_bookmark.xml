@@ -12,8 +12,10 @@
     <ImageView
         android:id="@+id/imgvPreview"
         android:layout_width="@dimen/bookmark_img_width"
-        android:background="@drawable/none_st_bd_greydark_rad30"
-        android:layout_height="@dimen/bookmark_img_width" />
+        android:layout_height="@dimen/bookmark_img_width"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:background="@drawable/none_st_bd_greydark_rad30" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,15 +31,14 @@
             android:layout_height="wrap_content"
             tools:text="TextSurface" />
 
-        <org.apmem.tools.layouts.FlowLayout xmlns:f="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/flowLayout"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recvTag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/txtvName"
-            android:gravity="fill"
-            f:weightDefault="1.0" />
+            android:minHeight="30dp" />
 
-        <include layout="@layout/item_star"/>
+        <include layout="@layout/item_star" />
 
     </RelativeLayout>
 </RelativeLayout>

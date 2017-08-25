@@ -7,8 +7,6 @@ import com.example.choijinjoo.wingdroid.model.Committer;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.event.Commit;
 import com.example.choijinjoo.wingdroid.model.event.Event;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.SelectArg;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -73,14 +71,20 @@ public class CommitRepository extends BaseRepository {
 
     public Commit getLastCommit(Repository repository) {
         try {
-            QueryBuilder<Repository, Integer> repositoryQB = repositoryDao.queryBuilder();
-            SelectArg repoSelectArg = new SelectArg();
-            repositoryQB.where().eq(Repository.ID_FIELD,repoSelectArg);
-            QueryBuilder<Commit,Integer> commitQB = commitDao.queryBuilder();
-            commitQB.join(repositoryQB);
+            Commit lastCommit = commitDao.queryBuilder().orderBy("date", false).where().eq("repository_id", repository.getId()).queryForFirst();
+            if (lastCommit != null)
+                return setCommitterForCommit(lastCommit);
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-            repoSelectArg.setValue(repository);
-            return commitQB.join(repositoryQB).orderBy(Commit.ID_FIELD,false).queryForFirst();
+    public Commit setCommitterForCommit(Commit commit) {
+        try {
+            commit.setCommitter(committerDao.queryBuilder().where().eq("id", commit.getCommitter().getId()).queryForFirst());
+            return commit;
         } catch (SQLException e) {
             e.printStackTrace();
         }

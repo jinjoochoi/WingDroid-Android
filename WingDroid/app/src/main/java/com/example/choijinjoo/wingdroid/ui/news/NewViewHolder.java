@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.ui.base.BaseViewHolder;
@@ -30,6 +31,8 @@ public class NewViewHolder extends BaseViewHolder<Repository> {
     public void bindData(Repository item) {
         Glide.with(context)
                 .load(item.getImage())
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL )
                 .into(imgvPreview);
         txtvName.setText(item.getName());
         txtvStar.setText(item.getFormattedStarString());

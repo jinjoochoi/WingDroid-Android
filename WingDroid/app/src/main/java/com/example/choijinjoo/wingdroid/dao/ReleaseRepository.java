@@ -7,8 +7,6 @@ import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.User;
 import com.example.choijinjoo.wingdroid.model.event.Event;
 import com.example.choijinjoo.wingdroid.model.event.Release;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.SelectArg;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -56,15 +54,7 @@ public class ReleaseRepository extends BaseRepository {
 
     public Release getLastRelease(Repository repository) {
         try {
-
-            QueryBuilder<Repository, Integer> repositoryQB = repositoryDao.queryBuilder();
-            SelectArg repoSelectArg = new SelectArg();
-            repositoryQB.where().eq(Repository.ID_FIELD,repoSelectArg);
-            QueryBuilder<Release,Integer> releaseQB = releaseDao.queryBuilder();
-            releaseQB.join(repositoryQB);
-
-            repoSelectArg.setValue(repository);
-            return releaseQB.join(repositoryQB).orderBy(PUBLISHEAT_FIELD,false).queryForFirst();
+            return releaseDao.queryBuilder().orderBy(PUBLISHEAT_FIELD, false).where().eq("repository_id", repository.getId()).queryForFirst();
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

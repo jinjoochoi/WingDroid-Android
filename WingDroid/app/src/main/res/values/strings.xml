@@ -30,7 +30,7 @@
     <string name="detail_issues">Issue</string>
     <string name="detail_watches">Watch</string>
     <string name="detail_github">Github</string>
-    <string name="detail_simulate">Simulate</string>
+    <string name="detail_simulate">SIMULATE</string>
     <string name="detail_star">Star</string>
     <string name="detail_fork">Fork</string>
 

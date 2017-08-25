@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.dao.TagRepository;
@@ -19,6 +20,7 @@ import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.model.eventbus.RepoBookMarkEvent;
 import com.example.choijinjoo.wingdroid.ui.base.BaseActivity;
+import com.example.choijinjoo.wingdroid.ui.simulate.LottieActivity;
 
 import org.apmem.tools.layouts.FlowLayout;
 import org.greenrobot.eventbus.EventBus;
@@ -66,9 +68,16 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     RecyclerView recvSimmilarLibs;
     @BindView(R.id.flowLayout)
     FlowLayout flowLayout;
+    @BindView(R.id.txtvSimulate)
+    TextView txtvSimulate;
+    @BindView(R.id.btnSimulate)
+    LinearLayout btnSimulate;
+    @BindView(R.id.imgvSimulate)
+    ImageView imgvSimulate;
+
 
     TagRepository tagRepository;
-    SimmilarsAdapter simmilarsAdapter;
+    ReleatedReposAdapter simmilarsAdapter;
     Repository repository;
 
 
@@ -87,9 +96,10 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     protected void initLayout() {
         repositories.add(tagRepository = new TagRepository(getBaseContext()));
         recvSimmilarLibs.setLayoutManager(new GridLayoutManager(getBaseContext(), 3, LinearLayoutManager.VERTICAL, false));
-        simmilarsAdapter = new SimmilarsAdapter(getBaseContext(), position -> moveToDetailActivity(simmilarsAdapter.getItem(position)));
+        simmilarsAdapter = new ReleatedReposAdapter(getBaseContext(), position -> moveToDetailActivity(simmilarsAdapter.getItem(position)));
         recvSimmilarLibs.setAdapter(simmilarsAdapter);
         imgvBookMark.setOnClickListener(this);
+        imgvShare.setOnClickListener(this);
         String repoId = getIntent().getStringExtra("repoId");
         loadRepository(repoId);
     }
@@ -103,7 +113,10 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
 
     private void setRepoItem(Repository item) {
         repository = item;
-        Glide.with(getBaseContext()).load(repository.getImage()).into(imgvPreview);
+        Glide.with(getBaseContext())
+                .load(repository.getImage())
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imgvPreview);
         txtvName.setText(repository.getName());
         txtvDescription.setText(repository.getDescription());
         txtvAuthor.setText("by. " + repository.getAuthor());
@@ -117,6 +130,12 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
 
         txtvWatch.setText(String.valueOf(repository.getWatch()));
         txtvFork.setText(String.valueOf(repository.getFork()));
+
+        btnSimulate.setEnabled(repository.isSimulate());
+        txtvSimulate.setEnabled(repository.isSimulate());
+        imgvSimulate.setEnabled(repository.isSimulate());
+        if (repository.isSimulate())
+            btnSimulate.setOnClickListener(this);
 
         flowLayout.removeAllViews();
         for (Tag tag : repository.getTags()) {
@@ -164,6 +183,20 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
                 repository.clickBookmark();
                 RepositoryRepository.getInstance(getBaseContext()).addBookmark(repository);
                 break;
+
+            case R.id.btnSimulate:
+                Intent intent = LottieActivity.getStartIntent(this, repository.getName());
+                startActivity(intent);
+                break;
+
+            case R.id.imgvShare:
+                Intent intent1 = new Intent();
+                intent1.setAction(Intent.ACTION_SEND);
+                intent1.setType("text/plain");
+                intent1.putExtra(Intent.EXTRA_TEXT,repository.getGit());
+                Intent chooser = Intent.createChooser(intent1, "Share with your partner! ");
+                startActivity(chooser);
+                break;
         }
 
     }
@@ -186,7 +219,7 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
         reloadBookmark(repository.getId());
     }
 
-    private void reloadBookmark(String repoId){
+    private void reloadBookmark(String repoId) {
         disposables.add(RepositoryRepository.getInstance(getBaseContext()).getRepositoryById(repoId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

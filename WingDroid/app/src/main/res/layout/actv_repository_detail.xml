@@ -25,7 +25,7 @@
                     android:id="@+id/imgvPreview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="300dp"/>
+                    android:minHeight="300dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -48,29 +48,35 @@
                             tools:text="TextSurface" />
 
                         <LinearLayout
+                            android:id="@+id/btnSimulate"
                             android:layout_width="wrap_content"
                             android:layout_height="28dp"
+                            android:layout_alignParentBottom="true"
                             android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
                             android:layout_marginRight="20dp"
                             android:background="@drawable/bd_blue_rad18"
+                            android:enabled="false"
                             android:gravity="center"
                             android:orientation="horizontal"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp">
 
                             <ImageView
+                                android:id="@+id/imgvSimulate"
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
-                                android:src="@drawable/ic_simulate"
-                                android:tint="@color/blue" />
+                                android:enabled="false"
+                                android:src="@drawable/selector_simulate" />
 
                             <TextView
+                                android:id="@+id/txtvSimulate"
+                                style="@style/TextStyle.Small"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="10dp"
+                                android:enabled="false"
                                 android:text="@string/detail_simulate"
-                                android:textColor="@color/blue" />
+                                android:textColor="@drawable/selector_simulate_text" />
                         </LinearLayout>
 
                     </RelativeLayout>
@@ -127,11 +133,11 @@
 
                     <org.apmem.tools.layouts.FlowLayout
                         android:id="@+id/flowLayout"
-                        android:layout_margin="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
                         android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"/>
+                        android:layout_marginTop="10dp" />
 
                     <View
                         android:layout_width="match_parent"

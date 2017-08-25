@@ -15,16 +15,7 @@
         android:layout_height="@dimen/bookmark_img_width"
         android:background="@drawable/none_st_bd_greydark_rad30" />
 
-    <com.athkalia.emphasis.EmphasisTextView
-        android:id="@+id/txtvCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/TextStyle.Small"
-        android:layout_alignParentRight="true"
-        tools:text="LIST/GRID" />
-
     <RelativeLayout
-        android:layout_below="@id/txtvCategory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="15dp"
@@ -34,28 +25,38 @@
         <com.athkalia.emphasis.EmphasisTextView
             android:id="@+id/txtvName"
             style="@style/TextStyle.Title"
-            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             tools:text="TextSurface" />
 
         <com.athkalia.emphasis.EmphasisTextView
+            android:id="@+id/txtvCategory"
+            style="@style/TextStyle.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/txtvName"
+            tools:text="LIST/GRID" />
+
+        <com.athkalia.emphasis.EmphasisTextView
             android:id="@+id/txtvDescription"
+            style="@style/TextStyle.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextStyle.Small"
-            android:layout_marginTop="5dp"
             android:layout_below="@id/txtvName"
+            android:layout_marginTop="5dp"
             android:maxLength="30"
             tools:text="this is description!!" />
 
-        <org.apmem.tools.layouts.FlowLayout xmlns:f="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/flowLayout"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recvTag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/txtvDescription"
-            android:gravity="fill"
-            f:weightDefault="1.0" />
+            android:layout_marginTop="10dp"
+            android:minHeight="30dp" />
 
         <include layout="@layout/item_star" />
 

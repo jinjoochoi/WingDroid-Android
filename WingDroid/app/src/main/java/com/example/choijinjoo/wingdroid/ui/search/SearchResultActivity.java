@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -50,6 +51,7 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
     @BindView(R.id.recvHistories) RecyclerView recvHistories;
     @BindView(R.id.btnSearch) RelativeLayout btnSearch;
     @BindView(R.id.txtvNoSearchResult) TextView txtvNoSearchResult;
+    @BindView(R.id.scrollView) ScrollView scrollView;
 
     String searchType = "";
 
@@ -87,6 +89,7 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
                 .map(c -> c.toString())
                 .subscribe(this::searchWithText);
 
+        scrollView.setNestedScrollingEnabled(false);
 
         // search history container
         searchHistoryAdapter = new SearchHistoryAdapter(this,
@@ -115,6 +118,7 @@ public class SearchResultActivity extends BaseActivity implements Dao.DaoObserve
                 containerResult.setVisibility(View.GONE);
             }
         }));
+
 
         // result container
         resultAdapter = new SearchResultAdapter(this, this::moveToDetailActivity);
