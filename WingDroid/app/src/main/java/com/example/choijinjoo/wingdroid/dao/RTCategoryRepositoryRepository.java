@@ -75,8 +75,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getNextRepoForCategoryOrderByDate(Category category, Repository repository) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (nextRepoForCategoryPreparedQuery == null)
-                nextRepoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByDateQuery(repository);
+            nextRepoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByDateQuery(repository);
 
             nextRepoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
             results.addAll(setTagsForRepo(repositoryDao.query(nextRepoForCategoryPreparedQuery)));
@@ -117,8 +116,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getNextRepoForCategoryOrderByStar(Category category, Repository repository) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (nextRepoForCategoryPreparedQuery == null)
-                nextRepoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByStarQuery(repository);
+            nextRepoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByStarQuery(repository);
 
             nextRepoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
             results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(nextRepoForCategoryPreparedQuery))));

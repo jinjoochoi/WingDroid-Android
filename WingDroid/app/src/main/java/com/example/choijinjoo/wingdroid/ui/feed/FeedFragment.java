@@ -161,8 +161,7 @@ public class FeedFragment extends BaseFragment {
                 int visibleItemCount = layoutManager.getChildCount();
                 int totalItemCount = layoutManager.getItemCount();
                 int[] firstVisibleItemPosition = layoutManager.findFirstVisibleItemPositions(null);
-
-                if (!isLoading() && !isLastPage()) {
+                if (!isLoading() && !isLastPage() && scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
                     if ((visibleItemCount + firstVisibleItemPosition[0]) >= totalItemCount
                             && firstVisibleItemPosition[0] >= 0 && totalItemCount >= ITEM_IN_PAGE) {
                         loadMoreItems();
