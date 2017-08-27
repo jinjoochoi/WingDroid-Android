@@ -88,6 +88,7 @@ public class FeedFragment extends BaseFragment {
         nestedScrollView.setOnScrollChangeListener(listener);
         containerSort.setOnClickListener(this::showSelectSortCriteriaDialog);
         recvRepositories.setNestedScrollingEnabled(false);
+        recvRepositories.setHasFixedSize(true);
 
         repositories.add(repoRepository = new RepositoryRepository(getContext()));
         repositories.add(rtCategoryRepository = new RTCategoryRepositoryRepository(getContext()));

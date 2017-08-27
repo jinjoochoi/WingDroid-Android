@@ -32,7 +32,9 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     private TagDao tagDao;
     private CategoryDao categoryDao;
 
-    private PreparedQuery<Repository> repoForCategoryPreparedQuery = null;
+    private PreparedQuery<Repository> initialRepoForCategoryOrderbyDatePreparedQuery = null;
+    private PreparedQuery<Repository> initialRepoForCategoryOrderbyStarPreparedQuery = null;
+    private PreparedQuery<Repository> nextRepoForCategoryPreparedQuery = null;
     private PreparedQuery<Tag> tagForRepoPreparedQuery = null;
     private PreparedQuery<Repository> refoForCategoriesPreparedQuery = null;
     private PreparedQuery<Category> categoryForRepoPreparedQuery = null;
@@ -59,11 +61,11 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getInitialRepoForCategoryOrderByDate(Category category) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (repoForCategoryPreparedQuery == null)
-                repoForCategoryPreparedQuery = makeInitialRepoForCategoryOrderByDateQuery();
+            if (initialRepoForCategoryOrderbyDatePreparedQuery == null)
+                initialRepoForCategoryOrderbyDatePreparedQuery = makeInitialRepoForCategoryOrderByDateQuery();
 
-            repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
-            results.addAll(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery)));
+            initialRepoForCategoryOrderbyDatePreparedQuery.setArgumentHolderValue(0, category);
+            results.addAll(setTagsForRepo(repositoryDao.query(initialRepoForCategoryOrderbyDatePreparedQuery)));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -73,11 +75,11 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getNextRepoForCategoryOrderByDate(Category category, Repository repository) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (repoForCategoryPreparedQuery == null)
-                repoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByDateQuery(repository);
+            if (nextRepoForCategoryPreparedQuery == null)
+                nextRepoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByDateQuery(repository);
 
-            repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
-            results.addAll(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery)));
+            nextRepoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
+            results.addAll(setTagsForRepo(repositoryDao.query(nextRepoForCategoryPreparedQuery)));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -87,11 +89,11 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getRepoForCategoryOrderByStar(Category category) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (repoForCategoryPreparedQuery == null)
-                repoForCategoryPreparedQuery = makeRepoForCategoryOrderByStarQuery();
+            if (initialRepoForCategoryOrderbyStarPreparedQuery == null)
+                initialRepoForCategoryOrderbyStarPreparedQuery = makeRepoForCategoryOrderByStarQuery();
 
-            repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
-            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery))));
+            initialRepoForCategoryOrderbyStarPreparedQuery.setArgumentHolderValue(0, category);
+            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(initialRepoForCategoryOrderbyStarPreparedQuery))));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -101,11 +103,11 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getInitialRepoForCategoryOrderByStar(Category category) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (repoForCategoryPreparedQuery == null)
-                repoForCategoryPreparedQuery = makeInitialRepoForCategoryOrderByStarQuery();
+            if (initialRepoForCategoryOrderbyStarPreparedQuery == null)
+                initialRepoForCategoryOrderbyStarPreparedQuery = makeInitialRepoForCategoryOrderByStarQuery();
 
-            repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
-            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery))));
+            initialRepoForCategoryOrderbyStarPreparedQuery.setArgumentHolderValue(0, category);
+            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(initialRepoForCategoryOrderbyStarPreparedQuery))));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -115,11 +117,11 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getNextRepoForCategoryOrderByStar(Category category, Repository repository) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (repoForCategoryPreparedQuery == null)
-                repoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByStarQuery(repository);
+            if (nextRepoForCategoryPreparedQuery == null)
+                nextRepoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByStarQuery(repository);
 
-            repoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
-            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryPreparedQuery))));
+            nextRepoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
+            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(nextRepoForCategoryPreparedQuery))));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -226,7 +228,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
 
         QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
-        repositoryQb.orderBy("createdAt", false).limit((long) ITEM_IN_PAGE).where().lt("createdAt", last.getCreatedAt()).in(Repository.ID_FIELD, rtCRQb);
+        repositoryQb.orderBy("createdAt", false).limit((long) ITEM_IN_PAGE).where().lt("createdAt", last.getCreatedAt()).and().in(Repository.ID_FIELD, rtCRQb);
         return repositoryQb.prepare();
     }
 
