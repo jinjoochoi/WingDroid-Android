@@ -87,7 +87,7 @@ public class RepositoryRepository extends BaseRepository {
             repoForCategoryOrderByStarPreparedQuery.setArgumentHolderValue(0, repository.getCategory());
             List<Repository> repos = setCategoryForRepos(setTagsForRepo(repositoryDao.query(repoForCategoryOrderByStarPreparedQuery)));
             if (repos.size() > 2)
-                results.addAll(repos.subList(0, 2));
+                results.addAll(repos.subList(0, 3));
             else
                 results.addAll(repos);
         } catch (SQLException e) {
@@ -279,7 +279,7 @@ public class RepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getBookmark(String order_by, boolean desc) {
         List<Repository> results = new ArrayList<>();
         try {
-            results.addAll(setTagsForRepo(repositoryDao.queryBuilder().orderBy(order_by, desc).where().eq(BOOKMARK_FIELD, true).query()));
+            results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.queryBuilder().orderBy(order_by, desc).where().eq(BOOKMARK_FIELD, true).query())));
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

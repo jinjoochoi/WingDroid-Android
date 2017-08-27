@@ -25,6 +25,9 @@ public class BookMarkViewHolder extends BaseViewHolder<Repository> {
     @BindView(R.id.txtvName) TextView txtvName;
     @BindView(R.id.recvTag) RecyclerView recvTag;
     @BindView(R.id.txtvStar) TextView txtvStar;
+    @BindView(R.id.txtvDescription) TextView txtvDescription;
+    @BindView(R.id.txtvCategory) TextView txtvCategory;
+    @BindView(R.id.txtvDate) TextView txtvDate;
 
     public BookMarkViewHolder(Context context, View itemView) {
         super(context, itemView);
@@ -39,6 +42,9 @@ public class BookMarkViewHolder extends BaseViewHolder<Repository> {
                 .into(imgvPreview);
         txtvName.setText(item.getName());
         txtvStar.setText(item.getFormattedStarString());
+        txtvCategory.setText(item.getCategory().getName());
+        txtvDescription.setText(item.getDescription().length() > 60 ? item.getDescription().substring(0, 59) + "..." : item.getDescription());
+        txtvDate.setText(item.getCreatedAtDateFormattedString());
 
         recvTag.setAdapter(new TagAdapter(context,item.getTags()));
         recvTag.setLayoutManager(new FlowLayoutManager());

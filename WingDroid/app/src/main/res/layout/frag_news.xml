@@ -24,9 +24,9 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recvNew"
-                android:minHeight="140dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:minHeight="140dp" />
 
             <include layout="@layout/space" />
 
@@ -46,10 +46,11 @@
 
                 <ImageView
                     android:id="@+id/imgvFilter"
-                    android:layout_width="@dimen/ic_filter_width"
-                    android:layout_height="@dimen/ic_filter_height"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:padding="6dp"
                     android:src="@drawable/ic_filter" />
             </RelativeLayout>
 

@@ -90,7 +90,7 @@ public class SearchFragment extends BaseFragment{
 
     private void setSuggestedRepoItems(List<Repository> repositories){
         if(repositories.size() > 2){
-            suggestionsAdapter.setItems(repositories.subList(0,2));
+            suggestionsAdapter.setItems(repositories.subList(0,3));
         }else {
             suggestionsAdapter.setItems(repositories);
         }

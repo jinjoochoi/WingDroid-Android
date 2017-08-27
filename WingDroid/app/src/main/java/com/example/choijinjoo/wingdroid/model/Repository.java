@@ -232,6 +232,9 @@ public class Repository {
     public String getFormattedStarString() {
         return Utils.getStarString(Long.valueOf(star));
     }
+    public String getFormattedForkString() {
+        return Utils.getStarString(Long.valueOf(fork));
+    }
 
     public Date getCreatedAtDate() {
         Timestamp stamp = new Timestamp(createdAt);

@@ -5,22 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/repository_suggestion_height"
     android:layout_weight="1"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="@dimen/repository_suggestion_padding">
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/imgvPreview"
         android:layout_width="@dimen/repository_suggestion_img_width"
-        android:layout_height="@dimen/repository_suggestion_img_height" />
+        android:layout_height="@dimen/repository_suggestion_img_height"
+        android:layout_gravity="center_horizontal"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
 
     <TextView
         android:id="@+id/txtvName"
         style="@style/TextStyle.Title.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
         tools:text="TextSurface" />
 
-    <include layout="@layout/item_star"/>
+    <include layout="@layout/item_star_right" />
 
 </LinearLayout>

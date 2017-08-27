@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.commit451.elasticdragdismisslayout.ElasticDragDismissLinearLayout;
+import com.commit451.elasticdragdismisslayout.ElasticDragDismissListener;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.dao.TagRepository;
@@ -74,6 +76,8 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     LinearLayout btnSimulate;
     @BindView(R.id.imgvSimulate)
     ImageView imgvSimulate;
+    @BindView(R.id.elasticDragDismissLinearLayout)
+    ElasticDragDismissLinearLayout elasticDragDismissLinearLayout;
 
 
     TagRepository tagRepository;
@@ -129,7 +133,7 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
         imgvBookMark.setSelected(repository.getBookmark());
 
         txtvWatch.setText(String.valueOf(repository.getWatch()));
-        txtvFork.setText(String.valueOf(repository.getFork()));
+        txtvFork.setText(String.valueOf(repository.getFormattedForkString()));
 
         btnSimulate.setEnabled(repository.isSimulate());
         txtvSimulate.setEnabled(repository.isSimulate());
@@ -149,6 +153,20 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::setRelatedRepoItems));
         addClick();
+
+        elasticDragDismissLinearLayout.addListener(new ElasticDragDismissListener() {
+            @Override
+            public void onDrag(float elasticOffset, float elasticOffsetPixels, float rawOffset, float rawOffsetPixels) {
+
+            }
+
+            @Override
+            public void onDragDismissed() {
+                finish();
+                overridePendingTransition(0,0);
+
+            }
+        });
     }
 
     private void setRelatedRepoItems(List<Repository> items) {
@@ -193,7 +211,7 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
                 Intent intent1 = new Intent();
                 intent1.setAction(Intent.ACTION_SEND);
                 intent1.setType("text/plain");
-                intent1.putExtra(Intent.EXTRA_TEXT,repository.getGit());
+                intent1.putExtra(Intent.EXTRA_TEXT, repository.getGit());
                 Intent chooser = Intent.createChooser(intent1, "Share with your partner! ");
                 startActivity(chooser);
                 break;
@@ -229,5 +247,7 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
                 }));
 
     }
+
+
 }
 

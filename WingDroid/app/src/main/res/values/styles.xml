@@ -53,6 +53,11 @@
         <item name="android:textColor">@color/grey</item>
     </style>
 
+    <style name="TextStyle.Min" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">@dimen/textsize_min</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
     <style name="TextStyle.IssueText" parent="TextAppearance.AppCompat.Small">
         <item name="android:textSize">@dimen/textsize_tag</item>
     </style>
@@ -60,6 +65,13 @@
     <style name="SearchView" parent="Widget.AppCompat.Light.SearchView">
         <item name="submitBackground">@color/white</item>
         <item name="queryBackground">@color/white</item>
+    </style>
+
+    <style name="Transparent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name ="android:windowBackground">@color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorForeground">#fff</item>
     </style>
 
 </resources>

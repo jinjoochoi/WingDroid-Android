@@ -70,7 +70,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         return Observable.just(results);
     }
 
-    public Observable<List<Repository>> getNextRepoForCategoryOrderByDate(Category category,Repository repository) {
+    public Observable<List<Repository>> getNextRepoForCategoryOrderByDate(Category category, Repository repository) {
         List<Repository> results = new ArrayList<>();
         try {
             if (repoForCategoryPreparedQuery == null)
@@ -154,12 +154,9 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
             for (Category category : categories) {
                 if (category.getSelected()) {
                     refoForCategoriesPreparedQuery.setArgumentHolderValue(0, category);
-                    results.addAll(setTagsForRepo(repositoryDao.query(refoForCategoriesPreparedQuery)));
+                    results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(refoForCategoriesPreparedQuery))));
                 }
             }
-
-            refoForCategoriesPreparedQuery.setArgumentHolderValue(0, categories);
-            results.addAll(setTagsForRepo(repositoryDao.query(refoForCategoriesPreparedQuery)));
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -262,7 +259,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         rtCRQb.where().eq(RTCategoryRepository.CATEGORY_ID_FIELD_NAME, categorySA);
 
         QueryBuilder<Repository, Integer> repositoryQb = repositoryDao.queryBuilder();
-        repositoryQb.orderBy(Repository.STAR_FIELD, false).limit((long) ITEM_IN_PAGE).where().lt(Repository.STAR_FIELD,last.getStar()).in(Repository.ID_FIELD, rtCRQb);
+        repositoryQb.orderBy(Repository.STAR_FIELD, false).limit((long) ITEM_IN_PAGE).where().lt(Repository.STAR_FIELD, last.getStar()).in(Repository.ID_FIELD, rtCRQb);
         return repositoryQb.prepare();
     }
 

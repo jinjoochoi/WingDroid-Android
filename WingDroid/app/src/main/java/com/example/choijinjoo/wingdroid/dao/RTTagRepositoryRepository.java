@@ -25,9 +25,10 @@ public class RTTagRepositoryRepository extends BaseRepository {
 
     public void createOrUpdateRepository(Repository repository) {
         try {
-            for (Tag tag : repository.getTags()) {
-                rtTagRepositoryDao.createOrUpdate(new RTTagRepository(repository, tag));
-            }
+            if (repository.getTags() != null)
+                for (Tag tag : repository.getTags()) {
+                    rtTagRepositoryDao.createOrUpdate(new RTTagRepository(repository, tag));
+                }
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

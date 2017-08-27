@@ -12,6 +12,7 @@
         <SearchView
             style="@style/SearchView"
             android:id="@+id/searchView"
+            android:nestedScrollingEnabled="false"
             android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="43dp" />

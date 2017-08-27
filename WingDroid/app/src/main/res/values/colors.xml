@@ -13,15 +13,8 @@
     <color name="trans_white">#90ffffff</color>
     <color name="blue">#076AFF</color>
 
+    <color name="transparent">#00000000</color>
 
-
-
-
-
-
-
-
-    9
 
     <color name="newcolor">@color/blue</color>
 

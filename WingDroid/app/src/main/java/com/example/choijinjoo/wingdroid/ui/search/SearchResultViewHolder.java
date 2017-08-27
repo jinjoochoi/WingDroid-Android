@@ -27,6 +27,8 @@ public class SearchResultViewHolder extends RecyclerView.ViewHolder {
     RecyclerView recvTag;
     @BindView(R.id.txtvStar)
     TextView txtvStar;
+    @BindView(R.id.txtvDate)
+    TextView txtvDate;
     @BindView(R.id.txtvDescription)
     EmphasisTextView txtvDescription;
     @BindView(R.id.txtvCategory)
@@ -48,7 +50,8 @@ public class SearchResultViewHolder extends RecyclerView.ViewHolder {
         txtvName.setText(item.getName());
         txtvStar.setText(item.getFormattedStarString());
         txtvCategory.setText(item.getCategory().getName());
-        txtvDescription.setText(item.getDescription().length() > 30 ? item.getDescription().substring(0, 29) + "..." : item.getDescription());
+        txtvDescription.setText(item.getDescription().length() > 60 ? item.getDescription().substring(0, 59) + "..." : item.getDescription());
+        txtvDate.setText(item.getCreatedAtDateFormattedString());
 
         SearchTagAdapter adapter = new SearchTagAdapter(context,item.getTags(), search);
         recvTag.setAdapter(adapter);

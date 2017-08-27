@@ -18,19 +18,19 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:src="@drawable/ic_search_black_24dp"
-                android:tint="@color/decorate_bd" />
+                android:tint="@color/decorate_bd"
+                android:src="@drawable/ic_search_black_24dp"/>
 
             <TextView
                 android:id="@+id/txtvHint"
+                android:layout_marginLeft="5dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@id/imgvSearch"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:text="@string/search_hint"
+                android:layout_toRightOf="@id/imgvSearch"
                 android:textColor="@color/decorate_bd" />
 
 
@@ -75,17 +75,11 @@
                 android:layout_height="180dp"
                 android:layout_marginTop="10dp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    style="@style/TextStyle.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/suggested_libraries" />
-
-            </RelativeLayout>
+            <TextView
+                style="@style/TextStyle.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/suggested_libraries" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recvSuggestions"

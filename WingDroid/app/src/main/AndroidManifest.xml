@@ -15,7 +15,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
-        <activity android:name=".ui.detail.RepositoryDetailActivity" />
+        <activity android:name=".ui.detail.RepositoryDetailActivity"  android:theme="@style/Transparent"/>
         <activity android:name=".ui.begin.LoginActivity">
 
         </activity>

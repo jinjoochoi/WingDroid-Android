@@ -4,7 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.choijinjoo.wingdroid.model.SearchHistory;
+import com.example.choijinjoo.wingdroid.model.eventbus.SearchHistoryEvent;
 import com.j256.ormlite.dao.Dao;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ public class SearchHistoryRepository extends BaseRepository {
     public void deleteSearchHistory(SearchHistory searchHistory) {
         try {
             searchHistoryDao.delete(searchHistory);
+            EventBus.getDefault().post(new SearchHistoryEvent());
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
