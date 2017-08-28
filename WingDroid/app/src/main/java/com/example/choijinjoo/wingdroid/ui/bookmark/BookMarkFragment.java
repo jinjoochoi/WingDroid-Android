@@ -36,7 +36,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.example.choijinjoo.wingdroid.model.Repository.BOOKMARKEDAT_FIELD;
-import static com.example.choijinjoo.wingdroid.model.Repository.CREATEDAT_FIELD;
 import static com.example.choijinjoo.wingdroid.model.Repository.STAR_FIELD;
 
 /**
@@ -83,6 +82,7 @@ public class BookMarkFragment extends BaseFragment {
         order_by = SortCriteria.RECENT;
 
         scrollView.setNestedScrollingEnabled(false);
+        recvRepositories.setHasFixedSize(true);
 
         loadCategoriesOrderByName();
 
@@ -128,14 +128,14 @@ public class BookMarkFragment extends BaseFragment {
 
         if (order_by == SortCriteria.RECENT) {
             if (isAll())
-                loadBookmarkItems(RepositoryRepository.getInstance(getContext()).getBookmark(CREATEDAT_FIELD, false));
+                loadBookmarkItems(RepositoryRepository.getInstance(getContext()).getBookmark(BOOKMARKEDAT_FIELD, true));
             else
-                loadBookmarkItems(rtCategoryRepositoryRepository.getBookmarkForCategories(BOOKMARKEDAT_FIELD, categories));
+                loadBookmarkItems(rtCategoryRepositoryRepository.getBookmarkForCategories(BOOKMARKEDAT_FIELD, true, categories));
         } else {
             if (isAll())
                 loadBookmarkItems(RepositoryRepository.getInstance(getContext()).getBookmark(STAR_FIELD, false));
             else
-                loadBookmarkItems(rtCategoryRepositoryRepository.getBookmarkForCategories(STAR_FIELD, categories));
+                loadBookmarkItems(rtCategoryRepositoryRepository.getBookmarkForCategories(STAR_FIELD,false, categories));
         }
     }
 

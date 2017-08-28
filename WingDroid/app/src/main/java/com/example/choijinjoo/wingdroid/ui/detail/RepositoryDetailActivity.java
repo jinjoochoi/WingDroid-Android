@@ -163,7 +163,7 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
             @Override
             public void onDragDismissed() {
                 finish();
-                overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
 
             }
         });
@@ -200,6 +200,10 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
             case R.id.imgvBookMark:
                 repository.clickBookmark();
                 RepositoryRepository.getInstance(getBaseContext()).addBookmark(repository);
+                if (repository.getBookmark())
+                    showToastMessage(R.string.toast_message_bookmark_added);
+                else
+                    showToastMessage(R.string.toast_message_bookmark_deleted);
                 break;
 
             case R.id.btnSimulate:

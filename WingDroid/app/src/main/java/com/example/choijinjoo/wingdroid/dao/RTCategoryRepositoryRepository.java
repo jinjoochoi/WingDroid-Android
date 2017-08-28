@@ -146,11 +146,10 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         return new ArrayList<>();
     }
 
-    public Observable<List<Repository>> getBookmarkForCategories(String order_by, List<Category> categories) {
+    public Observable<List<Repository>> getBookmarkForCategories(String order_by,boolean desc, List<Category> categories) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (refoForCategoriesPreparedQuery == null)
-                refoForCategoriesPreparedQuery = makeBookMarkRepoForCategories(order_by, false);
+                refoForCategoriesPreparedQuery = makeBookMarkRepoForCategories(order_by, desc);
             for (Category category : categories) {
                 if (category.getSelected()) {
                     refoForCategoriesPreparedQuery.setArgumentHolderValue(0, category);

@@ -1,5 +1,6 @@
 package com.example.choijinjoo.wingdroid.model.event;
 
+import com.example.choijinjoo.wingdroid.config.Config;
 import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.User;
 import com.example.choijinjoo.wingdroid.tools.Utils;
@@ -23,11 +24,9 @@ public class Release implements IEvent {
     public final static String UPDATEDAT_FIELD = "updated_at_id";
     public final static String PUBLISHEAT_FIELD = "published_at_id";
 
-    @SerializedName("html_url")
+    @SerializedName("url")
     @DatabaseField(id = true, unique = true, columnName = ID_FIELD)
-    Integer id;
-    @DatabaseField
-    String url;
+    String id;
     @SerializedName("tag_name")
     @DatabaseField
     String tagName;
@@ -53,45 +52,77 @@ public class Release implements IEvent {
     @DatabaseField(foreign = true)
     Repository repository;
 
-    public Integer getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public void setId(Integer id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getUrl() { return url; }
+    public String getTagName() {
+        return tagName;
+    }
 
-    public void setUrl(String url) { this.url = url; }
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
 
-    public String getTagName() { return tagName; }
+    public boolean isDraft() {
+        return draft;
+    }
 
-    public void setTagName(String tagName) { this.tagName = tagName; }
+    public void setDraft(boolean draft) {
+        this.draft = draft;
+    }
 
-    public boolean isDraft() { return draft; }
+    public User getAuthor() {
+        return author;
+    }
 
-    public void setDraft(boolean draft) { this.draft = draft; }
+    public void setAuthor(User author) {
+        this.author = author;
+    }
 
-    public User getAuthor() { return author; }
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
-    public void setAuthor(User author) { this.author = author; }
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 
-    public Date getCreatedAt() { return createdAt; }
+    public Date getPublishedAt() {
+        return publishedAt;
+    }
 
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt ; }
+    public void setPublishedAt(Date publishedAt) {
+        this.publishedAt = publishedAt;
+    }
 
-    public Date getPublishedAt() { return publishedAt; }
+    public Repository getRepository() {
+        return repository;
+    }
 
-    public void setPublishedAt(Date publishedAt) { this.publishedAt = publishedAt; }
+    public void setRepository(Repository repository) {
+        this.repository = repository;
+    }
 
-    public Repository getRepository() { return repository; }
+    public String getBody() {
+        return body;
+    }
 
-    public void setRepository(Repository repository) { this.repository = repository; }
+    public void setBody(String body) {
+        this.body = body;
+    }
 
-    public String getBody() { return body; }
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
 
-    public void setBody(String body) { this.body = body; }
-
-    public Date getUpdatedAt() { return updatedAt; }
-
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
 
     /*
@@ -100,7 +131,7 @@ public class Release implements IEvent {
 
     @Override
     public String getRepoAndAuthorName() {
-        return repository.getName() + " / " + author.getLogin() == null? "" : author.getLogin();
+        return repository.getName();
     }
 
     @Override
@@ -110,26 +141,32 @@ public class Release implements IEvent {
 
     @Override
     public String getEventInfoString() {
-        return "Released by " + author.getLogin() + "  "+Utils.getElapsedDateString(createdAt);
+        return "Released by " + author.getLogin() + "  " + Utils.getElapsedDateString(createdAt);
     }
 
     @Override
     public String getMainUrl() {
-        return url;
+        return Config.URL_GITHUB + repository.getAuthor()+"/"+repository.getName() + "/releases/tag/" + tagName;
     }
 
     @Override
-    public Integer getViewType() { return EVENT_RELEASE; }
+    public Integer getViewType() {
+        return EVENT_RELEASE;
+    }
 
     @Override
     public Long getLongTypeDate() {
-        return updatedAt.getTime();
+        return publishedAt.getTime();
     }
 
     @Override
-    public Boolean isRead() { return isRead; }
+    public Boolean isRead() {
+        return isRead;
+    }
 
     @Override
-    public void setRead(Boolean read) { isRead = read; }
+    public void setRead(Boolean read) {
+        isRead = read;
+    }
 
 }
