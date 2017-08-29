@@ -46,6 +46,7 @@ public class MainActivity extends BaseActivity {
         bottomNav.setOnNavigationItemSelectedListener(this::swtichFragment);
         BottomNavigationViewHelper.disableShiftMode(bottomNav);
 
+
         viewPager.setOffscreenPageLimit(3);
     }
 

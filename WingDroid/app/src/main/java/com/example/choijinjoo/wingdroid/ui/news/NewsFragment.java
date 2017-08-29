@@ -55,8 +55,6 @@ public class NewsFragment extends BaseFragment {
     RepositoryRepository repositoryRepository;
     ReleaseRepository releaseRepository;
 
-    List<Event> events = new ArrayList<>();
-
     private final Comparator<Event> eventComparator = new Comparator<Event>() {
         @Override
         public int compare(Event o1, Event o2) {
@@ -133,15 +131,17 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void loadAllEvents(){
-        events.clear();
-        Observable.merge(releaseRepository.getEvents(), CommitRepository.getInstance(getContext()).getEvents())
+        Observable.combineLatest(releaseRepository.getEvents(), CommitRepository.getInstance(getContext()).getEvents(),
+                (release, commit) -> {
+                    ArrayList<Event> events = new ArrayList<>();
+                    events.addAll(release);
+                    events.addAll(commit);
+                    Collections.sort(events,eventComparator);
+                    return events;
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event -> {
-                    events.addAll(event);
-                    Collections.sort(events,eventComparator);
-                    eventAdapter.setItems(events);
-                });
+                .subscribe(event -> eventAdapter.setItems(event));
     }
 
     private void loadReleaseEvents(){
