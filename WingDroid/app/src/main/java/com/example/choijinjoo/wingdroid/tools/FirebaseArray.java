@@ -32,7 +32,7 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener {
 
         void onChildChanged(EventType type, int index, int oldIndex);
 
-        void onDataChanged();
+        void onDataChanged(DataSnapshot dataSnapshot);
 
         void onCancelled(DatabaseError databaseError);
 
@@ -108,7 +108,8 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener {
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        mListener.onDataChanged();
+        if (mListener != null)
+            mListener.onDataChanged(dataSnapshot);
     }
 
     @Override
