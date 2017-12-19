@@ -1,15 +1,20 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext.gradleVersion = '2.3.3'
+    ext.butterknifeVersion = '8.4.0'
+    ext.googleserviceVersion = '3.1.0'
+    ext.objectboxVersion = '1.3.4'
+
     repositories {
         jcenter()
+        maven { url "http://objectbox.net/beta-repo/" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.6.0'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.2'
-        classpath 'com.google.gms:google-services:3.1.0'
-
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "com.jakewharton:butterknife-gradle-plugin:$butterknifeVersion"
+        classpath "com.google.gms:google-services:$googleserviceVersion"
+        classpath "io.objectbox:objectbox-gradle-plugin:$objectboxVersion"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -21,6 +26,7 @@ allprojects {
         jcenter()
         maven { url "https://maven.google.com" }
         maven { url "https://jitpack.io" }
+        maven { url "http://objectbox.net/beta-repo/" }
 
     }
 }
@@ -31,34 +37,37 @@ task clean(type: Delete) {
 
 ext {
     // App dependencies
-    support_version = '25.0.1'
-    parceler_version = '1.1.9'
+    supportVersion = '26.0.0'
 
-    butterknife_version = '8.7.0'
-    butterknife_compiler_version = '8.6.0'
+    parcelerVersion = '1.1.9'
+    butterknifeVersion = '8.4.0'
+    butterknifeCompilerVersion = '8.4.0'
 
-    glide_version = '3.8.0'
+    glideVersion = '3.8.0'
 
-    rxbinding_version = '2.0.0'
-    rxandroid_version = '2.0.1'
-    rxjava2_adapter_version = '2.2.0'
+    rxbindingVersion = '2.0.0'
+    rxandroidVersion = '2.0.1'
+    rxjava2AdapterVersion = '2.2.0'
+    eventbusVersion = '3.0.0'
 
-    flowlayout_version = '1.10@aar'
-    flowlayoutmanager_version = '1.2.3.2'
+    retrofitVersion = '2.3.0'
+    retrofitGsonVersion = '2.1.0'
+    stethoOkhttp3Version = '1.5.0'
+    okhttp3Version = '3.4.2'
+    okhttp3LoggingInterceptorVersion = '3.4.2'
 
-    firebase_auth_version = '10.0.1'
-    firebase_crash_version = '10.0.1'
-    firebase_database_version = '10.0.1'
-    firebase_ui_database_version = '1.1.1'
-    firebase_messaging_version = '10.0.1'
+    firebaseAuthVersion = '10.0.1'
+    firebaseCrashVersion = '10.0.1'
+    firebaseDatabaseVersion = '10.0.1'
+    firebaseUiDatabaseVersion = '1.1.1'
+    firebaseMessagingVersion = '10.0.1'
 
+    ormliteVersion = '5.0'
 
-    retrofit_version = '2.3.0'
-    retrofit_gson_version = '2.1.0'
-    stetho_okhttp3_version = '1.5.0'
-    okhttp3_version = '3.4.2'
-    okhttp3_logging_interceptor = '3.4.2'
+    flowlayoutVersion = '1.10@aar'
+    flowlayoutmanagerVersion = '1.2.3.2'
+    emphasisVersion = '0.4'
 
-    ormlite_version = '5.0'
+    objectboxVersion = '1.3.4'
 
 }

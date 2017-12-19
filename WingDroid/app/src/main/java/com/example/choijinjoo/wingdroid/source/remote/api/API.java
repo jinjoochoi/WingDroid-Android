@@ -24,19 +24,6 @@ public class API<T> {
         mCallClazz = clazz;
     }
 
-    private Retrofit createRetrofit() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .client(new OkHttpClient().newBuilder()
-                        .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                        .addNetworkInterceptor(new StethoInterceptor()).build())
-                .baseUrl(getAuthURL())
-                .addConverterFactory(GsonConverterFactory.create(createGson()))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
-
-        return retrofit;
-    }
-
 
     private Retrofit createAPIRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -61,20 +48,11 @@ public class API<T> {
     }
 
 
-    protected T createCallService() {
-        mRetrofit = createRetrofit();
-        return mRetrofit.create(mCallClazz);
-    }
-
-
     protected T createAPIService() {
         mRetrofit = createAPIRetrofit();
         return mRetrofit.create(mCallClazz);
     }
 
-    protected String getAuthURL() {
-        return Config.URL_GITHUB_OAUTH;
-    }
 
     protected String getAPIURL() {
         return Config.URL_GITHUB_API;

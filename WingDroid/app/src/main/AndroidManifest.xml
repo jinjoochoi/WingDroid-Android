@@ -14,14 +14,13 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.MainActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
-        <activity android:name=".ui.detail.RepositoryDetailActivity"  android:theme="@style/Transparent"/>
-        <activity android:name=".ui.begin.LoginActivity">
-
-        </activity>
-        <activity android:name=".ui.begin.GithubActivity" />
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity
+            android:name=".ui.detail.RepositoryDetailActivity"
+            android:theme="@style/Transparent" />
         <activity android:name=".ui.detail.WebViewAcitivty" />
         <activity android:name=".ui.search.SearchResultActivity" />
+        <activity android:name=".ui.simulate.LottieActivity" />
         <activity android:name=".ui.begin.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,10 +39,7 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <activity android:name=".ui.simulate.LottieActivity"/>
         <service android:name=".service.FirebaseDataSyncService" />
-
         <service
             android:name=".service.BookmarkEventSyncService"
             android:exported="true"

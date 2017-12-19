@@ -75,8 +75,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getNextRepoForCategoryOrderByDate(Category category, Repository repository) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (nextRepoForCategoryPreparedQuery == null)
-                nextRepoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByDateQuery(repository);
+            nextRepoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByDateQuery(repository);
 
             nextRepoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
             results.addAll(setTagsForRepo(repositoryDao.query(nextRepoForCategoryPreparedQuery)));
@@ -117,8 +116,7 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
     public Observable<List<Repository>> getNextRepoForCategoryOrderByStar(Category category, Repository repository) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (nextRepoForCategoryPreparedQuery == null)
-                nextRepoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByStarQuery(repository);
+            nextRepoForCategoryPreparedQuery = makeNextRepoForCategoryOrderByStarQuery(repository);
 
             nextRepoForCategoryPreparedQuery.setArgumentHolderValue(0, category);
             results.addAll(setCategoryForRepos(setTagsForRepo(repositoryDao.query(nextRepoForCategoryPreparedQuery))));
@@ -148,11 +146,10 @@ public class RTCategoryRepositoryRepository extends BaseRepository {
         return new ArrayList<>();
     }
 
-    public Observable<List<Repository>> getBookmarkForCategories(String order_by, List<Category> categories) {
+    public Observable<List<Repository>> getBookmarkForCategories(String order_by,boolean desc, List<Category> categories) {
         List<Repository> results = new ArrayList<>();
         try {
-            if (refoForCategoriesPreparedQuery == null)
-                refoForCategoriesPreparedQuery = makeBookMarkRepoForCategories(order_by, false);
+                refoForCategoriesPreparedQuery = makeBookMarkRepoForCategories(order_by, desc);
             for (Category category : categories) {
                 if (category.getSelected()) {
                     refoForCategoriesPreparedQuery.setArgumentHolderValue(0, category);

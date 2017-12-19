@@ -13,8 +13,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.commit451.elasticdragdismisslayout.ElasticDragDismissLinearLayout;
-import com.commit451.elasticdragdismisslayout.ElasticDragDismissListener;
 import com.example.choijinjoo.wingdroid.R;
 import com.example.choijinjoo.wingdroid.dao.RepositoryRepository;
 import com.example.choijinjoo.wingdroid.dao.TagRepository;
@@ -76,8 +74,6 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
     LinearLayout btnSimulate;
     @BindView(R.id.imgvSimulate)
     ImageView imgvSimulate;
-    @BindView(R.id.elasticDragDismissLinearLayout)
-    ElasticDragDismissLinearLayout elasticDragDismissLinearLayout;
 
 
     TagRepository tagRepository;
@@ -154,19 +150,6 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
                 .subscribe(this::setRelatedRepoItems));
         addClick();
 
-        elasticDragDismissLinearLayout.addListener(new ElasticDragDismissListener() {
-            @Override
-            public void onDrag(float elasticOffset, float elasticOffsetPixels, float rawOffset, float rawOffsetPixels) {
-
-            }
-
-            @Override
-            public void onDragDismissed() {
-                finish();
-                overridePendingTransition(0,0);
-
-            }
-        });
     }
 
     private void setRelatedRepoItems(List<Repository> items) {
@@ -200,6 +183,10 @@ public class RepositoryDetailActivity extends BaseActivity implements View.OnCli
             case R.id.imgvBookMark:
                 repository.clickBookmark();
                 RepositoryRepository.getInstance(getBaseContext()).addBookmark(repository);
+                if (repository.getBookmark())
+                    showToastMessage(R.string.toast_message_bookmark_added);
+                else
+                    showToastMessage(R.string.toast_message_bookmark_deleted);
                 break;
 
             case R.id.btnSimulate:

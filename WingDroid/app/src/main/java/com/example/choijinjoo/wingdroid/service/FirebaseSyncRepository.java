@@ -12,7 +12,7 @@ import com.example.choijinjoo.wingdroid.model.Repository;
 import com.example.choijinjoo.wingdroid.model.Tag;
 import com.example.choijinjoo.wingdroid.model.UpdatedAt;
 import com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelper;
-import com.example.choijinjoo.wingdroid.tools.FirebaseArray2;
+import com.example.choijinjoo.wingdroid.tools.FirebaseArray;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -26,8 +26,7 @@ import static com.example.choijinjoo.wingdroid.source.local.SharedPreferenceHelp
  * Created by choijinjoo on 2017. 8. 17..
  */
 
-public class
-FirebaseSyncRepository {
+public class FirebaseSyncRepository {
     Context context;
 
     PublishSubject<Boolean> loadedCategoryPS;
@@ -35,10 +34,10 @@ FirebaseSyncRepository {
     PublishSubject<Boolean> loadedTagPS;
     PublishSubject<Boolean> needUpdatePS;
 
-    FirebaseArray2 repoFirebaseArray;
-    FirebaseArray2 categoryFirebaseArray;
-    FirebaseArray2 tagsFirebaseArray;
-    FirebaseArray2 updatedAtFirebaseArray;
+    FirebaseArray repoFirebaseArray;
+    FirebaseArray categoryFirebaseArray;
+    FirebaseArray tagsFirebaseArray;
+    FirebaseArray updatedAtFirebaseArray;
 
     RepositoryRepository repositoryRepository;
     CategoryRepository categoryRepository;
@@ -81,12 +80,12 @@ FirebaseSyncRepository {
     }
 
     public void start() {
-        updatedAtFirebaseArray = new FirebaseArray2(updatedAtQuery);
+        updatedAtFirebaseArray = new FirebaseArray(updatedAtQuery);
         updatedAtFirebaseArray.setOnChangedListener(updatedAtListener);
     }
 
 
-    FirebaseArray2.OnChangedListener repoListener = new FirebaseArray2.OnChangedListener() {
+    FirebaseArray.OnChangedListener repoListener = new FirebaseArray.OnChangedListener() {
         @Override
         public void onChildChanged(EventType type, int index, int oldIndex) {
             Repository repository = repoFirebaseArray.getItem(index).getValue(Repository.class);
@@ -126,7 +125,7 @@ FirebaseSyncRepository {
         }
     };
 
-    FirebaseArray2.OnChangedListener categoryListener = new FirebaseArray2.OnChangedListener() {
+    FirebaseArray.OnChangedListener categoryListener = new FirebaseArray.OnChangedListener() {
         @Override
         public void onChildChanged(EventType type, int index, int oldIndex) {
             Category category = categoryFirebaseArray.getItem(index).getValue(Category.class);
@@ -164,7 +163,7 @@ FirebaseSyncRepository {
         }
     };
 
-    FirebaseArray2.OnChangedListener tagsListener = new FirebaseArray2.OnChangedListener() {
+    FirebaseArray.OnChangedListener tagsListener = new FirebaseArray.OnChangedListener() {
         @Override
         public void onChildChanged(EventType type, int index, int oldIndex) {
             Tag tag = tagsFirebaseArray.getItem(index).getValue(Tag.class);
@@ -202,7 +201,7 @@ FirebaseSyncRepository {
         }
     };
 
-    FirebaseArray2.OnChangedListener updatedAtListener = new FirebaseArray2.OnChangedListener() {
+    FirebaseArray.OnChangedListener updatedAtListener = new FirebaseArray.OnChangedListener() {
         @Override
         public void onChildChanged(EventType type, int index, int oldIndex) {
             switch (type) {
@@ -215,9 +214,9 @@ FirebaseSyncRepository {
                     }
                     //FIXME : Load가 다 된 다음에
                     SharedPreferenceHelper.getInstance().putLongValue(context,LOAD_UPDATEDAT,updatedAt.getUpdatedAt());
-                    categoryFirebaseArray = new FirebaseArray2(categoryQuery);
-                    tagsFirebaseArray = new FirebaseArray2(tagQuery);
-                    repoFirebaseArray = new FirebaseArray2(repoQuery);
+                    categoryFirebaseArray = new FirebaseArray(categoryQuery);
+                    tagsFirebaseArray = new FirebaseArray(tagQuery);
+                    repoFirebaseArray = new FirebaseArray(repoQuery);
 
                     repoFirebaseArray.setOnChangedListener(repoListener);
                     categoryFirebaseArray.setOnChangedListener(categoryListener);
